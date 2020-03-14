@@ -1,11 +1,6 @@
 package org.mirna;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
+import static org.mirna.Utils.resource;
 
 public enum Strs {
 
@@ -20,21 +15,15 @@ public enum Strs {
     CONFIG_REPORT_SIZE("config.report.size"),
     CONFIG_REPORT_VALUE("config.report.value");
 
-    String getStr(Object... args) {
-        try {
-            InputStream stream = Objects.requireNonNull(getClass().getClassLoader().getResource("strs.properties")).openStream();
-            PropertyResourceBundle res = new PropertyResourceBundle(new InputStreamReader(stream, StandardCharsets.ISO_8859_1));
-            return String.format(ResourceBundle.getBundle("strs").getString(key), args);
-        } catch (Exception e) {
-            throw new MirnaException(e.getMessage(), e);
-        }
+    public String formatString(Object... args) {
+        return String.format(toString(), args);
     }
 
     public String toString() {
-        return getStr();
+        return resource().getString(key);
     }
 
-    private String key;
+    private final String key;
 
     Strs(String key) {
         this.key = key;

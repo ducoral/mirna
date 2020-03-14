@@ -28,7 +28,7 @@ public class Descriptor {
 
     public final Class<? extends Converter> con;
 
-    private static List<Class<? extends Annotation>> ANNOTATIONS = Arrays.asList(
+    private static final List<Class<? extends Annotation>> ANNOTATIONS = Arrays.asList(
             MirnaRecord.class, IntegerField.class, DecimalField.class,
             DateTimeField.class, StringField.class, CustomField.class);
 
@@ -54,7 +54,7 @@ public class Descriptor {
     public static Descriptor create(String name, Annotation ann) {
         if (ann instanceof MirnaRecord) {
             MirnaRecord mr = (MirnaRecord) ann;
-            return new Descriptor(name, 0, mr.identifier().length(), (char) 0, "", false, 0, mr.identifier(), null);
+            return new Descriptor(name, 0, mr.identifier().length(), (char) 0, "", false, 0, "'" + mr.identifier() + "'", null);
         } else if (ann instanceof IntegerField) {
             IntegerField intF = (IntegerField) ann;
             return new Descriptor(name, intF.pos(), intF.len(), intF.fil(), "", false, 0, "<integer>", intF.con());

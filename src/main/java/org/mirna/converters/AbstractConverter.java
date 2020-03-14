@@ -14,12 +14,12 @@ public abstract class AbstractConverter implements Converter {
 
     @Override
     public String toStr(Object value) {
-        return null;
+        return value.toString();
     }
 
     @Override
     public Object toObj(String value) {
-        return null;
+        return value;
     }
 
     protected Descriptor descriptor() {

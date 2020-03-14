@@ -2,7 +2,11 @@ package org.mirna;
 
 import org.mirna.annotations.MirnaRecord;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.mirna.Strs.*;
@@ -33,28 +37,57 @@ public final class Utils {
         return list;
     }
 
+    public static ResourceBundle resource() {
+        ClassLoader loader = Utils.class.getClassLoader();
+        URL resource = loader.getResource(String.format("strs_%s.properties", Locale.getDefault()));
+        if (resource == null)
+            resource = loader.getResource("strs.properties");
+        if (resource == null)
+            throw new MirnaException(INTERNAL_ERROR);
+        try {
+            return new PropertyResourceBundle(new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new MirnaException(e.getMessage(), e);
+        }
+    }
+
+    public static List<Descriptor> descriptors(Class<?> mirnaRecord) {
+        List<Descriptor> list = new ArrayList<>();
+        if (mirnaRecord.isAnnotationPresent(MirnaRecord.class))
+            list.add(Descriptor.create(CONFIG_REPORT_IDENTIFIER.toString(), mirnaRecord.getAnnotation(MirnaRecord.class)));
+        for (Field field : mirnaRecord.getDeclaredFields())
+            if (Descriptor.isAnnotated(field))
+                addInOrder(list, Descriptor.create(field));
+        return list;
+    }
+
+    private static void addInOrder(List<Descriptor> list, Descriptor descriptor) {
+        int index = 0;
+        while (index < list.size())
+            if (descriptor.pos < list.get(index).pos) break;
+            else index++;
+        list.add(index, descriptor);
+    }
+
     public static String report(Class<?> cla) {
         List<List<String>> table = new ArrayList<>();
-        table.add(strList(
+        List<String> row = strList(
                 CONFIG_REPORT_FIELD, CONFIG_REPORT_POSITION, CONFIG_REPORT_FROM,
-                CONFIG_REPORT_TO, CONFIG_REPORT_SIZE, CONFIG_REPORT_VALUE));
-
-        Descriptor des = Descriptor.create(Strs.CONFIG_REPORT_IDENTIFIER.getStr(), cla.getAnnotation(MirnaRecord.class));
-        table.add(strList(des.name, des.pos, 1, des.len, des.len, "'" + des.val + "'"));
-        int col = des.len;
-        for (Field field : cla.getDeclaredFields())
-            if (Descriptor.isAnnotated(field)) {
-                des = Descriptor.create(field);
-                String name = des.name.replaceAll("[A-Z]", " $0").toLowerCase();
-                table.add(strList(name, des.pos, col + 1, col + des.len, des.len, des.val));
-                col += des.len;
-        }
+                CONFIG_REPORT_TO, CONFIG_REPORT_SIZE, CONFIG_REPORT_VALUE);
+        table.add(row);
 
         Map<Integer, Integer> cols = new LinkedHashMap<>();
-        table.forEach(row -> {
-            for (int i = 0; i < row.size(); i++)
-                cols.put(i, Math.max(row.get(i).length(), cols.getOrDefault(i, 0)));
-        });
+        for (int index = 0; index < row.size(); index++)
+            cols.put(index, row.get(index).length());
+
+        int col = 0;
+        for (Descriptor des : descriptors(cla)) {
+            String name = des.name.replaceAll("[A-Z][^A-Z ]", " $0").toLowerCase();
+            table.add(row = strList(name, des.pos, col + 1, col + des.len, des.len, des.val));
+            for (int index = 0; index < row.size(); index++)
+                cols.put(index, Math.max(row.get(index).length(), cols.get(index)));
+            col += des.len;
+        }
 
         String lineSeparator = cols
                 .values()
@@ -62,15 +95,14 @@ public final class Utils {
                 .reduce("+", (par, len) -> par + chars(len + 2, '-') + '+', String::concat);
 
         StringBuilder report = new StringBuilder(lineSeparator);
-        table.forEach(row -> report
-                .append("\n| ").append(fixLeft(row.get(0), cols.get(0), ' '))
-                .append(" | ").append(fixRight(row.get(1), cols.get(1), ' '))
-                .append(" | ").append(fixRight(row.get(2), cols.get(2), ' '))
-                .append(" | ").append(fixRight(row.get(3), cols.get(3), ' '))
-                .append(" | ").append(fixRight(row.get(4), cols.get(4), ' '))
-                .append(" | ").append(fixLeft(row.get(5), cols.get(5), ' '))
+        table.forEach(line -> report
+                .append("\n| ").append(fixLeft(line.get(0), cols.get(0), ' '))
+                .append(" | ").append(fixRight(line.get(1), cols.get(1), ' '))
+                .append(" | ").append(fixRight(line.get(2), cols.get(2), ' '))
+                .append(" | ").append(fixRight(line.get(3), cols.get(3), ' '))
+                .append(" | ").append(fixRight(line.get(4), cols.get(4), ' '))
+                .append(" | ").append(fixLeft(line.get(5), cols.get(5), ' '))
                 .append(" |\n").append(lineSeparator));
         return report.toString();
     }
-
 }
