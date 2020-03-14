@@ -2,12 +2,13 @@ package org.mirna;
 
 import org.mirna.sample.Main;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
-import java.util.Properties;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 
 public enum Strs {
 
@@ -23,7 +24,7 @@ public enum Strs {
     CONFIG_REPORT_VALUE("config.report.value");
 
     String getStr(Object... args) {
-        return String.format(prop.getProperty(key), args);
+        return String.format(res.getString(key), args);
     }
 
     public String toString() {
@@ -31,7 +32,7 @@ public enum Strs {
     }
 
     private String key;
-    private Properties prop = new Properties();
+    private ResourceBundle res;
 
     Strs(String key) {
         this.key = key;
@@ -41,8 +42,10 @@ public enum Strs {
         if (url == null) throw new RuntimeException("FUNKING INTERNAL ERROR");
 
         try {
-            prop.load(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-        } catch (IOException e) {
+            URLConnection con = url.openConnection();
+            con.setUseCaches(false);
+            res = new PropertyResourceBundle(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+        } catch (Exception e) {
             throw new MirnaException(e.getMessage(), e);
         }
     }
