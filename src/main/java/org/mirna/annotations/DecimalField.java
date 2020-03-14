@@ -1,5 +1,6 @@
 package org.mirna.annotations;
 
+import org.mirna.Align;
 import org.mirna.converters.Converter;
 import org.mirna.converters.DecimalConverter;
 
@@ -21,6 +22,8 @@ public @interface DecimalField {
     int dec() default 2;
 
     boolean sep() default false;
+
+    Align ali() default Align.RIGHT;
 
     Class<? extends Converter> con() default DecimalConverter.class;
 }

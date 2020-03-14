@@ -1,5 +1,6 @@
 package org.mirna.annotations;
 
+import org.mirna.Align;
 import org.mirna.converters.Converter;
 import org.mirna.converters.IntegerConverter;
 
@@ -17,6 +18,8 @@ public @interface IntegerField {
     int len();
 
     char fil() default ' ';
+
+    Align ali() default Align.RIGHT;
 
     Class<? extends Converter> con() default IntegerConverter.class;
 }

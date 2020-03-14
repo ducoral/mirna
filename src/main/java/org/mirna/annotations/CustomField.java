@@ -1,5 +1,6 @@
 package org.mirna.annotations;
 
+import org.mirna.Align;
 import org.mirna.converters.Converter;
 
 import java.lang.annotation.ElementType;
@@ -16,6 +17,8 @@ public @interface CustomField {
     int len();
 
     char fil() default ' ';
+
+    Align ali() default Align.LEFT;
 
     Class<? extends Converter> con();
 }
