@@ -1,10 +1,11 @@
 package org.mirna.sample;
 
-import org.mirna.Utils;
+import java.math.BigDecimal;
 
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println(Utils.report(SampleRecord.class));
+        BigDecimal big = new BigDecimal("12345678965.562").setScale(4, BigDecimal.ROUND_DOWN);
+        System.out.println(big.toString());
     }
 }

@@ -15,7 +15,7 @@ class DescriptorTest {
     @MirnaRecord(identifier = "ident")
     private static class MirnaRecordCase {
         @StringField(position = 1, length = 1, fill = '*', align = RIGHT) private String strF;
-        @DecimalField(position = 2, length = 2, fill = '0', align = LEFT, separator = true, decimals = 4) private Double decF;
+        @DecimalField(position = 2, length = 2, fill = '0', align = LEFT, separator = '.', decimals = 4) private Double decF;
         @IntegerField(position = 3, length = 3, fill = '_', align = LEFT) private Integer intF;
         @DateTimeField(position = 4, format = "ddMMyy") private Date dtmF;
         @CustomField(position = 5, length = 5, fill = '-', align = RIGHT, converter = CustomConverter.class) private StringBuilder ctmF;
@@ -38,7 +38,7 @@ class DescriptorTest {
         assertEquals(5, des.length);
         assertEquals('\0', des.fill);
         assertEquals("", des.format);
-        assertFalse(des.separator);
+        assertEquals('\0', des.separator);
         assertEquals(0, des.decimals);
         assertEquals("'ident'", des.value);
         assertNull(des.converter);
@@ -54,7 +54,7 @@ class DescriptorTest {
         assertEquals(1, des.length);
         assertEquals('*', des.fill);
         assertEquals("", des.format);
-        assertFalse(des.separator);
+        assertEquals('\0', des.separator);
         assertEquals(0, des.decimals);
         assertEquals("<string>", des.value);
         assertEquals(StringConverter.class, des.converter);
@@ -70,7 +70,7 @@ class DescriptorTest {
         assertEquals(3, des.length);
         assertEquals('_', des.fill);
         assertEquals("", des.format);
-        assertFalse(des.separator);
+        assertEquals('\0', des.separator);
         assertEquals(0, des.decimals);
         assertEquals("<integer>", des.value);
         assertEquals(IntegerConverter.class, des.converter);
@@ -85,7 +85,7 @@ class DescriptorTest {
         assertEquals(2, des.length);
         assertEquals('0', des.fill);
         assertEquals("", des.format);
-        assertTrue(des.separator);
+        assertEquals('.', des.separator);
         assertEquals(4, des.decimals);
         assertEquals("<decimal>", des.value);
         assertEquals(DecimalConverter.class, des.converter);
@@ -101,7 +101,7 @@ class DescriptorTest {
         assertEquals(6, des.length);
         assertEquals('\0', des.fill);
         assertEquals("ddMMyy", des.format);
-        assertFalse(des.separator);
+        assertEquals('\0', des.separator);
         assertEquals(0, des.decimals);
         assertEquals("<date time>", des.value);
         assertEquals(DateTimeConverter.class, des.converter);
@@ -117,7 +117,7 @@ class DescriptorTest {
         assertEquals(5, des.length);
         assertEquals('-', des.fill);
         assertEquals("", des.format);
-        assertFalse(des.separator);
+        assertEquals('\0', des.separator);
         assertEquals(0, des.decimals);
         assertEquals("<custom>", des.value);
         assertEquals(CustomConverter.class, des.converter);

@@ -2,7 +2,7 @@ package org.mirna.converters;
 
 public interface Converter {
 
-    String toStr(Object value);
+    String toText(Object value);
 
-    Object fromStr(String value);
+    Object fromText(String text);
 }

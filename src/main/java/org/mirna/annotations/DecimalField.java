@@ -19,7 +19,7 @@ public @interface DecimalField {
 
     int decimals() default 2;
 
-    boolean separator() default false;
+    char separator() default '\0';
 
     Align align() default Align.RIGHT;
 }

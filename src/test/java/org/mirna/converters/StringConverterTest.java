@@ -19,21 +19,21 @@ class StringConverterTest {
     }
 
     @Test
-    void toStr() throws NoSuchFieldException {
-        assertEquals("abcde*****", converter("fieldCase1").toStr("abcde"));
-        assertEquals("a*********", converter("fieldCase1").toStr("a"));
-        assertEquals("+++++abcde", converter("fieldCase2").toStr("abcde"));
-        assertEquals("+++++++++a", converter("fieldCase2").toStr("a"));
+    void toText() throws NoSuchFieldException {
+        assertEquals("abcde*****", converter("fieldCase1").toText("abcde"));
+        assertEquals("a*********", converter("fieldCase1").toText("a"));
+        assertEquals("+++++abcde", converter("fieldCase2").toText("abcde"));
+        assertEquals("+++++++++a", converter("fieldCase2").toText("a"));
     }
 
     @Test
-    void fromStr() throws NoSuchFieldException {
-        assertEquals("abcde", converter("fieldCase1").fromStr("abcde*****"));
-        assertEquals("a", converter("fieldCase1").fromStr("a*********"));
-        assertEquals("*", converter("fieldCase1").fromStr("**********"));
-        assertEquals("abcde", converter("fieldCase2").fromStr("+++++abcde"));
-        assertEquals("a", converter("fieldCase2").fromStr("+++++++++a"));
-        assertEquals("+", converter("fieldCase2").fromStr("++++++++++"));
+    void fromText() throws NoSuchFieldException {
+        assertEquals("abcde", converter("fieldCase1").fromText("abcde*****"));
+        assertEquals("a", converter("fieldCase1").fromText("a*********"));
+        assertEquals("*", converter("fieldCase1").fromText("**********"));
+        assertEquals("abcde", converter("fieldCase2").fromText("+++++abcde"));
+        assertEquals("a", converter("fieldCase2").fromText("+++++++++a"));
+        assertEquals("+", converter("fieldCase2").fromText("++++++++++"));
     }
 
     @Test
