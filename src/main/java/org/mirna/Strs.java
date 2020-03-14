@@ -1,12 +1,9 @@
 package org.mirna;
 
-import org.mirna.sample.Main;
-
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
+import java.util.Objects;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -24,7 +21,13 @@ public enum Strs {
     CONFIG_REPORT_VALUE("config.report.value");
 
     String getStr(Object... args) {
-        return String.format(res.getString(key), args);
+        try {
+            InputStream stream = Objects.requireNonNull(getClass().getClassLoader().getResource("strs.properties")).openStream();
+            PropertyResourceBundle res = new PropertyResourceBundle(new InputStreamReader(stream, StandardCharsets.ISO_8859_1));
+            return String.format(ResourceBundle.getBundle("strs").getString(key), args);
+        } catch (Exception e) {
+            throw new MirnaException(e.getMessage(), e);
+        }
     }
 
     public String toString() {
@@ -32,21 +35,8 @@ public enum Strs {
     }
 
     private String key;
-    private ResourceBundle res;
 
     Strs(String key) {
         this.key = key;
-
-        URL url = Main.class.getClassLoader().getResource(String.format("strings_%s.properties", Locale.getDefault()));
-        if (url == null) url = Main.class.getClassLoader().getResource("strings.properties");
-        if (url == null) throw new RuntimeException("FUNKING INTERNAL ERROR");
-
-        try {
-            URLConnection con = url.openConnection();
-            con.setUseCaches(false);
-            res = new PropertyResourceBundle(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            throw new MirnaException(e.getMessage(), e);
-        }
     }
 }

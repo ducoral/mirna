@@ -1,10 +1,11 @@
 package org.mirna.sample;
 
-import org.mirna.Utils;
+import org.mirna.MirnaException;
+import org.mirna.Strs;
 
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println(Utils.report(SampleRecord.class));
+        throw new MirnaException(Strs.INVALID_PARAMETER, "teste");
     }
 }

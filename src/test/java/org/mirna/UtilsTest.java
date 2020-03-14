@@ -23,13 +23,4 @@ public class UtilsTest {
         assertEquals("12345          ", Utils.fixLeft("12345", 15, ' '));
         assertEquals("345", Utils.fixLeft("12345", 3, ' '));
     }
-
-    @Test
-    void strList() {
-    }
-
-
-    @Test
-    void report() {
-    }
 }
