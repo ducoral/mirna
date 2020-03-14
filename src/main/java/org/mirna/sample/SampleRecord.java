@@ -8,18 +8,18 @@ import java.util.Date;
 @MirnaRecord(identifier = "1")
 public class SampleRecord {
 
-    @IntegerField(pos = 1, len = 5)
+    @IntegerField(position = 1, length = 5)
     private Integer integerField;
 
-    @DecimalField(pos = 2, len = 10)
+    @DecimalField(position = 2, length = 10)
     private Float decimalField;
 
-    @StringField(pos = 3, len = 20)
+    @StringField(position = 3, length = 20)
     private String stringField;
 
-    @DateTimeField(pos = 4)
+    @DateTimeField(position = 4)
     private Date dateField;
 
-    @CustomField(pos = 5, len = 15, con = CustomConverter.class)
+    @CustomField(position = 5, length = 15, converter = CustomConverter.class)
     private Object object;
 }

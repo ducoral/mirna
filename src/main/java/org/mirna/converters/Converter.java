@@ -4,5 +4,5 @@ public interface Converter {
 
     String toStr(Object value);
 
-    Object toObj(String value);
+    Object fromStr(String value);
 }

@@ -12,13 +12,13 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 public @interface CustomField {
 
-    int pos();
+    int position();
 
-    int len();
+    int length();
 
-    char fil() default ' ';
+    char fill() default ' ';
 
-    Align ali() default Align.LEFT;
+    Align align() default Align.LEFT;
 
-    Class<? extends Converter> con();
+    Class<? extends Converter> converter();
 }

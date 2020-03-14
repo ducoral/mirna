@@ -1,8 +1,6 @@
 package org.mirna.annotations;
 
 import org.mirna.Align;
-import org.mirna.converters.Converter;
-import org.mirna.converters.DecimalConverter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,17 +11,15 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface DecimalField {
 
-    int pos();
+    int position();
 
-    int len();
+    int length();
 
-    char fil() default ' ';
+    char fill() default ' ';
 
-    int dec() default 2;
+    int decimals() default 2;
 
-    boolean sep() default false;
+    boolean separator() default false;
 
-    Align ali() default Align.RIGHT;
-
-    Class<? extends Converter> con() default DecimalConverter.class;
+    Align align() default Align.RIGHT;
 }

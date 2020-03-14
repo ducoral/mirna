@@ -1,8 +1,5 @@
 package org.mirna.annotations;
 
-import org.mirna.converters.Converter;
-import org.mirna.converters.DateTimeConverter;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,9 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface DateTimeField {
 
-    int pos();
+    int position();
 
-    String fmt() default "ddMMyyyy";
-
-    Class<? extends Converter> con() default DateTimeConverter.class;
+    String format() default "ddMMyyyy";
 }

@@ -1,8 +1,6 @@
 package org.mirna.annotations;
 
 import org.mirna.Align;
-import org.mirna.converters.Converter;
-import org.mirna.converters.IntegerConverter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,13 +11,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface IntegerField {
 
-    int pos();
+    int position();
 
-    int len();
+    int length();
 
-    char fil() default ' ';
+    char fill() default ' ';
 
-    Align ali() default Align.RIGHT;
-
-    Class<? extends Converter> con() default IntegerConverter.class;
+    Align align() default Align.RIGHT;
 }

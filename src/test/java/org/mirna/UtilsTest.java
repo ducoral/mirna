@@ -20,13 +20,21 @@ public class UtilsTest {
     }
 
     @Test
-    void fillLeft() {
+    void fixStr() {
+        assertEquals("00001234", Utils.fixStr("1234", 8, '0', Align.RIGHT));
+        assertEquals("1234", Utils.fixStr("1234567", 4, ' ', Align.RIGHT));
+        assertEquals("12345          ", Utils.fixStr("12345", 15, ' ', Align.LEFT));
+        assertEquals("345", Utils.fixStr("12345", 3, ' ', Align.LEFT));
+    }
+
+    @Test
+    void fixLeft() {
         assertEquals("00001234", Utils.fixRight("1234", 8, '0'));
         assertEquals("1234", Utils.fixRight("1234567", 4, ' '));
     }
 
     @Test
-    void fillRight() {
+    void fixRight() {
         assertEquals("12345          ", Utils.fixLeft("12345", 15, ' '));
         assertEquals("345", Utils.fixLeft("12345", 3, ' '));
     }
@@ -43,49 +51,49 @@ public class UtilsTest {
 
     @MirnaRecord(identifier = "ident_1")
     public static class MirnaRecordCase1 {
-        @CustomField(pos = 3, len = 15, con = CustomConverter.class) private StringBuilder customField3;
-        @StringField(pos = 1, len = 10) private String stringField1;
-        @IntegerField(pos = 2, len = 5) private Integer integerField2;
+        @CustomField(position = 3, length = 15, converter = CustomConverter.class) private StringBuilder customField3;
+        @StringField(position = 1, length = 10) private String stringField1;
+        @IntegerField(position = 2, length = 5) private Integer integerField2;
     }
 
     @MirnaRecord(identifier = "ident_2")
     public static class MirnaRecordCase2 {
-        @DecimalField(pos = 3, len = 10) private Float decimalField3;
-        @DateTimeField(pos = 2) private Date dateField2;
-        @DecimalField(pos = 4, len = 15) private Double decimalField4;
-        @DateTimeField(pos = 1) private Date dateField1;
+        @DecimalField(position = 3, length = 10) private Float decimalField3;
+        @DateTimeField(position = 2) private Date dateField2;
+        @DecimalField(position = 4, length = 15) private Double decimalField4;
+        @DateTimeField(position = 1) private Date dateField1;
     }
 
     @MirnaRecord(identifier = "ident_3")
     public static class MirnaRecordCase3 {
-        @DecimalField(pos = 3, len = 10) private float decimalField3;
-        @DecimalField(pos = 2, len = 15) private double decimalField2;
-        @IntegerField(pos = 1, len = 5) private int integerField1;
+        @DecimalField(position = 3, length = 10) private float decimalField3;
+        @DecimalField(position = 2, length = 15) private double decimalField2;
+        @IntegerField(position = 1, length = 5) private int integerField1;
     }
 
     @Test
     void descriptors() {
         List<Descriptor> desc = Utils.descriptors(MirnaRecordCase1.class);
         assertEquals(4, desc.size());
-        assertEquals(desc.get(0).pos, 0);
-        assertEquals(desc.get(1).pos, 1);
-        assertEquals(desc.get(2).pos, 2);
-        assertEquals(desc.get(3).pos, 3);
+        assertEquals(desc.get(0).position, 0);
+        assertEquals(desc.get(1).position, 1);
+        assertEquals(desc.get(2).position, 2);
+        assertEquals(desc.get(3).position, 3);
 
         desc = Utils.descriptors(MirnaRecordCase2.class);
         assertEquals(5, desc.size());
-        assertEquals(desc.get(0).pos, 0);
-        assertEquals(desc.get(1).pos, 1);
-        assertEquals(desc.get(2).pos, 2);
-        assertEquals(desc.get(3).pos, 3);
-        assertEquals(desc.get(4).pos, 4);
+        assertEquals(desc.get(0).position, 0);
+        assertEquals(desc.get(1).position, 1);
+        assertEquals(desc.get(2).position, 2);
+        assertEquals(desc.get(3).position, 3);
+        assertEquals(desc.get(4).position, 4);
 
         desc = Utils.descriptors(MirnaRecordCase3.class);
         assertEquals(4, desc.size());
-        assertEquals(desc.get(0).pos, 0);
-        assertEquals(desc.get(1).pos, 1);
-        assertEquals(desc.get(2).pos, 2);
-        assertEquals(desc.get(3).pos, 3);
+        assertEquals(desc.get(0).position, 0);
+        assertEquals(desc.get(1).position, 1);
+        assertEquals(desc.get(2).position, 2);
+        assertEquals(desc.get(3).position, 3);
     }
 
     @Test

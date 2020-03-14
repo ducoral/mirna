@@ -19,6 +19,10 @@ public final class Utils {
         return new String(new char[len]).replace('\0', fil);
     }
 
+    public static String fixStr(String str, int len, char fil, Align ali) {
+        return ali == Align.RIGHT ? fixRight(str, len, fil) : fixLeft(str, len, fil);
+    }
+
     public static String fixRight(String str, int len, char fil) {
         return str.length() >= len
                 ? str.substring(0, len)
@@ -64,7 +68,7 @@ public final class Utils {
     private static void addInOrder(List<Descriptor> list, Descriptor descriptor) {
         int index = 0;
         while (index < list.size())
-            if (descriptor.pos < list.get(index).pos) break;
+            if (descriptor.position < list.get(index).position) break;
             else index++;
         list.add(index, descriptor);
     }
@@ -83,10 +87,10 @@ public final class Utils {
         int col = 0;
         for (Descriptor des : descriptors(cla)) {
             String name = des.name.replaceAll("[A-Z][^A-Z ]", " $0").toLowerCase();
-            table.add(row = strList(name, des.pos, col + 1, col + des.len, des.len, des.val));
+            table.add(row = strList(name, des.position, col + 1, col + des.length, des.length, des.value));
             for (int index = 0; index < row.size(); index++)
                 cols.put(index, Math.max(row.get(index).length(), cols.get(index)));
-            col += des.len;
+            col += des.length;
         }
 
         String lineSeparator = cols

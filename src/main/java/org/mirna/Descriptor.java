@@ -1,7 +1,7 @@
 package org.mirna;
 
 import org.mirna.annotations.*;
-import org.mirna.converters.Converter;
+import org.mirna.converters.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -14,23 +14,23 @@ public class Descriptor {
 
     public final String name;
 
-    public final int pos;
+    public final int position;
 
-    public final int len;
+    public final int length;
 
-    public final char fil;
+    public final char fill;
 
-    public final String fmt;
+    public final String format;
 
-    public final boolean sep;
+    public final boolean separator;
 
-    public final int dec;
+    public final int decimals;
 
-    public final String val;
+    public final String value;
 
-    public final Align ali;
+    public final Align align;
 
-    public final Class<? extends Converter> con;
+    public final Class<? extends Converter> converter;
 
     private static final List<Class<? extends Annotation>> ANNOTATIONS = Arrays.asList(
                     IntegerField.class, DecimalField.class, DateTimeField.class,
@@ -47,7 +47,6 @@ public class Descriptor {
         for (Class<? extends Annotation> ann : ANNOTATIONS)
             if (fld.isAnnotationPresent(ann))
                 return create(fld.getName(), fld.getAnnotation(ann));
-
         throw new MirnaException(Strs.INVALID_PARAMETER, fld);
     }
 
@@ -61,19 +60,19 @@ public class Descriptor {
             return new Descriptor(name, 0, mr.identifier().length(), (char) 0, "", false, 0, "'" + mr.identifier() + "'", LEFT, null);
         } else if (ann instanceof IntegerField) {
             IntegerField intF = (IntegerField) ann;
-            return new Descriptor(name, intF.pos(), intF.len(), intF.fil(), "", false, 0, "<integer>", intF.ali(), intF.con());
+            return new Descriptor(name, intF.position(), intF.length(), intF.fill(), "", false, 0, "<integer>", intF.align(), IntegerConverter.class);
         } else if (ann instanceof DecimalField) {
             DecimalField decF = (DecimalField) ann;
-            return new Descriptor(name, decF.pos(), decF.len(), decF.fil(), "", decF.sep(), decF.dec(), "<decimal>", decF.ali(), decF.con());
+            return new Descriptor(name, decF.position(), decF.length(), decF.fill(), "", decF.separator(), decF.decimals(), "<decimal>", decF.align(), DecimalConverter.class);
         } else if (ann instanceof DateTimeField) {
             DateTimeField dtmF = (DateTimeField) ann;
-            return new Descriptor(name, dtmF.pos(), dtmF.fmt().length(), '\0', dtmF.fmt(), false, 0, "<date time>", LEFT, dtmF.con());
+            return new Descriptor(name, dtmF.position(), dtmF.format().length(), '\0', dtmF.format(), false, 0, "<date time>", LEFT, DateTimeConverter.class);
         } else if (ann instanceof StringField) {
             StringField strF = (StringField) ann;
-            return new Descriptor(name, strF.pos(), strF.len(), strF.fil(), "", false, 0, "<string>", strF.ali(), strF.con());
+            return new Descriptor(name, strF.position(), strF.length(), strF.fill(), "", false, 0, "<string>", strF.align(), StringConverter.class);
         } else if (ann instanceof CustomField) {
             CustomField ctmF = (CustomField) ann;
-            return new Descriptor(name, ctmF.pos(), ctmF.len(), ctmF.fil(), "", false, 0, "<custom>", ctmF.ali(), ctmF.con());
+            return new Descriptor(name, ctmF.position(), ctmF.length(), ctmF.fill(), "", false, 0, "<custom>", ctmF.align(), ctmF.converter());
         } else
             throw new MirnaException(Strs.INVALID_PARAMETER, ann);
     }
@@ -82,14 +81,14 @@ public class Descriptor {
             String name, int pos, int len, char fil, String fmt,
             boolean sep, int dec, String val, Align ali, Class<? extends Converter> con) {
         this.name = name;
-        this.pos = pos;
-        this.len = len;
-        this.fil = fil;
-        this.fmt = fmt;
-        this.sep = sep;
-        this.dec = dec;
-        this.val = val;
-        this.con = con;
-        this.ali = ali;
+        this.position = pos;
+        this.length = len;
+        this.fill = fil;
+        this.format = fmt;
+        this.separator = sep;
+        this.decimals = dec;
+        this.value = val;
+        this.converter = con;
+        this.align = ali;
     }
 }
