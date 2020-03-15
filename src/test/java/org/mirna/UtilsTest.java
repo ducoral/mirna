@@ -2,7 +2,7 @@ package org.mirna;
 
 import org.junit.jupiter.api.Test;
 import org.mirna.annotations.*;
-import org.mirna.converters.CustomConverter;
+import org.mirna.converters.StringConverter;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -51,7 +51,7 @@ public class UtilsTest {
 
     @MirnaRecord(identifier = "ident_1")
     public static class MirnaRecordCase1 {
-        @CustomField(position = 3, length = 15, converter = CustomConverter.class) private StringBuilder customField3;
+        @CustomField(position = 3, length = 15, converter = StringConverter.class) private StringBuilder customField3;
         @StringField(position = 1, length = 10) private String stringField1;
         @IntegerField(position = 2, length = 5) private Integer integerField2;
     }

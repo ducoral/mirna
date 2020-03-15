@@ -1,7 +1,7 @@
 package org.mirna.sample;
 
 import org.mirna.annotations.*;
-import org.mirna.converters.CustomConverter;
+import org.mirna.converters.StringConverter;
 
 import java.util.Date;
 
@@ -20,6 +20,6 @@ public class SampleRecord {
     @DateTimeField(position = 4)
     private Date dateField;
 
-    @CustomField(position = 5, length = 15, converter = CustomConverter.class)
+    @CustomField(position = 5, length = 15, converter = StringConverter.class)
     private Object object;
 }

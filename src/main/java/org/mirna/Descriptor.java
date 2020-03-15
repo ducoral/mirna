@@ -65,38 +65,38 @@ public class Descriptor {
         return annotation == CustomField.class;
     }
 
-    public static Descriptor create(Field fld) {
+    public static Descriptor create(Field field) {
         for (Class<? extends Annotation> ann : ANNOTATIONS)
-            if (fld.isAnnotationPresent(ann))
-                return create(fld.getName(), fld.getAnnotation(ann));
-        throw new MirnaException(Strs.INVALID_PARAMETER, fld);
+            if (field.isAnnotationPresent(ann))
+                return create(field.getName(), field.getAnnotation(ann));
+        throw new MirnaException(Strs.INVALID_PARAMETER, field);
     }
 
-    public static Descriptor create(Annotation ann) {
-        return create("", ann);
+    public static Descriptor create(Annotation annotation) {
+        return create("", annotation);
     }
 
-    public static Descriptor create(String name, Annotation ann) {
-        if (ann instanceof MirnaRecord) {
-            MirnaRecord mr = (MirnaRecord) ann;
-            return new Descriptor(name, 0, mr.identifier().length(), (char) 0, "", '\0', 0, "'" + mr.identifier() + "'", LEFT, null);
-        } else if (ann instanceof IntegerField) {
-            IntegerField intF = (IntegerField) ann;
+    public static Descriptor create(String name, Annotation annotation) {
+        if (annotation instanceof MirnaRecord) {
+            MirnaRecord rec = (MirnaRecord) annotation;
+            return new Descriptor(name, 0, rec.identifier().length(), (char) 0, "", '\0', 0, "'" + rec.identifier() + "'", LEFT, null);
+        } else if (annotation instanceof IntegerField) {
+            IntegerField intF = (IntegerField) annotation;
             return new Descriptor(name, intF.position(), intF.length(), intF.fill(), "", '\0', 0, "<integer>", intF.align(), IntegerConverter.class);
-        } else if (ann instanceof DecimalField) {
-            DecimalField decF = (DecimalField) ann;
+        } else if (annotation instanceof DecimalField) {
+            DecimalField decF = (DecimalField) annotation;
             return new Descriptor(name, decF.position(), decF.length(), decF.fill(), "", decF.separator(), decF.decimals(), "<decimal>", decF.align(), DecimalConverter.class);
-        } else if (ann instanceof DateTimeField) {
-            DateTimeField dtmF = (DateTimeField) ann;
+        } else if (annotation instanceof DateTimeField) {
+            DateTimeField dtmF = (DateTimeField) annotation;
             return new Descriptor(name, dtmF.position(), dtmF.format().length(), '\0', dtmF.format(), '\0', 0, "<date time>", LEFT, DateTimeConverter.class);
-        } else if (ann instanceof StringField) {
-            StringField strF = (StringField) ann;
+        } else if (annotation instanceof StringField) {
+            StringField strF = (StringField) annotation;
             return new Descriptor(name, strF.position(), strF.length(), strF.fill(), "", '\0', 0, "<string>", strF.align(), StringConverter.class);
-        } else if (ann instanceof CustomField) {
-            CustomField ctmF = (CustomField) ann;
+        } else if (annotation instanceof CustomField) {
+            CustomField ctmF = (CustomField) annotation;
             return new Descriptor(name, ctmF.position(), ctmF.length(), ctmF.fill(), "", '\0', 0, "<custom>", ctmF.align(), ctmF.converter());
         } else
-            throw new MirnaException(Strs.INVALID_PARAMETER, ann);
+            throw new MirnaException(Strs.INVALID_PARAMETER, annotation);
     }
 
     private Descriptor(

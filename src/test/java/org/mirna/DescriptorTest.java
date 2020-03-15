@@ -2,7 +2,10 @@ package org.mirna;
 
 import org.junit.jupiter.api.Test;
 import org.mirna.annotations.*;
-import org.mirna.converters.*;
+import org.mirna.converters.DateTimeConverter;
+import org.mirna.converters.DecimalConverter;
+import org.mirna.converters.IntegerConverter;
+import org.mirna.converters.StringConverter;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -25,7 +28,7 @@ class DescriptorTest {
         private Integer intF;
         @DateTimeField(position = 4, format = "ddMMyy")
         private Date dtmF;
-        @CustomField(position = 5, length = 5, fill = '-', align = RIGHT, converter = CustomConverter.class)
+        @CustomField(position = 5, length = 5, fill = '-', align = RIGHT, converter = StringConverter.class)
         private StringBuilder ctmF;
     }
 
@@ -61,18 +64,18 @@ class DescriptorTest {
         Date dateValue = new Date();
         StringBuilder objectValue = new StringBuilder();
 
-        assertTrue(Descriptor.isValid(byteValue,        IntegerField.class));
-        assertTrue(Descriptor.isValid(shortValue,       IntegerField.class));
-        assertTrue(Descriptor.isValid(intValue,         IntegerField.class));
-        assertTrue(Descriptor.isValid(longValue,        IntegerField.class));
-        assertTrue(Descriptor.isValid(bigIntegerValue,  IntegerField.class));
-        assertTrue(Descriptor.isValid(floatValue,       DecimalField.class));
-        assertTrue(Descriptor.isValid(doubleValue,      DecimalField.class));
-        assertTrue(Descriptor.isValid(bigDecimalValue,  DecimalField.class));
-        assertTrue(Descriptor.isValid(dateValue,        DateTimeField.class));
-        assertTrue(Descriptor.isValid(charValue,        StringField.class));
-        assertTrue(Descriptor.isValid(stringValue,      StringField.class));
-        assertTrue(Descriptor.isValid(objectValue,      CustomField.class));
+        assertTrue(Descriptor.isValid(byteValue,         IntegerField.class));
+        assertTrue(Descriptor.isValid(shortValue,        IntegerField.class));
+        assertTrue(Descriptor.isValid(intValue,          IntegerField.class));
+        assertTrue(Descriptor.isValid(longValue,         IntegerField.class));
+        assertTrue(Descriptor.isValid(bigIntegerValue,   IntegerField.class));
+        assertTrue(Descriptor.isValid(floatValue,        DecimalField.class));
+        assertTrue(Descriptor.isValid(doubleValue,       DecimalField.class));
+        assertTrue(Descriptor.isValid(bigDecimalValue,   DecimalField.class));
+        assertTrue(Descriptor.isValid(dateValue,         DateTimeField.class));
+        assertTrue(Descriptor.isValid(charValue,         StringField.class));
+        assertTrue(Descriptor.isValid(stringValue,       StringField.class));
+        assertTrue(Descriptor.isValid(objectValue,       CustomField.class));
 
         assertFalse(Descriptor.isValid(byteValue,        DecimalField.class));
         assertFalse(Descriptor.isValid(shortValue,       DecimalField.class));
@@ -200,7 +203,7 @@ class DescriptorTest {
 
     @Test
     void createCaseCustomField() {
-        // @CustomField(pos = 5, len = 5, fil = '-', ali = RIGHT, con = CustomConverter.class) private StringBuilder ctmF;
+        // @CustomField(pos = 5, len = 5, fil = '-', ali = RIGHT, con = StringConverter.class) private StringBuilder ctmF;
         Descriptor des = Descriptor.create(getField("ctmF"));
         assertEquals("ctmF", des.name);
         assertEquals(5, des.position);
@@ -210,7 +213,7 @@ class DescriptorTest {
         assertEquals('\0', des.separator);
         assertEquals(0, des.decimals);
         assertEquals("<custom>", des.value);
-        assertEquals(CustomConverter.class, des.converter);
+        assertEquals(StringConverter.class, des.converter);
         assertEquals(RIGHT, des.align);
     }
 }
