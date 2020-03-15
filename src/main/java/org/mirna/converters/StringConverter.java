@@ -21,7 +21,7 @@ public class StringConverter implements Converter {
     @Override
     public String toText(Object value) {
         if (!Descriptor.isValid(value, StringField.class))
-            throw new MirnaException(Strs.INVALID_PARAMETER, value);
+            throw new MirnaException(Strs.MSG_INVALID_PARAMETER, value);
         Descriptor des = descriptor();
         return Utils.fixStr(String.valueOf(value), des.length, des.fill, des.align);
     }

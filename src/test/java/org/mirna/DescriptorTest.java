@@ -19,26 +19,89 @@ import static org.mirna.Align.RIGHT;
 class DescriptorTest {
 
     @MirnaRecord(identifier = "ident")
-    private static class MirnaRecordCase {
+    private static class MirnaRecordCase1 {
         @StringField(position = 1, length = 1, fill = '*', align = RIGHT)
         private String strF;
+
         @DecimalField(position = 2, length = 2, fill = '0', align = LEFT, separator = '.', decimals = 4)
         private Double decF;
+
         @IntegerField(position = 3, length = 3, fill = '_', align = LEFT)
         private Integer intF;
+
         @DateTimeField(position = 4, format = "ddMMyy")
         private Date dtmF;
+
         @CustomField(position = 5, length = 5, fill = '-', align = RIGHT, converter = StringConverter.class)
         private StringBuilder ctmF;
     }
 
+    private static class MirnaRecordCase2 {
+    }
+
+    @MirnaRecord(identifier = "abc")
+    private static class MirnaRecordCase3 {
+    }
+
+    @MirnaRecord(identifier = "abc")
+    private static class MirnaRecordCase4 {
+        @StringField(position = 2, length = 1)
+        private String fieldCase1;
+    }
+
+    @MirnaRecord(identifier = "abc")
+    private static class MirnaRecordCase5 {
+        @StringField(position = 1, length = 1)
+        private String fieldCase1;
+
+        @StringField(position = 3, length = 1)
+        private String fieldCase2;
+    }
+
+    @MirnaRecord(identifier = "abc")
+    private static class MirnaRecordCase6 {
+        @IntegerField(position = 1, length = 1)
+        private Date fieldCase1;
+    }
+
     private static Field getField(String name) {
         try {
-            return MirnaRecordCase.class.getDeclaredField(name);
+            return MirnaRecordCase1.class.getDeclaredField(name);
         } catch (NoSuchFieldException e) {
             throw new MirnaException(e.getMessage(), e);
         }
     }
+
+    @Test
+    void validate() {
+        assertDoesNotThrow(() -> Descriptor.validate(MirnaRecordCase1.class));
+
+        assertThrows(
+                MirnaException.class,
+                () -> Descriptor.validate(MirnaRecordCase2.class),
+                Strs.MSG_ANNOTATION_NOT_PRESENT.format(MirnaRecord.class, MirnaRecordCase2.class));
+
+        assertThrows(
+                MirnaException.class,
+                () -> Descriptor.validate(MirnaRecordCase3.class),
+                Strs.MSG_MISSING_FIELD_CONFIG.format(MirnaRecordCase3.class));
+
+        assertThrows(
+                MirnaException.class,
+                () -> Descriptor.validate(MirnaRecordCase4.class),
+                Strs.MSG_MISSING_POSITION_CONFIG.format(1, MirnaRecordCase4.class));
+
+        assertThrows(
+                MirnaException.class,
+                () -> Descriptor.validate(MirnaRecordCase5.class),
+                Strs.MSG_MISSING_POSITION_CONFIG.format(2, MirnaRecordCase5.class));
+
+        assertThrows(
+                MirnaException.class,
+                () -> Descriptor.validate(MirnaRecordCase6.class),
+                Strs.MSG_INVALID_FIELD_TYPE.format(Date.class, StringField.class));
+    }
+
 
     @Test
     void isAnnotated() {
@@ -124,7 +187,7 @@ class DescriptorTest {
 
     @Test
     void createCaseMirnaRecord() {
-        Descriptor des = Descriptor.create(MirnaRecordCase.class.getAnnotation(MirnaRecord.class));
+        Descriptor des = Descriptor.create(MirnaRecordCase1.class.getAnnotation(MirnaRecord.class));
         assertEquals("", des.name);
         assertEquals(0, des.position);
         assertEquals(5, des.length);

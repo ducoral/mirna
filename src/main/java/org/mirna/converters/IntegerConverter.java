@@ -17,7 +17,7 @@ public class IntegerConverter extends StringConverter {
     @Override
     public String toText(Object value) {
         if (!Descriptor.isValid(value, IntegerField.class))
-            throw new MirnaException(Strs.INVALID_PARAMETER, value);
+            throw new MirnaException(Strs.MSG_INVALID_PARAMETER, value);
         return super.toText(String.valueOf(value));
     }
 

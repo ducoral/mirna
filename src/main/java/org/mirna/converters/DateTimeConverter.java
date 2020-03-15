@@ -19,7 +19,7 @@ public class DateTimeConverter extends StringConverter {
     @Override
     public String toText(Object value) {
         if (!Descriptor.isValid(value, DateTimeField.class))
-            throw new MirnaException(Strs.INVALID_PARAMETER, value);
+            throw new MirnaException(Strs.MSG_INVALID_PARAMETER, value);
         return super.toText(new SimpleDateFormat(descriptor().format).format((Date)value));
     }
 

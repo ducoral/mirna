@@ -47,7 +47,7 @@ public final class Utils {
         if (resource == null)
             resource = loader.getResource("strs.properties");
         if (resource == null)
-            throw new MirnaException(INTERNAL_ERROR);
+            throw new MirnaException(MSG_INTERNAL_ERROR);
         try {
             return new PropertyResourceBundle(new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8));
         } catch (IOException e) {
@@ -58,14 +58,14 @@ public final class Utils {
     public static List<Descriptor> descriptors(Class<?> mirnaRecord) {
         List<Descriptor> list = new ArrayList<>();
         if (mirnaRecord.isAnnotationPresent(MirnaRecord.class))
-            list.add(Descriptor.create(CONFIG_REPORT_IDENTIFIER.toString(), mirnaRecord.getAnnotation(MirnaRecord.class)));
+            list.add(Descriptor.create(REPORT_IDENTIFIER.toString(), mirnaRecord.getAnnotation(MirnaRecord.class)));
         for (Field field : mirnaRecord.getDeclaredFields())
             if (Descriptor.isAnnotated(field))
                 addInOrder(list, Descriptor.create(field));
         return list;
     }
 
-    private static void addInOrder(List<Descriptor> list, Descriptor descriptor) {
+    public static void addInOrder(List<Descriptor> list, Descriptor descriptor) {
         int index = 0;
         while (index < list.size())
             if (descriptor.position < list.get(index).position) break;
@@ -76,8 +76,8 @@ public final class Utils {
     public static String report(Class<?> cla) {
         List<List<String>> table = new ArrayList<>();
         List<String> row = strList(
-                CONFIG_REPORT_FIELD, CONFIG_REPORT_POSITION, CONFIG_REPORT_FROM,
-                CONFIG_REPORT_TO, CONFIG_REPORT_SIZE, CONFIG_REPORT_VALUE);
+                REPORT_FIELD, REPORT_POSITION, REPORT_FROM,
+                REPORT_TO, REPORT_SIZE, REPORT_VALUE);
         table.add(row);
 
         Map<Integer, Integer> cols = new LinkedHashMap<>();

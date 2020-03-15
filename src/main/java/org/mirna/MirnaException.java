@@ -7,7 +7,7 @@ public class MirnaException extends RuntimeException {
     }
 
     public MirnaException(Strs msg, Throwable thr, Object... args) {
-        super(msg.formatString(args), thr);
+        super(msg.format(args), thr);
     }
 
     public MirnaException(Strs msg, Object... args) {

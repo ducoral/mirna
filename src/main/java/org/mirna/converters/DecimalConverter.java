@@ -18,7 +18,7 @@ public class DecimalConverter extends StringConverter {
     @Override
     public String toText(Object value) {
         if (!Descriptor.isValid(value, DecimalField.class))
-            throw new MirnaException(Strs.INVALID_PARAMETER, value);
+            throw new MirnaException(Strs.MSG_INVALID_PARAMETER, value);
         Descriptor des = descriptor();
         String txt = new BigDecimal(String.valueOf(value))
                 .setScale(des.decimals, BigDecimal.ROUND_DOWN)

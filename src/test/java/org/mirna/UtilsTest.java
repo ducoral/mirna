@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.mirna.annotations.*;
 import org.mirna.converters.StringConverter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +70,20 @@ public class UtilsTest {
         @DecimalField(position = 3, length = 10) private float decimalField3;
         @DecimalField(position = 2, length = 15) private double decimalField2;
         @IntegerField(position = 1, length = 5) private int integerField1;
+    }
+
+    @Test
+    void addInOrder() throws NoSuchFieldException {
+        List<Descriptor> list = new ArrayList<>();
+        Utils.addInOrder(list, Descriptor.create(MirnaRecordCase2.class.getDeclaredField("decimalField3")));
+        Utils.addInOrder(list, Descriptor.create(MirnaRecordCase2.class.getDeclaredField("dateField2")));
+        Utils.addInOrder(list, Descriptor.create(MirnaRecordCase2.class.getDeclaredField("decimalField4")));
+        Utils.addInOrder(list, Descriptor.create(MirnaRecordCase2.class.getDeclaredField("dateField1")));
+
+        assertEquals("dateField1", list.get(0).name);
+        assertEquals("dateField2", list.get(1).name);
+        assertEquals("decimalField3", list.get(2).name);
+        assertEquals("decimalField4", list.get(3).name);
     }
 
     @Test

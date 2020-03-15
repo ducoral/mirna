@@ -27,7 +27,7 @@ class StringConverterTest {
         try {
             return MirnaRecordCase.class.getDeclaredField(field);
         } catch (NoSuchFieldException e) {
-            throw new MirnaException(Strs.INTERNAL_ERROR);
+            throw new MirnaException(Strs.MSG_INTERNAL_ERROR);
         }
     }
 

@@ -4,19 +4,26 @@ import static org.mirna.Utils.resource;
 
 public enum Strs {
 
-    INTERNAL_ERROR("internal.error"),
-    INVALID_PARAMETER("invalid.parameter"),
+    MSG_INTERNAL_ERROR("msg.internal.error"),
+    MSG_INVALID_PARAMETER("msg.invalid.parameter"),
+    MSG_ANNOTATION_NOT_PRESENT("msg.annotation.not.present"),
+    MSG_MISSING_POSITION_CONFIG("msg.missing.position.config"),
+    MSG_MISSING_FIELD_CONFIG("msg.missing.field.config"),
+    MSG_INVALID_FIELD_TYPE("msg.invalid.field.type"),
 
-    CONFIG_REPORT_IDENTIFIER("config.report.identifier"),
-    CONFIG_REPORT_FIELD("config.report.field"),
-    CONFIG_REPORT_POSITION("config.report.position"),
-    CONFIG_REPORT_FROM("config.report.from"),
-    CONFIG_REPORT_TO("config.report.to"),
-    CONFIG_REPORT_SIZE("config.report.size"),
-    CONFIG_REPORT_VALUE("config.report.value");
+    REPORT_IDENTIFIER("config.report.identifier"),
+    REPORT_FIELD("config.report.field"),
+    REPORT_POSITION("config.report.position"),
+    REPORT_FROM("config.report.from"),
+    REPORT_TO("config.report.to"),
+    REPORT_SIZE("config.report.size"),
+    REPORT_VALUE("config.report.value");
 
-    public String formatString(Object... args) {
-        return String.format(toString(), args);
+    public String format(Object... args) {
+        Object[] strs = new Object[args.length];
+        for (int i = 0; i < args.length; i++)
+            strs[i] = String.valueOf(args[i]);
+        return String.format(toString(), strs);
     }
 
     public String toString() {
