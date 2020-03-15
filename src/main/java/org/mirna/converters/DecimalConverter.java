@@ -1,5 +1,6 @@
 package org.mirna.converters;
 
+import org.mirna.Align;
 import org.mirna.Descriptor;
 
 import java.lang.reflect.Field;
@@ -27,7 +28,7 @@ public class DecimalConverter extends StringConverter {
     @Override
     public Object fromText(String text) {
         Descriptor des = descriptor();
-        setRemoveFill(des.fill != '0');
+        setRemoveFill(des.fill != '0' || des.align == Align.LEFT || des.decimals == 0);
         String value = (String) super.fromText(text);
         if (des.separator == '\0')
             value = new StringBuilder(value)
