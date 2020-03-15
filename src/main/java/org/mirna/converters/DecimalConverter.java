@@ -2,6 +2,9 @@ package org.mirna.converters;
 
 import org.mirna.Align;
 import org.mirna.Descriptor;
+import org.mirna.MirnaException;
+import org.mirna.Strs;
+import org.mirna.annotations.DecimalField;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -14,6 +17,8 @@ public class DecimalConverter extends StringConverter {
 
     @Override
     public String toText(Object value) {
+        if (!Descriptor.isValid(value, DecimalField.class))
+            throw new MirnaException(Strs.INVALID_PARAMETER, value);
         Descriptor des = descriptor();
         String txt = new BigDecimal(String.valueOf(value))
                 .setScale(des.decimals, BigDecimal.ROUND_DOWN)

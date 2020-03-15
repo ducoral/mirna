@@ -1,11 +1,15 @@
 package org.mirna.sample;
 
-import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Main {
 
     public static void main(String[] args) {
-        BigDecimal big = new BigDecimal("12345678965.562").setScale(4, BigDecimal.ROUND_DOWN);
-        System.out.println(big.toString());
+
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        System.out.println(sdf.toLocalizedPattern());
+        System.out.println(sdf.toPattern());
+        System.out.println(new Date());
     }
 }

@@ -5,7 +5,10 @@ import org.mirna.converters.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static org.mirna.Align.LEFT;
@@ -33,14 +36,33 @@ public class Descriptor {
     public final Class<? extends Converter> converter;
 
     private static final List<Class<? extends Annotation>> ANNOTATIONS = Arrays.asList(
-                    IntegerField.class, DecimalField.class, DateTimeField.class,
-                    StringField.class, CustomField.class);
+            IntegerField.class, DecimalField.class, DateTimeField.class,
+            StringField.class, CustomField.class);
 
     public static boolean isAnnotated(Field fld) {
         for (Class<? extends Annotation> ann : ANNOTATIONS)
             if (fld.isAnnotationPresent(ann))
                 return true;
         return false;
+    }
+
+    public static boolean isValid(Object value, Class<? extends Annotation> annotation) {
+        if (annotation == IntegerField.class)
+            return value instanceof Byte
+                    || value instanceof Short
+                    || value instanceof Integer
+                    || value instanceof Long
+                    || value instanceof BigInteger;
+        if (annotation == DecimalField.class)
+            return value instanceof Float
+                    || value instanceof Double
+                    || value instanceof BigDecimal;
+        if (annotation == DateTimeField.class)
+            return value instanceof Date;
+        if (annotation == StringField.class)
+            return value instanceof Character
+                    || value instanceof String;
+        return annotation == CustomField.class;
     }
 
     public static Descriptor create(Field fld) {

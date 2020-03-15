@@ -2,11 +2,15 @@ package org.mirna.converters;
 
 import org.junit.jupiter.api.Test;
 import org.mirna.Align;
+import org.mirna.MirnaException;
 import org.mirna.annotations.DecimalField;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DecimalConverterTest {
 
@@ -19,22 +23,31 @@ class DecimalConverterTest {
         @DecimalField(position = 0, length = 12, separator = ',', align = Align.LEFT) Double fieldCase6;
     }
 
-    private static DecimalConverter converter(String field) throws NoSuchFieldException {
-        return new DecimalConverter(MirnaRecordCase.class.getDeclaredField(field));
+    private static DecimalConverter converter(String field) {
+        return new DecimalConverter(getField(field));
+    }
+
+    private static Field getField(String field) {
+        try {
+            return MirnaRecordCase.class.getDeclaredField(field);
+        } catch (NoSuchFieldException e) {
+            throw new MirnaException(e.getMessage(), e);
+        }
     }
 
     @Test
-    void toText() throws NoSuchFieldException {
+    void toText() {
         assertEquals("000012345678", converter("fieldCase1").toText(123456.789));
         assertEquals("00123456.789", converter("fieldCase2").toText(123456.789));
         assertEquals(" 123456,7890", converter("fieldCase3").toText(123456.789));
         assertEquals("123456000000", converter("fieldCase4").toText(123456.789));
         assertEquals("123456.70000", converter("fieldCase5").toText(123456.789));
         assertEquals("123456,78   ", converter("fieldCase6").toText(123456.789));
+        assertThrows(MirnaException.class, () -> converter("fieldCase6").toText(new Date()));
     }
 
     @Test
-    void fromText() throws NoSuchFieldException {
+    void fromText() {
        assertEquals(new BigDecimal("123456.78"), converter("fieldCase1").fromText("000012345678"));
        assertEquals(new BigDecimal("123456.789"), converter("fieldCase2").fromText("00123456.789"));
        assertEquals(new BigDecimal("123456.7890"), converter("fieldCase3").fromText(" 123456,7890"));
