@@ -6,8 +6,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static org.mirna.Strs.MSG_INTERNAL_ERROR;
-
 public final class Utils {
 
     private Utils() {
@@ -45,7 +43,7 @@ public final class Utils {
         if (resource == null)
             resource = loader.getResource("strs.properties");
         if (resource == null)
-            throw new MirnaException(MSG_INTERNAL_ERROR);
+            throw new MirnaException("Não foi possível carregar o arquivo de mensagens");
         try {
             return new PropertyResourceBundle(new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8));
         } catch (IOException e) {

@@ -1,7 +1,5 @@
 package org.mirna;
 
-import java.util.stream.IntStream;
-
 import static org.mirna.Utils.resource;
 
 public enum Strs {
@@ -20,13 +18,15 @@ public enum Strs {
     REPORT_FROM("config.report.from"),
     REPORT_TO("config.report.to"),
     REPORT_SIZE("config.report.size"),
-    REPORT_VALUE("config.report.value");
+    REPORT_VALUE("config.report.value"),
+
+    TEST_MSG_WITH_PARAMETERS("test.msg.with.parameters");
 
     public String format(Object... args) {
-        IntStream
-                .range(0, args.length)
-                .forEach(index -> args[index] = args[index].toString());
-        return String.format(toString(), args);
+        String message = toString();
+        for (int i = 0; i < args.length; i++)
+                message = message.replaceAll(String.format("\\{%d\\}", i), args[i].toString());
+        return message;
     }
 
     public String toString() {

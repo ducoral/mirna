@@ -26,6 +26,7 @@ public class Record {
     }
 
     void validate() {
+
     }
 
     String toText(Object record) {
