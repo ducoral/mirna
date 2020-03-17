@@ -1,5 +1,7 @@
 package org.mirna;
 
+import java.util.stream.IntStream;
+
 import static org.mirna.Utils.resource;
 
 public enum Strs {
@@ -11,7 +13,8 @@ public enum Strs {
     MSG_MISSING_FIELD_CONFIG("msg.missing.field.config"),
     MSG_INVALID_FIELD_TYPE("msg.invalid.field.type"),
 
-    REPORT_IDENTIFIER("config.report.identifier"),
+    RECORD_IDENTIFIER("record.identifier"),
+
     REPORT_FIELD("config.report.field"),
     REPORT_POSITION("config.report.position"),
     REPORT_FROM("config.report.from"),
@@ -20,10 +23,10 @@ public enum Strs {
     REPORT_VALUE("config.report.value");
 
     public String format(Object... args) {
-        Object[] strs = new Object[args.length];
-        for (int i = 0; i < args.length; i++)
-            strs[i] = String.valueOf(args[i]);
-        return String.format(toString(), strs);
+        IntStream
+                .range(0, args.length)
+                .forEach(index -> args[index] = args[index].toString());
+        return String.format(toString(), args);
     }
 
     public String toString() {

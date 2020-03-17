@@ -1,6 +1,7 @@
 package org.mirna.converters;
 
 import org.junit.jupiter.api.Test;
+import org.mirna.Mapping;
 import org.mirna.MirnaException;
 import org.mirna.annotations.DateTimeField;
 
@@ -21,7 +22,7 @@ class DateTimeConverterTest {
 
     private static DateTimeConverter converter(String field) {
         try {
-            return new DateTimeConverter(MirnaRecordCase.class.getDeclaredField(field));
+            return new DateTimeConverter(new Mapping(MirnaRecordCase.class.getDeclaredField(field)));
         } catch (NoSuchFieldException e) {
             throw new MirnaException(e.getMessage(), e);
         }

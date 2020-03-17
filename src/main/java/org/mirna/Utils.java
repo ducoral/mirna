@@ -1,43 +1,41 @@
 package org.mirna;
 
-import org.mirna.annotations.MirnaRecord;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static org.mirna.Strs.*;
+import static org.mirna.Strs.MSG_INTERNAL_ERROR;
 
 public final class Utils {
 
-    private Utils() {}
+    private Utils() {
+    }
 
-    public static String chars(int len, char fil) {
-        return new String(new char[len]).replace('\0', fil);
+    public static String chars(int length, char fill) {
+        return new String(new char[length]).replace('\0', fill);
     }
 
     public static String fixStr(String str, int len, char fil, Align ali) {
         return ali == Align.RIGHT ? fixRight(str, len, fil) : fixLeft(str, len, fil);
     }
 
-    public static String fixRight(String str, int len, char fil) {
-        return str.length() >= len
-                ? str.substring(0, len)
-                : chars(len - str.length(), fil) + str;
+    public static String fixRight(String str, int length, char fill) {
+        return str.length() >= length
+                ? str.substring(0, length)
+                : chars(length - str.length(), fill) + str;
     }
 
-    public static String fixLeft(String str, int len, char fill) {
-        return str.length() >= len
-                ? str.substring(str.length() - len)
-                : str + chars(len - str.length(), fill);
+    public static String fixLeft(String str, int length, char fill) {
+        return str.length() >= length
+                ? str.substring(str.length() - length)
+                : str + chars(length - str.length(), fill);
     }
 
-    public static List<String> strList(Object... objs) {
+    public static List<String> strList(Object... objects) {
         List<String> list = new ArrayList<>();
-        Arrays.stream(objs).forEach(o -> list.add(String.valueOf(o)));
+        Arrays.stream(objects).forEach(o -> list.add(String.valueOf(o)));
         return list;
     }
 
@@ -55,58 +53,9 @@ public final class Utils {
         }
     }
 
-    public static List<Descriptor> descriptors(Class<?> mirnaRecord) {
-        List<Descriptor> list = new ArrayList<>();
-        if (mirnaRecord.isAnnotationPresent(MirnaRecord.class))
-            list.add(Descriptor.create(REPORT_IDENTIFIER.toString(), mirnaRecord.getAnnotation(MirnaRecord.class)));
-        for (Field field : mirnaRecord.getDeclaredFields())
-            if (Descriptor.isAnnotated(field))
-                addInOrder(list, Descriptor.create(field));
+    private static List<String> update(List<String> list, Map<Integer, Integer> columns) {
+        int column = columns.size();
+        list.forEach(str -> columns.put(column, Math.max(str.length(), columns.getOrDefault(column, 0))));
         return list;
-    }
-
-    public static void addInOrder(List<Descriptor> list, Descriptor descriptor) {
-        int index = 0;
-        while (index < list.size())
-            if (descriptor.position < list.get(index).position) break;
-            else index++;
-        list.add(index, descriptor);
-    }
-
-    public static String report(Class<?> cla) {
-        List<List<String>> table = new ArrayList<>();
-        List<String> row = strList(
-                REPORT_FIELD, REPORT_POSITION, REPORT_FROM,
-                REPORT_TO, REPORT_SIZE, REPORT_VALUE);
-        table.add(row);
-
-        Map<Integer, Integer> cols = new LinkedHashMap<>();
-        for (int index = 0; index < row.size(); index++)
-            cols.put(index, row.get(index).length());
-
-        int col = 0;
-        for (Descriptor des : descriptors(cla)) {
-            String name = des.name.replaceAll("[A-Z][^A-Z ]", " $0").toLowerCase();
-            table.add(row = strList(name, des.position, col + 1, col + des.length, des.length, des.value));
-            for (int index = 0; index < row.size(); index++)
-                cols.put(index, Math.max(row.get(index).length(), cols.get(index)));
-            col += des.length;
-        }
-
-        String lineSeparator = cols
-                .values()
-                .stream()
-                .reduce("+", (par, len) -> par + chars(len + 2, '-') + '+', String::concat);
-
-        StringBuilder report = new StringBuilder(lineSeparator);
-        table.forEach(line -> report
-                .append("\n| ").append(fixLeft(line.get(0), cols.get(0), ' '))
-                .append(" | ").append(fixRight(line.get(1), cols.get(1), ' '))
-                .append(" | ").append(fixRight(line.get(2), cols.get(2), ' '))
-                .append(" | ").append(fixRight(line.get(3), cols.get(3), ' '))
-                .append(" | ").append(fixRight(line.get(4), cols.get(4), ' '))
-                .append(" | ").append(fixLeft(line.get(5), cols.get(5), ' '))
-                .append(" |\n").append(lineSeparator));
-        return report.toString();
     }
 }

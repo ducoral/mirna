@@ -1,46 +1,38 @@
 package org.mirna.converters;
 
 import org.mirna.Align;
-import org.mirna.Descriptor;
-import org.mirna.MirnaException;
-import org.mirna.Strs;
-import org.mirna.annotations.DecimalField;
+import org.mirna.Mapping;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 
 public class DecimalConverter extends StringConverter {
 
-    public DecimalConverter(Field field) {
-        super(field);
+    public DecimalConverter(Mapping mapping) {
+        super(mapping);
     }
 
     @Override
     public String toText(Object value) {
-        if (!Descriptor.isValid(value, DecimalField.class))
-            throw new MirnaException(Strs.MSG_INVALID_PARAMETER, value);
-        Descriptor des = descriptor();
         String txt = new BigDecimal(String.valueOf(value))
-                .setScale(des.decimals, BigDecimal.ROUND_DOWN)
+                .setScale(mapping.decimals(), BigDecimal.ROUND_DOWN)
                 .toString();
-        if (des.separator == '\0')
+        if (mapping.separator() == '\0')
             txt = txt.replace(".", "");
-        else if (des.separator != '.')
-            txt = txt.replace(".", String.valueOf(des.separator));
+        else if (mapping.separator() != '.')
+            txt = txt.replace(".", String.valueOf(mapping.separator()));
         return super.toText(txt);
     }
 
     @Override
     public Object fromText(String text) {
-        Descriptor des = descriptor();
-        setRemoveFill(des.fill != '0' || des.align == Align.LEFT || des.decimals == 0);
+        setRemoveFill(mapping.fill() != '0' || mapping.align() == Align.LEFT || mapping.decimals() == 0);
         String value = (String) super.fromText(text);
-        if (des.separator == '\0')
+        if (mapping.separator() == '\0')
             value = new StringBuilder(value)
-                    .insert(value.length() - des.decimals, '.')
+                    .insert(value.length() - mapping.decimals(), '.')
                     .toString();
-        else if (des.separator != '.')
-            value = value.replace(des.separator, '.');
+        else if (mapping.separator() != '.')
+            value = value.replace(mapping.separator(), '.');
         return new BigDecimal(value);
     }
 }

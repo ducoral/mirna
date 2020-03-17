@@ -2,7 +2,7 @@ package org.mirna.converters;
 
 import org.junit.jupiter.api.Test;
 import org.mirna.Align;
-import org.mirna.Descriptor;
+import org.mirna.Mapping;
 import org.mirna.MirnaException;
 import org.mirna.Strs;
 import org.mirna.annotations.StringField;
@@ -10,7 +10,6 @@ import org.mirna.annotations.StringField;
 import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class StringConverterTest {
 
@@ -20,7 +19,7 @@ class StringConverterTest {
     }
 
     private static StringConverter converter(String field) {
-        return new StringConverter(getField(field));
+        return new StringConverter(new Mapping(getField(field)));
     }
 
     private static Field getField(String field) {
@@ -37,7 +36,6 @@ class StringConverterTest {
         assertEquals("a*********", converter("fieldCase1").toText("a"));
         assertEquals("+++++abcde", converter("fieldCase2").toText("abcde"));
         assertEquals("+++++++++a", converter("fieldCase2").toText("a"));
-        assertThrows(MirnaException.class, () -> converter("fieldCase2").toText(1));
     }
 
     @Test
@@ -48,22 +46,5 @@ class StringConverterTest {
         assertEquals("abcde", converter("fieldCase2").fromText("+++++abcde"));
         assertEquals("a", converter("fieldCase2").fromText("+++++++++a"));
         assertEquals("+", converter("fieldCase2").fromText("++++++++++"));
-    }
-
-    @Test
-    void descriptor() {
-        Descriptor expected = Descriptor.create(getField("fieldCase1"));
-        Descriptor actual = converter("fieldCase1").descriptor();
-        assertEquals(expected.position, actual.position);
-        assertEquals(expected.length, actual.length);
-        assertEquals(expected.fill, actual.fill);
-        assertEquals(expected.align, actual.align);
-
-        expected = Descriptor.create(getField("fieldCase2"));
-        actual = converter("fieldCase2").descriptor();
-        assertEquals(expected.position, actual.position);
-        assertEquals(expected.length, actual.length);
-        assertEquals(expected.fill, actual.fill);
-        assertEquals(expected.align, actual.align);
     }
 }

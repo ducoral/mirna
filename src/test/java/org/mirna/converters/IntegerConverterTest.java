@@ -2,16 +2,15 @@ package org.mirna.converters;
 
 import org.junit.jupiter.api.Test;
 import org.mirna.Align;
+import org.mirna.Mapping;
 import org.mirna.MirnaException;
 import org.mirna.Strs;
 import org.mirna.annotations.IntegerField;
 
 import java.lang.reflect.Field;
 import java.math.BigInteger;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class IntegerConverterTest {
 
@@ -21,7 +20,7 @@ class IntegerConverterTest {
     }
 
     private static IntegerConverter converter(String field) {
-        return new IntegerConverter(getField(field));
+        return new IntegerConverter(new Mapping(getField(field)));
     }
 
     private static Field getField(String field) {
@@ -36,7 +35,6 @@ class IntegerConverterTest {
     void toText() {
         assertEquals("0000000123", converter("fieldCase1").toText(123));
         assertEquals("123       ", converter("fieldCase2").toText(123));
-        assertThrows(MirnaException.class, () -> converter("fieldCase1").toText(new Date()));
     }
 
     @Test
