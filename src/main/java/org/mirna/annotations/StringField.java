@@ -1,6 +1,6 @@
 package org.mirna.annotations;
 
-import org.mirna.Align;
+import org.mirna.core.Align;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,7 +1,7 @@
 package org.mirna.annotations;
 
-import org.mirna.Align;
-import org.mirna.converters.Converter;
+import org.mirna.core.Align;
+import org.mirna.core.Converter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

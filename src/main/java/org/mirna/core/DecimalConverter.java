@@ -1,11 +1,8 @@
-package org.mirna.converters;
-
-import org.mirna.Align;
-import org.mirna.Mapping;
+package org.mirna.core;
 
 import java.math.BigDecimal;
 
-public class DecimalConverter extends StringConverter {
+class DecimalConverter extends StringConverter {
 
     public DecimalConverter(Mapping mapping) {
         super(mapping);

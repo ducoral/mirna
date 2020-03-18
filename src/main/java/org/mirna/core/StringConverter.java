@@ -1,9 +1,6 @@
-package org.mirna.converters;
+package org.mirna.core;
 
-import org.mirna.Mapping;
-import org.mirna.Utils;
-
-public class StringConverter implements Converter {
+class StringConverter implements Converter {
 
     protected final Mapping mapping;
 
@@ -23,16 +20,13 @@ public class StringConverter implements Converter {
         int begin = 0;
         int end = text.length();
         if (removeFill)
-            switch (mapping.align()) {
-                case RIGHT:
-                    while (begin < end - 1 && text.charAt(begin) == mapping.fill())
-                        begin++;
-                    break;
-                case LEFT:
-                    while (end > 1 && text.charAt(end - 1) == mapping.fill())
-                        end--;
-                    break;
-            }
+            if (mapping.align() == Align.RIGHT)
+                while (begin < end - 1 && text.charAt(begin) == mapping.fill()) {
+                    begin++;
+                }
+            else
+                while (end > 1 && text.charAt(end - 1) == mapping.fill())
+                    end--;
         return text.substring(begin, end);
     }
 

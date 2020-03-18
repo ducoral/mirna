@@ -1,12 +1,13 @@
-package org.mirna;
+package org.mirna.core;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mirna.annotations.*;
-import org.mirna.converters.StringConverter;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MappingTest {
 
@@ -29,6 +30,42 @@ class MappingTest {
         private Object ctmField;
     }
 
+    static class MirnaRecordInvalidCase {
+
+        @StringField(position = 0, length = 0)
+        private Integer fieldCase1;
+
+        @IntegerField(position = 0, length = 0)
+        private Date fieldCase2;
+
+        @DecimalField(position = 0, length = 0)
+        private Integer fieldCase3;
+
+        @DateTimeField(position = 0)
+        private String fieldCase4;
+    }
+
+    static Field validField(String name) throws NoSuchFieldException {
+        return MirnaRecodCase.class.getDeclaredField(name);
+    }
+
+    static Field invalidField(String name) throws NoSuchFieldException {
+        return MirnaRecordInvalidCase.class.getDeclaredField(name);
+    }
+
+    @Test
+    void isTypeSupported() throws NoSuchFieldException {
+        assertTrue(Mapping.isTypeSupported(validField("strField")));
+        assertTrue(Mapping.isTypeSupported(validField("intField")));
+        assertTrue(Mapping.isTypeSupported(validField("decField")));
+        assertTrue(Mapping.isTypeSupported(validField("dtmField")));
+        assertTrue(Mapping.isTypeSupported(validField("ctmField")));
+        assertFalse(Mapping.isTypeSupported(invalidField("fieldCase1")));
+        assertFalse(Mapping.isTypeSupported(invalidField("fieldCase2")));
+        assertFalse(Mapping.isTypeSupported(invalidField("fieldCase3")));
+        assertFalse(Mapping.isTypeSupported(invalidField("fieldCase4")));
+    }
+
     @Test
     void mirnaRecordCase() {
         Mapping mapping = new Mapping(MirnaRecodCase.class);
@@ -42,7 +79,7 @@ class MappingTest {
         assertEquals(1, mapping.position());
         assertEquals(10, mapping.length());
         assertEquals(' ', mapping.fill());
-        assertEquals(Align.LEFT, mapping.align());
+        Assertions.assertEquals(Align.LEFT, mapping.align());
     }
 
     @Test

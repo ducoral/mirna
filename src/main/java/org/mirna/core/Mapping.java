@@ -1,15 +1,15 @@
-package org.mirna;
+package org.mirna.core;
 
 import org.mirna.annotations.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class Mapping {
 
@@ -18,24 +18,37 @@ public class Mapping {
             DecimalField.class, DateTimeField.class, CustomField.class
     );
 
-    public static final String IDENTIFIER = "identifier";
-    public static final String FIELD = "field";
-    public static final String POSITION = "position";
-    public static final String LENGTH = "length";
-    public static final String FILL = "fill";
-    public static final String FORMAT = "format";
-    public static final String SEPARATOR = "separator";
-    public static final String DECIMALS = "decimals";
-    public static final String ALIGN = "align";
-    public static final String CONVERTER = "converter";
+    static final String IDENTIFIER = "identifier";
+    static final String FIELD = "field";
+    static final String POSITION = "position";
+    static final String LENGTH = "length";
+    static final String FILL = "fill";
+    static final String FORMAT = "format";
+    static final String SEPARATOR = "separator";
+    static final String DECIMALS = "decimals";
+    static final String ALIGN = "align";
+    static final String CONVERTER = "converter";
 
-    private Map<String, Object> properties = new HashMap<>();
+    private final Map<String, Object> properties = new HashMap<>();
 
-    private Object target;
+    private final Object target;
+
+    private Class<? extends Annotation> configuration;
 
     public Mapping(Object target) {
         this.target = target;
-        annotation(target, annotation -> attributes(annotation, (name, value) -> properties.put(name, value)));
+        annotation(target, annotation -> {
+            this.configuration = annotation.annotationType();
+            attributes(annotation, properties::put);
+        });
+    }
+
+    public Class<? extends Annotation> configuration() {
+        return configuration;
+    }
+
+    public void put(String key, Object value) {
+        properties.put(key, value);
     }
 
     public boolean isEmpty() {
@@ -86,9 +99,27 @@ public class Mapping {
         return (Class<?>) properties.getOrDefault(CONVERTER, null);
     }
 
-    public Mapping put(String property, Object value) {
-        properties.put(property, value);
-        return this;
+    static boolean isMapped(AnnotatedElement element) {
+        return SUPPORT.stream().anyMatch(element::isAnnotationPresent);
+    }
+
+    static boolean isTypeSupported(Field target) {
+        final Class<?> type = target.getType();
+        return SUPPORT.stream()
+                .filter(target::isAnnotationPresent)
+                .allMatch(annotation -> {
+                    if (annotation == StringField.class)
+                        return Stream.of(Character.class, String.class).anyMatch(type::isAssignableFrom);
+                    if (annotation == IntegerField.class)
+                        return Stream
+                                .of(Byte.class, Short.class, Integer.class, Long.class, BigInteger.class)
+                                .anyMatch(type::isAssignableFrom);
+                    if (annotation == DecimalField.class)
+                        return Stream.of(Float.class, Double.class).anyMatch(type::isAssignableFrom);
+                    if (annotation == DateTimeField.class)
+                        return Stream.of(Date.class).anyMatch(type::isAssignableFrom);
+                    return annotation == CustomField.class;
+                });
     }
 
     static void attributes(Annotation annotation, BiConsumer<String, Object> action) {

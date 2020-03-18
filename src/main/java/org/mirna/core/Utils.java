@@ -1,4 +1,4 @@
-package org.mirna;
+package org.mirna.core;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -6,7 +6,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public final class Utils {
+final class Utils {
 
     private Utils() {
     }

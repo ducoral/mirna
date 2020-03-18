@@ -1,13 +1,10 @@
-package org.mirna.converters;
-
-import org.mirna.Mapping;
-import org.mirna.MirnaException;
+package org.mirna.core;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateTimeConverter extends StringConverter {
+class DateTimeConverter extends StringConverter {
 
     public DateTimeConverter(Mapping mapping) {
         super(mapping);

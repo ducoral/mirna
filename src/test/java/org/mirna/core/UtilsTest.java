@@ -1,8 +1,7 @@
-package org.mirna;
+package org.mirna.core;
 
 import org.junit.jupiter.api.Test;
 import org.mirna.annotations.*;
-import org.mirna.converters.StringConverter;
 
 import java.util.Arrays;
 import java.util.Date;

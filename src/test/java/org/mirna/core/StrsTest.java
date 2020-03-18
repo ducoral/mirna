@@ -1,5 +1,6 @@
-package org.mirna;
+package org.mirna.core;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,7 +9,7 @@ class StrsTest {
 
     @Test
     void resource() {
-        assertEquals(
+        Assertions.assertEquals(
                 Utils.resource().getString("msg.invalid.parameter").replace("{0}", "mirna"),
                 Strs.MSG_INVALID_PARAMETER.format("mirna")
         );

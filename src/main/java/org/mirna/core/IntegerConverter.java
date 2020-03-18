@@ -1,10 +1,8 @@
-package org.mirna.converters;
-
-import org.mirna.Mapping;
+package org.mirna.core;
 
 import java.math.BigInteger;
 
-public class IntegerConverter extends StringConverter {
+class IntegerConverter extends StringConverter {
 
     public IntegerConverter(Mapping mapping) {
         super(mapping);

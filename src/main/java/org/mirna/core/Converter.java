@@ -1,4 +1,4 @@
-package org.mirna.converters;
+package org.mirna.core;
 
 public interface Converter {
 
