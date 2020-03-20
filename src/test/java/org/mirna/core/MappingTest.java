@@ -1,6 +1,5 @@
 package org.mirna.core;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mirna.annotations.*;
 
@@ -79,7 +78,7 @@ class MappingTest {
         assertEquals(1, mapping.position());
         assertEquals(10, mapping.length());
         assertEquals(' ', mapping.fill());
-        Assertions.assertEquals(Align.LEFT, mapping.align());
+        assertEquals(Align.LEFT, mapping.align());
     }
 
     @Test

@@ -28,7 +28,7 @@ enum Strs {
     public String format(Object... args) {
         String message = toString();
         for (int i = 0; i < args.length; i++)
-                message = message.replaceAll(String.format("\\{%d\\}", i), args[i].toString());
+            message = message.replace(String.format("{%d}", i), args[i].toString());
         return message;
     }
 

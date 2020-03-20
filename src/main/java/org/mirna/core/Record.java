@@ -8,13 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static org.mirna.core.Mapping.annotation;
-
 class Record {
 
     private final List<Mapping> columns = new ArrayList<>();
 
-    private Record(Class<?> mirnaRecord) {
+    Record(Class<?> mirnaRecord) {
         validate(mirnaRecord, this::add);
     }
 
@@ -37,15 +35,15 @@ class Record {
         mappings(mirnaRecord, maps::add);
         if (maps.isEmpty())
             throw new MirnaException(
-                    Strs.MSG_MISSING_CONFIGURATION, mirnaRecord.getName());
+                    Strs.MSG_MISSING_CONFIGURATION, mirnaRecord.getSimpleName());
 
         if (maps.get(0).identifier().isEmpty())
             throw new MirnaException(
-                    Strs.MSG_ANNOTATION_NOT_PRESENT, MirnaRecord.class.getName(), mirnaRecord.getName());
+                    Strs.MSG_ANNOTATION_NOT_PRESENT, MirnaRecord.class.getSimpleName(), mirnaRecord.getSimpleName());
 
         if (maps.size() == 1)
             throw new MirnaException(
-                    Strs.MSG_MISSING_FIELD_CONFIG, mirnaRecord.getName());
+                    Strs.MSG_MISSING_FIELD_CONFIG, mirnaRecord.getSimpleName());
 
         for (int i = 1; i < maps.size(); i++) {
             Mapping mapping = maps.get(i);
@@ -53,8 +51,8 @@ class Record {
             if (Mapping.isMapped(field) && !Mapping.isTypeSupported(field))
                 throw new MirnaException(
                         Strs.MSG_INVALID_FIELD_TYPE,
-                        field.getType().getName(),
-                        mapping.configuration());
+                        field.getType().getSimpleName(),
+                        mapping.configuration().getSimpleName());
         }
 
         for (int pos = 0; pos < maps.size(); pos++) {
@@ -63,21 +61,20 @@ class Record {
                 throw new MirnaException(
                         Strs.MSG_DUPLICATE_POSITION_CONFIG,
                         expected,
-                        maps.get(0).target().getClass().getName());
+                        ((Field)maps.get(pos).target()).getName());
             else if (pos < expected)
                 throw new MirnaException(
                         Strs.MSG_MISSING_POSITION_CONFIG,
                         pos,
-                        maps.get(0).target().getClass().getName());
-
+                        ((Field)maps.get(pos).target()).getName());
         }
     }
 
     static void mappings(Class<?> mirnaRecord, Consumer<Mapping> action) {
-        annotation(mirnaRecord, annotation -> action.accept(new Mapping(annotation)));
+        action.accept(new Mapping(mirnaRecord));
         Arrays.stream(mirnaRecord.getDeclaredFields())
                 .filter(Mapping::isMapped)
-                .forEach(field -> annotation(field, annotation -> action.accept(new Mapping(annotation))));
+                .forEach(field -> action.accept(new Mapping(field)));
     }
 
 }

@@ -1,51 +1,91 @@
 package org.mirna.core;
 
+import org.junit.jupiter.api.Test;
 import org.mirna.annotations.MirnaRecord;
 import org.mirna.annotations.StringField;
 
-/*
-    List<Mapping> maps = new ArrayList<>();
-        mappings(mirnaRecord, maps::add);
-        if (maps.isEmpty())
-            throw new MirnaException(
-                    Strs.MSG_MISSING_CONFIGURATION, mirnaRecord.getName());
-        if (maps.get(0).identifier().isEmpty())
-            throw new MirnaException(
-                    Strs.MSG_ANNOTATION_NOT_PRESENT, MirnaRecord.class.getName(), mirnaRecord.getName());
-        if (maps.size() == 1)
-            throw new MirnaException(
-                    Strs.MSG_MISSING_FIELD_CONFIG, mirnaRecord.getName());
-        for (int i = 1; i < maps.size(); i++) {
-            Mapping mapping = maps.get(i);
-            Field field = (Field) mapping.target();
-            if (Mapping.isMapped(field) && !Mapping.isTypeSupported(field))
-                throw new MirnaException(
-                        Strs.MSG_INVALID_FIELD_TYPE,
-                        field.getType().getName(),
-                        mapping.configuration());
-        }
-        for (int pos = 0; pos < maps.size(); pos++) {
-            int expected = maps.get(pos).position();
-            if (pos > expected)
-                throw new MirnaException(
-                        Strs.MSG_DUPLICATE_POSITION_CONFIG,
-                        expected,
-                        maps.get(0).target().getClass().getName());
-            else if (pos < expected)
-                throw new MirnaException(
-                        Strs.MSG_MISSING_POSITION_CONFIG,
-                        pos,
-                        maps.get(0).target().getClass().getName());
-
- */
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RecordTest {
 
     @MirnaRecord(identifier = "id")
-    static class MirnaRecordValidCase {
+    public static class MirnaRecordValidCase {
         @StringField(position = 1, length = 10)
         String fieldCase1;
     }
 
+    static class MirnaRecordInvalidCase1 {
+    }
 
+    static class MirnaRecordInvalidCase2 {
+        @StringField(position = 1, length = 10)
+        String fieldCase1;
+    }
+
+    @MirnaRecord(identifier = "id")
+    static class MirnaRecordInvalidCase3 {
+    }
+
+    @MirnaRecord(identifier = "id")
+    static class MirnaRecordInvalidCase4 {
+        @StringField(position = 1, length = 10)
+        Integer fieldCase1;
+    }
+
+
+    @MirnaRecord(identifier = "id")
+    static class MirnaRecordInvalidCase5 {
+        @StringField(position = 1, length = 10)
+        String fieldCase1;
+
+        @StringField(position = 1, length = 5)
+        String fieldCase2;
+    }
+
+    @MirnaRecord(identifier = "id")
+    static class MirnaRecordInvalidCase6 {
+        @StringField(position = 1, length = 10)
+        String fieldCase1;
+
+        @StringField(position = 3, length = 5)
+        String fieldCase2;
+    }
+
+    @Test
+    void validate() {
+        assertDoesNotThrow(() -> new Record(MirnaRecordValidCase.class));
+
+        assertThrows(
+                MirnaException.class,
+                () -> new Record(MirnaRecordInvalidCase1.class),
+                Strs.MSG_MISSING_CONFIGURATION.format(MirnaRecordInvalidCase1.class));
+
+        assertThrows(
+                MirnaException.class,
+                () -> new Record(MirnaRecordInvalidCase2.class),
+                Strs.MSG_ANNOTATION_NOT_PRESENT.format(
+                        MirnaRecord.class.getName(),
+                        MirnaRecordInvalidCase2.class.getName()));
+
+        assertThrows(
+                MirnaException.class,
+                () -> new Record(MirnaRecordInvalidCase3.class),
+                Strs.MSG_MISSING_FIELD_CONFIG.format(MirnaRecordInvalidCase3.class.getName()));
+
+        assertThrows(
+                MirnaException.class,
+                () -> new Record(MirnaRecordInvalidCase4.class),
+                Strs.MSG_INVALID_FIELD_TYPE.format("fieldCase1", StringField.class.getName()));
+
+        assertThrows(
+                MirnaException.class,
+                () -> new Record(MirnaRecordInvalidCase5.class),
+                Strs.MSG_DUPLICATE_POSITION_CONFIG.format(2, "fieldCase2"));
+
+        assertThrows(
+                MirnaException.class,
+                () -> new Record(MirnaRecordInvalidCase6.class),
+                Strs.MSG_MISSING_POSITION_CONFIG.format(2, "fieldCase2"));
+    }
 }
