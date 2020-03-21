@@ -7,10 +7,11 @@ import org.mirna.annotations.StringField;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class RecordTest {
+class RecordValidationTest {
 
     @MirnaRecord(identifier = "id")
-    public static class MirnaRecordValidCase {
+    static
+    class MirnaRecordValidCase {
         @StringField(position = 1, length = 10)
         String fieldCase1;
     }
@@ -24,18 +25,21 @@ class RecordTest {
     }
 
     @MirnaRecord(identifier = "id")
-    static class MirnaRecordInvalidCase3 {
+    static
+    class MirnaRecordInvalidCase3 {
     }
 
     @MirnaRecord(identifier = "id")
-    static class MirnaRecordInvalidCase4 {
+    static
+    class MirnaRecordInvalidCase4 {
         @StringField(position = 1, length = 10)
         Integer fieldCase1;
     }
 
 
     @MirnaRecord(identifier = "id")
-    static class MirnaRecordInvalidCase5 {
+    static
+    class MirnaRecordInvalidCase5 {
         @StringField(position = 1, length = 10)
         String fieldCase1;
 
@@ -44,7 +48,8 @@ class RecordTest {
     }
 
     @MirnaRecord(identifier = "id")
-    static class MirnaRecordInvalidCase6 {
+    static
+    class MirnaRecordInvalidCase6 {
         @StringField(position = 1, length = 10)
         String fieldCase1;
 

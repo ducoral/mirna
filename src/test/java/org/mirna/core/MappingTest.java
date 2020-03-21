@@ -10,6 +10,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MappingTest {
 
+    static class CustomConverterCase implements Converter {
+
+        @Override
+        public String toText(Object value) {
+            return String.valueOf(value);
+        }
+
+        @Override
+        public Object fromText(String text) {
+            return text;
+        }
+    }
+
     @MirnaRecord(identifier = "ident")
     static class MirnaRecodCase {
 
@@ -25,7 +38,7 @@ class MappingTest {
         @DateTimeField(position = 4)
         private Date dtmField;
 
-        @CustomField(position = 5, length = 50, converter = StringConverter.class)
+        @CustomField(position = 5, length = 50, converter = CustomConverterCase.class)
         private Object ctmField;
     }
 
@@ -44,11 +57,11 @@ class MappingTest {
         private String fieldCase4;
     }
 
-    static Field validField(String name) throws NoSuchFieldException {
+    Field validField(String name) throws NoSuchFieldException {
         return MirnaRecodCase.class.getDeclaredField(name);
     }
 
-    static Field invalidField(String name) throws NoSuchFieldException {
+    Field invalidField(String name) throws NoSuchFieldException {
         return MirnaRecordInvalidCase.class.getDeclaredField(name);
     }
 
@@ -75,6 +88,7 @@ class MappingTest {
     @Test
     void stringFieldCase() throws NoSuchFieldException {
         Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("strField"));
+        assertEquals("strField", mapping.field().getName());
         assertEquals(1, mapping.position());
         assertEquals(10, mapping.length());
         assertEquals(' ', mapping.fill());
@@ -84,6 +98,7 @@ class MappingTest {
     @Test
     void integerFieldCase() throws NoSuchFieldException {
         Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("intField"));
+        assertEquals("intField", mapping.field().getName());
         assertEquals(2, mapping.position());
         assertEquals(20, mapping.length());
         assertEquals(' ', mapping.fill());
@@ -93,6 +108,7 @@ class MappingTest {
     @Test
     void decimalFieldCase() throws NoSuchFieldException {
         Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("decField"));
+        assertEquals("decField", mapping.field().getName());
         assertEquals(3, mapping.position());
         assertEquals(30, mapping.length());
         assertEquals(' ', mapping.fill());
@@ -104,6 +120,7 @@ class MappingTest {
     @Test
     void dateTimeFieldCase() throws NoSuchFieldException {
         Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("dtmField"));
+        assertEquals("dtmField", mapping.field().getName());
         assertEquals(4, mapping.position());
         assertEquals("ddMMyyyy", mapping.format());
     }
@@ -111,8 +128,9 @@ class MappingTest {
     @Test
     void customFieldCase() throws NoSuchFieldException {
         Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("ctmField"));
+        assertEquals("ctmField", mapping.field().getName());
         assertEquals(5, mapping.position());
         assertEquals(50, mapping.length());
-        assertEquals(StringConverter.class, mapping.converter());
+        assertEquals(CustomConverterCase.class, mapping.converter().getClass());
     }
 }

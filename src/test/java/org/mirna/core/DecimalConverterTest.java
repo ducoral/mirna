@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DecimalConverterTest {
 
-    private static class MirnaRecordCase {
+    static class MirnaRecordCase {
         @DecimalField(position = 0, length = 12, fill = '0') Double fieldCase1;
         @DecimalField(position = 0, length = 12, fill = '0', separator = '.', decimals = 3) Double fieldCase2;
         @DecimalField(position = 0, length = 12, separator = ',', decimals = 4) Double fieldCase3;
@@ -19,11 +19,11 @@ class DecimalConverterTest {
         @DecimalField(position = 0, length = 12, separator = ',', align = Align.LEFT) Double fieldCase6;
     }
 
-    private static DecimalConverter converter(String field) {
+    DecimalConverter converter(String field) {
         return new DecimalConverter(new Mapping(getField(field)));
     }
 
-    private static Field getField(String field) {
+    Field getField(String field) {
         try {
             return MirnaRecordCase.class.getDeclaredField(field);
         } catch (NoSuchFieldException e) {

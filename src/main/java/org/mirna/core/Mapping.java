@@ -5,6 +5,7 @@ import org.mirna.annotations.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -19,7 +20,6 @@ public class Mapping {
     );
 
     static final String IDENTIFIER = "identifier";
-    static final String FIELD = "field";
     static final String POSITION = "position";
     static final String LENGTH = "length";
     static final String FILL = "fill";
@@ -31,12 +31,12 @@ public class Mapping {
 
     private final Map<String, Object> properties = new HashMap<>();
 
-    private final Object target;
-
     private Class<? extends Annotation> configuration;
 
+    private final Field field;
+
     public Mapping(Object target) {
-        this.target = target;
+        field = target instanceof Field ? (Field) target : null;
         annotation(target, annotation -> {
             this.configuration = annotation.annotationType();
             attributes(annotation, properties::put);
@@ -55,16 +55,12 @@ public class Mapping {
         return properties.isEmpty();
     }
 
-    public Object target() {
-        return target;
-    }
-
     public String identifier() {
         return (String) properties.getOrDefault(IDENTIFIER, "");
     }
 
-    public String field() {
-        return (String) properties.getOrDefault(FIELD, "");
+    public Field field() {
+        return field;
     }
 
     public int position() {
@@ -95,8 +91,16 @@ public class Mapping {
         return (Align) properties.getOrDefault(ALIGN, Align.LEFT);
     }
 
-    public Class<?> converter() {
-        return (Class<?>) properties.getOrDefault(CONVERTER, null);
+    public Converter converter() {
+        Class<?> converterClass = (Class<?>) properties.get(CONVERTER);
+        try {
+            if (configuration == CustomField.class)
+                return (Converter) converterClass.newInstance();
+            else
+                return (Converter) converterClass.getConstructor(Mapping.class).newInstance(this);
+        } catch (Exception e) {
+            throw new MirnaException(e.getMessage(), e);
+        }
     }
 
     static boolean isMapped(AnnotatedElement element) {
@@ -109,13 +113,16 @@ public class Mapping {
                 .filter(target::isAnnotationPresent)
                 .allMatch(annotation -> {
                     if (annotation == StringField.class)
-                        return Stream.of(Character.class, String.class).anyMatch(type::isAssignableFrom);
+                        return Stream.of(Character.TYPE, Character.class, String.class).anyMatch(type::isAssignableFrom);
                     if (annotation == IntegerField.class)
                         return Stream
-                                .of(Byte.class, Short.class, Integer.class, Long.class, BigInteger.class)
+                                .of(Byte.TYPE, Short.TYPE, Integer.TYPE, Long.TYPE,
+                                    Byte.class, Short.class, Integer.class, Long.class, BigInteger.class)
                                 .anyMatch(type::isAssignableFrom);
                     if (annotation == DecimalField.class)
-                        return Stream.of(Float.class, Double.class).anyMatch(type::isAssignableFrom);
+                        return Stream
+                                .of(Float.TYPE, Float.class, Double.TYPE, Double.class, BigDecimal.class)
+                                .anyMatch(type::isAssignableFrom);
                     if (annotation == DateTimeField.class)
                         return Stream.of(Date.class).anyMatch(type::isAssignableFrom);
                     return annotation == CustomField.class;

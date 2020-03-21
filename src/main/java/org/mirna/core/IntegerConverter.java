@@ -15,6 +15,6 @@ class IntegerConverter extends StringConverter {
 
     @Override
     public Object fromText(String text) {
-        return new BigInteger((String)super.fromText(text));
+        return new BigInteger((String) super.fromText(text));
     }
 }

@@ -1,10 +1,8 @@
 package org.mirna.core;
 
 import org.junit.jupiter.api.Test;
-import org.mirna.annotations.*;
 
 import java.util.Arrays;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -45,27 +43,5 @@ public class UtilsTest {
     @Test
     void resource() {
         assertNotNull(Utils.resource());
-    }
-
-    @MirnaRecord(identifier = "ident_1")
-    public static class MirnaRecordCase1 {
-        @CustomField(position = 3, length = 15, converter = StringConverter.class) private StringBuilder customField3;
-        @StringField(position = 1, length = 10) private String stringField1;
-        @IntegerField(position = 2, length = 5) private Integer integerField2;
-    }
-
-    @MirnaRecord(identifier = "ident_2")
-    public static class MirnaRecordCase2 {
-        @DecimalField(position = 3, length = 10) private Float decimalField3;
-        @DateTimeField(position = 2) private Date dateField2;
-        @DecimalField(position = 4, length = 15) private Double decimalField4;
-        @DateTimeField(position = 1) private Date dateField1;
-    }
-
-    @MirnaRecord(identifier = "ident_3")
-    public static class MirnaRecordCase3 {
-        @DecimalField(position = 3, length = 10) private float decimalField3;
-        @DecimalField(position = 2, length = 15) private double decimalField2;
-        @IntegerField(position = 1, length = 5) private int integerField1;
     }
 }

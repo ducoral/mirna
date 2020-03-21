@@ -9,16 +9,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StringConverterTest {
 
-    private static class MirnaRecordCase {
-        @StringField(position = 0, length = 10, fill = '*') String fieldCase1;
-        @StringField(position = 0, length = 10, fill = '+', align = Align.RIGHT) String fieldCase2;
+    static class MirnaRecordCase {
+        @StringField(position = 0, length = 10, fill = '*')
+        String fieldCase1;
+
+        @StringField(position = 0, length = 10, fill = '+', align = Align.RIGHT)
+        String fieldCase2;
     }
 
-    private static StringConverter converter(String field) {
+    StringConverter converter(String field) {
         return new StringConverter(new Mapping(getField(field)));
     }
 
-    private static Field getField(String field) {
+    Field getField(String field) {
         try {
             return MirnaRecordCase.class.getDeclaredField(field);
         } catch (NoSuchFieldException e) {

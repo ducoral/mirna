@@ -10,16 +10,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IntegerConverterTest {
 
-    private static class MirnaRecordCase {
+    static class MirnaRecordCase {
         @IntegerField(position = 0, length = 10, fill = '0') Integer fieldCase1;
         @IntegerField(position = 1, length = 10, align = Align.LEFT) Integer fieldCase2;
     }
 
-    private static IntegerConverter converter(String field) {
+    IntegerConverter converter(String field) {
         return new IntegerConverter(new Mapping(getField(field)));
     }
 
-    private static Field getField(String field) {
+    Field getField(String field) {
         try {
             return MirnaRecordCase.class.getDeclaredField(field);
         } catch (NoSuchFieldException e) {

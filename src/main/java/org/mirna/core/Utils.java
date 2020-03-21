@@ -43,7 +43,7 @@ final class Utils {
         if (resource == null)
             resource = loader.getResource("strs.properties");
         if (resource == null)
-            throw new MirnaException("Não foi possível carregar o arquivo de mensagens");
+            throw new MirnaException("Could not load message file");
         try {
             return new PropertyResourceBundle(new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8));
         } catch (IOException e) {
