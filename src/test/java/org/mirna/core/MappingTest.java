@@ -27,19 +27,19 @@ class MappingTest {
     static class MirnaRecodCase {
 
         @StringField(position = 1, length = 10)
-        private String strField;
+        private String fieldCase1;
 
         @IntegerField(position = 2, length = 20)
-        private Integer intField;
+        private Integer fieldCase2;
 
         @DecimalField(position = 3, length = 30)
-        private Double decField;
+        private Double fieldCase3;
 
         @DateTimeField(position = 4)
-        private Date dtmField;
+        private Date fieldCase4;
 
         @CustomField(position = 5, length = 50, converter = CustomConverterCase.class)
-        private Object ctmField;
+        private Object fieldCase5;
     }
 
     static class MirnaRecordInvalidCase {
@@ -57,25 +57,34 @@ class MappingTest {
         private String fieldCase4;
     }
 
-    Field validField(String name) throws NoSuchFieldException {
+    Field validCaseField(String name) throws NoSuchFieldException {
         return MirnaRecodCase.class.getDeclaredField(name);
     }
 
-    Field invalidField(String name) throws NoSuchFieldException {
+    Field invalidCaseField(String name) throws NoSuchFieldException {
         return MirnaRecordInvalidCase.class.getDeclaredField(name);
     }
 
     @Test
+    void converters() throws NoSuchFieldException {
+        assertEquals(StringConverter.class, new Mapping(validCaseField("fieldCase1")).converter().getClass());
+        assertEquals(IntegerConverter.class, new Mapping(validCaseField("fieldCase2")).converter().getClass());
+        assertEquals(DecimalConverter.class, new Mapping(validCaseField("fieldCase3")).converter().getClass());
+        assertEquals(DateTimeConverter.class, new Mapping(validCaseField("fieldCase4")).converter().getClass());
+        assertEquals(CustomConverter.class, new Mapping(validCaseField("fieldCase5")).converter().getClass());
+    }
+
+    @Test
     void isTypeSupported() throws NoSuchFieldException {
-        assertTrue(Mapping.isTypeSupported(validField("strField")));
-        assertTrue(Mapping.isTypeSupported(validField("intField")));
-        assertTrue(Mapping.isTypeSupported(validField("decField")));
-        assertTrue(Mapping.isTypeSupported(validField("dtmField")));
-        assertTrue(Mapping.isTypeSupported(validField("ctmField")));
-        assertFalse(Mapping.isTypeSupported(invalidField("fieldCase1")));
-        assertFalse(Mapping.isTypeSupported(invalidField("fieldCase2")));
-        assertFalse(Mapping.isTypeSupported(invalidField("fieldCase3")));
-        assertFalse(Mapping.isTypeSupported(invalidField("fieldCase4")));
+        assertTrue(Mapping.isTypeSupported(validCaseField("fieldCase1")));
+        assertTrue(Mapping.isTypeSupported(validCaseField("fieldCase2")));
+        assertTrue(Mapping.isTypeSupported(validCaseField("fieldCase3")));
+        assertTrue(Mapping.isTypeSupported(validCaseField("fieldCase4")));
+        assertTrue(Mapping.isTypeSupported(validCaseField("fieldCase5")));
+        assertFalse(Mapping.isTypeSupported(invalidCaseField("fieldCase1")));
+        assertFalse(Mapping.isTypeSupported(invalidCaseField("fieldCase2")));
+        assertFalse(Mapping.isTypeSupported(invalidCaseField("fieldCase3")));
+        assertFalse(Mapping.isTypeSupported(invalidCaseField("fieldCase4")));
     }
 
     @Test
@@ -87,8 +96,8 @@ class MappingTest {
 
     @Test
     void stringFieldCase() throws NoSuchFieldException {
-        Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("strField"));
-        assertEquals("strField", mapping.field().getName());
+        Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("fieldCase1"));
+        assertEquals("fieldCase1", mapping.field().getName());
         assertEquals(1, mapping.position());
         assertEquals(10, mapping.length());
         assertEquals(' ', mapping.fill());
@@ -97,8 +106,8 @@ class MappingTest {
 
     @Test
     void integerFieldCase() throws NoSuchFieldException {
-        Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("intField"));
-        assertEquals("intField", mapping.field().getName());
+        Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("fieldCase2"));
+        assertEquals("fieldCase2", mapping.field().getName());
         assertEquals(2, mapping.position());
         assertEquals(20, mapping.length());
         assertEquals(' ', mapping.fill());
@@ -107,8 +116,8 @@ class MappingTest {
 
     @Test
     void decimalFieldCase() throws NoSuchFieldException {
-        Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("decField"));
-        assertEquals("decField", mapping.field().getName());
+        Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("fieldCase3"));
+        assertEquals("fieldCase3", mapping.field().getName());
         assertEquals(3, mapping.position());
         assertEquals(30, mapping.length());
         assertEquals(' ', mapping.fill());
@@ -119,18 +128,19 @@ class MappingTest {
 
     @Test
     void dateTimeFieldCase() throws NoSuchFieldException {
-        Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("dtmField"));
-        assertEquals("dtmField", mapping.field().getName());
+        Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("fieldCase4"));
+        assertEquals("fieldCase4", mapping.field().getName());
         assertEquals(4, mapping.position());
         assertEquals("ddMMyyyy", mapping.format());
     }
 
     @Test
     void customFieldCase() throws NoSuchFieldException {
-        Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("ctmField"));
-        assertEquals("ctmField", mapping.field().getName());
+        Mapping mapping = new Mapping(MirnaRecodCase.class.getDeclaredField("fieldCase5"));
+        assertEquals("fieldCase5", mapping.field().getName());
         assertEquals(5, mapping.position());
         assertEquals(50, mapping.length());
-        assertEquals(CustomConverterCase.class, mapping.converter().getClass());
+        assertEquals(CustomConverter.class, mapping.converter().getClass());
+        assertEquals(CustomConverterCase.class, ((CustomConverter) mapping.converter()).custom().getClass());
     }
 }

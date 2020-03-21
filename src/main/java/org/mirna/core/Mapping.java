@@ -41,6 +41,10 @@ public class Mapping {
             this.configuration = annotation.annotationType();
             attributes(annotation, properties::put);
         });
+        if (configuration == StringField.class) properties.put(CONVERTER, StringConverter.class);
+        else if (configuration == IntegerField.class) properties.put(CONVERTER, IntegerConverter.class);
+        else if (configuration == DecimalField.class) properties.put(CONVERTER, DecimalConverter.class);
+        else if (configuration == DateTimeField.class) properties.put(CONVERTER, DateTimeConverter.class);
     }
 
     public Class<? extends Annotation> configuration() {
@@ -95,7 +99,7 @@ public class Mapping {
         Class<?> converterClass = (Class<?>) properties.get(CONVERTER);
         try {
             if (configuration == CustomField.class)
-                return (Converter) converterClass.newInstance();
+                return new CustomConverter(this, (Converter) converterClass.newInstance());
             else
                 return (Converter) converterClass.getConstructor(Mapping.class).newInstance(this);
         } catch (Exception e) {

@@ -27,12 +27,24 @@ class Record {
     }
 
     String toText(Object mirnaRecord) {
+        StringBuilder text = new StringBuilder(columns.get(0).identifier());
         for (int pos = 1; pos < columns.size(); pos++) {
             Mapping mapping = columns.get(pos);
-            Field field = mapping.field();
-
+            Converter converter = mapping.converter();
+            Object value = value(mirnaRecord, mapping);
+            text.append(converter.toText(value));
         }
-        return "";
+        return text.toString();
+    }
+
+    Object value(Object mirnaRecord, Mapping mapping) {
+        try {
+            Field field = mapping.field();
+            field.setAccessible(true);
+            return field.get(mirnaRecord);
+        } catch (IllegalAccessException e) {
+            throw new MirnaException(e.getMessage(), e);
+        }
     }
 
     static boolean match(Class<?> mirnaRecordClass, String textRecord) {
@@ -77,6 +89,7 @@ class Record {
                         pos,
                         maps.get(pos).field());
         }
+        maps.forEach(action);
     }
 
     static void mappings(Class<?> mirnaRecordClass, Consumer<Mapping> action) {

@@ -75,7 +75,7 @@ class RecordToTextTest {
         double fieldCase2 = 56.789;
 
         @DecimalField(position = 3, length = 20, decimals = 4, fill = '*', separator = '.')
-        float fieldCase3 = 1234.5678f;
+        float fieldCase3 = 1234.567f;
 
         @DecimalField(position = 4, length = 25, decimals = 5, separator = ',')
         double fieldCase4 = 12345.67890;
@@ -89,13 +89,13 @@ class RecordToTextTest {
         String expected = "ident3"
                 + "0000001234"
                 + "56789          "
-                + "***********1234.5678"
+                + "***********1234.5670"
                 + "              12345,67890"
                 + "000000000000123456789123456789";
         assertEquals(expected, new Record(MirnaRecordCase3.class).toText(new MirnaRecordCase3()));
     }
 
-    @MirnaRecord(identifier = "ident3")
+    @MirnaRecord(identifier = "ident4")
     static class MirnaRecordCase4 {
 
         @DateTimeField(position = 1)
