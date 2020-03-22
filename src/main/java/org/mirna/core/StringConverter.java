@@ -27,7 +27,11 @@ class StringConverter implements Converter {
             else
                 while (end > 1 && text.charAt(end - 1) == mapping.fill())
                     end--;
-        return text.substring(begin, end);
+        String result = text.substring(begin, end);
+        Class<?> type = mapping.field().getType();
+        if (type == Character.TYPE || type == Character.class)
+            return result.charAt(0);
+        return result;
     }
 
     protected void setRemoveFill(boolean removeFill) {

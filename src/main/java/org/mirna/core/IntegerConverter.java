@@ -15,6 +15,24 @@ class IntegerConverter extends StringConverter {
 
     @Override
     public Object fromText(String text) {
-        return new BigInteger((String) super.fromText(text));
+        text = (String) super.fromText(text);
+        Class<?> type = mapping.field().getType();
+        if (type == Byte.TYPE)
+            return Byte.parseByte(text);
+        else if (type == Byte.class)
+            return Byte.valueOf(text);
+        else if (type == Short.TYPE)
+            return Short.parseShort(text);
+        else if (type == Short.class)
+            return Short.valueOf(text);
+        else if (type == Integer.TYPE)
+            return Integer.parseInt(text);
+        else if (type == Integer.class)
+            return Integer.valueOf(text);
+        else if (type == Long.TYPE)
+            return Long.parseLong(text);
+        else if (type == Long.class)
+            return Long.valueOf(text);
+        else return new BigInteger(text);
     }
 }

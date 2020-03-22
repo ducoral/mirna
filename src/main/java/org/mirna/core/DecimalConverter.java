@@ -30,6 +30,16 @@ class DecimalConverter extends StringConverter {
                     .toString();
         else if (mapping.separator() != '.')
             value = value.replace(mapping.separator(), '.');
-        return new BigDecimal(value);
+        Class<?> type = mapping.field().getType();
+        if (type == Float.TYPE)
+            return Float.parseFloat(value);
+        else if (type == Float.class)
+            return Float.valueOf(value);
+        else if (type == Double.TYPE)
+            return Double.parseDouble(value);
+        else if (type == Double.class)
+            return Double.valueOf(value);
+        else
+            return new BigDecimal(value);
     }
 }

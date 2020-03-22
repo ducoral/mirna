@@ -12,8 +12,11 @@ class Record {
 
     private final List<Mapping> columns = new ArrayList<>();
 
+    private final Class<?> mirnaRecordClass;
+
     Record(Class<?> mirnaRecordClass) {
         validate(mirnaRecordClass, this::add);
+        this.mirnaRecordClass = mirnaRecordClass;
     }
 
     private void add(Mapping mapping) {
@@ -35,6 +38,24 @@ class Record {
             text.append(converter.toText(value));
         }
         return text.toString();
+    }
+
+    Object fromText(String text) {
+        try {
+            Object record = mirnaRecordClass.newInstance();
+            Mapping mapping = columns.get(0);
+            text = text.substring(mapping.length());
+            for (int pos = 1; pos < columns.size(); pos++) {
+                mapping = columns.get(pos);
+                String substring = text.substring(0, mapping.length());
+                Object value = mapping.converter().fromText(substring);
+                mapping.field().set(record, value);
+                text = text.substring(mapping.length());
+            }
+            return record;
+        } catch (Exception e) {
+            throw new MirnaException(e.getMessage(), e);
+        }
     }
 
     Object value(Object mirnaRecord, Mapping mapping) {

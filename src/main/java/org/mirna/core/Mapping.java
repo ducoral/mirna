@@ -41,10 +41,14 @@ public class Mapping {
             this.configuration = annotation.annotationType();
             attributes(annotation, properties::put);
         });
-        if (configuration == StringField.class) properties.put(CONVERTER, StringConverter.class);
+        if (configuration == MirnaRecord.class) properties.put(LENGTH, identifier().length());
+        else if (configuration == StringField.class) properties.put(CONVERTER, StringConverter.class);
         else if (configuration == IntegerField.class) properties.put(CONVERTER, IntegerConverter.class);
         else if (configuration == DecimalField.class) properties.put(CONVERTER, DecimalConverter.class);
-        else if (configuration == DateTimeField.class) properties.put(CONVERTER, DateTimeConverter.class);
+        else if (configuration == DateTimeField.class) {
+            properties.put(CONVERTER, DateTimeConverter.class);
+            properties.put(LENGTH, format().length());
+        }
     }
 
     public Class<? extends Annotation> configuration() {

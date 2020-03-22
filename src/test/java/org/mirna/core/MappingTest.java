@@ -92,6 +92,7 @@ class MappingTest {
         Mapping mapping = new Mapping(MirnaRecodCase.class);
         assertEquals("ident", mapping.identifier());
         assertEquals(0, mapping.position());
+        assertEquals(5, mapping.length());
     }
 
     @Test
@@ -132,6 +133,7 @@ class MappingTest {
         assertEquals("fieldCase4", mapping.field().getName());
         assertEquals(4, mapping.position());
         assertEquals("ddMMyyyy", mapping.format());
+        assertEquals(8, mapping.length());
     }
 
     @Test

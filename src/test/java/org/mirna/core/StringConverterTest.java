@@ -15,6 +15,9 @@ class StringConverterTest {
 
         @StringField(position = 0, length = 10, fill = '+', align = Align.RIGHT)
         String fieldCase2;
+
+        @StringField(position = 0, length = 1)
+        char fieldCase3;
     }
 
     StringConverter converter(String field) {
@@ -35,6 +38,7 @@ class StringConverterTest {
         assertEquals("a*********", converter("fieldCase1").toText("a"));
         assertEquals("+++++abcde", converter("fieldCase2").toText("abcde"));
         assertEquals("+++++++++a", converter("fieldCase2").toText("a"));
+        assertEquals("a", converter("fieldCase3").toText('a'));
     }
 
     @Test
@@ -45,5 +49,6 @@ class StringConverterTest {
         assertEquals("abcde", converter("fieldCase2").fromText("+++++abcde"));
         assertEquals("a", converter("fieldCase2").fromText("+++++++++a"));
         assertEquals("+", converter("fieldCase2").fromText("++++++++++"));
+        assertEquals('a', converter("fieldCase3").fromText("a"));
     }
 }
