@@ -8,15 +8,72 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-class Record {
+public class Record {
 
     private final List<Mapping> columns = new ArrayList<>();
 
     private final Class<?> mirnaRecordClass;
 
-    Record(Class<?> mirnaRecordClass) {
+    public Record(Class<?> mirnaRecordClass) {
         validate(mirnaRecordClass, this::add);
         this.mirnaRecordClass = mirnaRecordClass;
+    }
+
+    public static boolean match(Class<?> mirnaRecordClass, String textRecord) {
+        return textRecord.startsWith(new Mapping(mirnaRecordClass).identifier());
+    }
+
+    public String toText(Object mirnaRecord) {
+        StringBuilder text = new StringBuilder(columns.get(0).identifier());
+        for (int pos = 1; pos < columns.size(); pos++) {
+            Mapping mapping = columns.get(pos);
+            Converter converter = mapping.converter();
+            Object value = getValue(mirnaRecord, mapping);
+            text.append(converter.toText(value));
+        }
+        return text.toString();
+    }
+
+    public Object fromText(String text) {
+        Object record = mirnaRecord();
+        Mapping mapping = columns.get(0);
+        text = text.substring(mapping.length());
+        for (int pos = 1; pos < columns.size(); pos++) {
+            mapping = columns.get(pos);
+            String substring = text.substring(0, mapping.length());
+            Object value = mapping.converter().fromText(substring);
+            setValue(record, mapping, value);
+            text = text.substring(mapping.length());
+        }
+        return record;
+    }
+
+    private Object mirnaRecord() {
+        try {
+            return mirnaRecordClass.newInstance();
+        } catch (Exception e) {
+            throw new MirnaException(e.getMessage(), e);
+        }
+    }
+
+    private Object getValue(Object mirnaRecord, Mapping mapping) {
+        try {
+            Field field = mapping.field();
+            field.setAccessible(true);
+            return field.get(mirnaRecord);
+        } catch (IllegalAccessException e) {
+            throw new MirnaException(e.getMessage(), e);
+        }
+    }
+
+    private void setValue(Object mirnaRecord, Mapping mapping, Object value) {
+        try {
+            Field field = mapping.field();
+            field.setAccessible(true);
+            field.set(mirnaRecord, value);
+        } catch (Exception e) {
+            throw new MirnaException(e.getMessage(), e);
+        }
     }
 
     private void add(Mapping mapping) {
@@ -29,50 +86,7 @@ class Record {
         columns.add(index, mapping);
     }
 
-    String toText(Object mirnaRecord) {
-        StringBuilder text = new StringBuilder(columns.get(0).identifier());
-        for (int pos = 1; pos < columns.size(); pos++) {
-            Mapping mapping = columns.get(pos);
-            Converter converter = mapping.converter();
-            Object value = value(mirnaRecord, mapping);
-            text.append(converter.toText(value));
-        }
-        return text.toString();
-    }
-
-    Object fromText(String text) {
-        try {
-            Object record = mirnaRecordClass.newInstance();
-            Mapping mapping = columns.get(0);
-            text = text.substring(mapping.length());
-            for (int pos = 1; pos < columns.size(); pos++) {
-                mapping = columns.get(pos);
-                String substring = text.substring(0, mapping.length());
-                Object value = mapping.converter().fromText(substring);
-                mapping.field().set(record, value);
-                text = text.substring(mapping.length());
-            }
-            return record;
-        } catch (Exception e) {
-            throw new MirnaException(e.getMessage(), e);
-        }
-    }
-
-    Object value(Object mirnaRecord, Mapping mapping) {
-        try {
-            Field field = mapping.field();
-            field.setAccessible(true);
-            return field.get(mirnaRecord);
-        } catch (IllegalAccessException e) {
-            throw new MirnaException(e.getMessage(), e);
-        }
-    }
-
-    static boolean match(Class<?> mirnaRecordClass, String textRecord) {
-        return textRecord.startsWith(new Mapping(mirnaRecordClass).identifier());
-    }
-
-    static void validate(Class<?> mirnaClass, Consumer<Mapping> action) {
+    private static void validate(Class<?> mirnaClass, Consumer<Mapping> action) {
         List<Mapping> maps = new ArrayList<>();
         mappings(mirnaClass, maps::add);
         if (maps.isEmpty())
@@ -113,7 +127,7 @@ class Record {
         maps.forEach(action);
     }
 
-    static void mappings(Class<?> mirnaRecordClass, Consumer<Mapping> action) {
+    private static void mappings(Class<?> mirnaRecordClass, Consumer<Mapping> action) {
         action.accept(new Mapping(mirnaRecordClass));
         Arrays.stream(mirnaRecordClass.getDeclaredFields())
                 .filter(Mapping::isMapped)
