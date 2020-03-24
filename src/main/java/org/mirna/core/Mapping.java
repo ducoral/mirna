@@ -1,5 +1,6 @@
 package org.mirna.core;
 
+import org.mirna.MirnaException;
 import org.mirna.annotations.*;
 
 import java.lang.annotation.Annotation;

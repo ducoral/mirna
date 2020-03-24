@@ -1,6 +1,8 @@
 package org.mirna.core;
 
 import org.junit.jupiter.api.Test;
+import org.mirna.MirnaException;
+import org.mirna.Strs;
 import org.mirna.annotations.IntegerField;
 
 import java.lang.reflect.Field;

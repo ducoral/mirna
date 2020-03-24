@@ -1,11 +1,12 @@
 package org.mirna.core;
 
 import org.junit.jupiter.api.Test;
+import org.mirna.MirnaException;
+import org.mirna.Strs;
 import org.mirna.annotations.MirnaRecord;
 import org.mirna.annotations.StringField;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class RecordValidationTest {
 
@@ -92,5 +93,10 @@ class RecordValidationTest {
                 MirnaException.class,
                 () -> new Record(MirnaRecordInvalidCase6.class),
                 Strs.MSG_MISSING_POSITION_CONFIG.format(2, "fieldCase2"));
+    }
+
+    @Test
+    void match() {
+        fail();
     }
 }

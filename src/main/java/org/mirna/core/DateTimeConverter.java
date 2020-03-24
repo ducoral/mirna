@@ -1,5 +1,7 @@
 package org.mirna.core;
 
+import org.mirna.MirnaException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

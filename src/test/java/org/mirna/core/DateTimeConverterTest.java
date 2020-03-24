@@ -1,6 +1,7 @@
 package org.mirna.core;
 
 import org.junit.jupiter.api.Test;
+import org.mirna.MirnaException;
 import org.mirna.annotations.DateTimeField;
 
 import java.text.SimpleDateFormat;

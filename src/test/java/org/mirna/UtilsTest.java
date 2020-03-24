@@ -1,6 +1,7 @@
-package org.mirna.core;
+package org.mirna;
 
 import org.junit.jupiter.api.Test;
+import org.mirna.core.Align;
 
 import java.util.Arrays;
 

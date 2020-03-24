@@ -1,4 +1,4 @@
-package org.mirna.core;
+package org.mirna;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

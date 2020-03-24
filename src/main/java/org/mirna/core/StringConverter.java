@@ -1,5 +1,7 @@
 package org.mirna.core;
 
+import org.mirna.Utils;
+
 class StringConverter implements Converter {
 
     protected final Mapping mapping;
