@@ -172,9 +172,10 @@ class MirnaTest {
         mirna.register(MirnaRecordType2.class);
         mirna.register(MirnaRecordType3.class);
 
-        String expected = Strs.MSG_UNMAPPED_RECORD.format(1, "400015string-test         01234");
-
-        assertThrows(MirnaException.class, () -> mirna.readRecords(new StringReader(text)));
+        assertThrows(
+                MirnaException.class,
+                () -> mirna.readRecords(new StringReader(text)),
+                Strs.MSG_UNMAPPED_RECORD.format(1, "400015string-test         01234"));
     }
 
     @Test
