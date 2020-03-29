@@ -1,6 +1,4 @@
-package org.mirna.annotations;
-
-import org.mirna.core.Align;
+package org.mirna;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
-public @interface DecimalField {
+public @interface CustomField {
 
     int position();
 
@@ -17,9 +15,7 @@ public @interface DecimalField {
 
     char fill() default ' ';
 
-    int decimals() default 2;
+    Align align() default Align.LEFT;
 
-    char separator() default '\0';
-
-    Align align() default Align.RIGHT;
+    Class<? extends Converter> converter();
 }

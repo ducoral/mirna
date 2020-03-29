@@ -1,7 +1,6 @@
-package org.mirna.core;
+package org.mirna;
 
 import org.junit.jupiter.api.Test;
-import org.mirna.annotations.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

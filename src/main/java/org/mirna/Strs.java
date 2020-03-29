@@ -2,7 +2,7 @@ package org.mirna;
 
 import static org.mirna.Utils.resource;
 
-public enum Strs {
+enum Strs {
 
     MSG_ANY_FIELD_ANNOTATION("msg.any.field.annotation"),
     MSG_INTERNAL_ERROR("msg.internal.error"),
@@ -14,6 +14,7 @@ public enum Strs {
     MSG_MISSING_FIELD_CONFIG("msg.missing.field.config"),
     MSG_DUPLICATE_POSITION_CONFIG("msg.duplicate.position_config"),
     MSG_DUPLICATE_RECORD_IDENTIFIER("msg.duplicate.record.identifier"),
+    MSG_UNMAPPED_RECORD("msg.unmapped.record"),
 
     RECORD_IDENTIFIER("record.identifier"),
 

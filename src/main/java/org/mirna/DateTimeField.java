@@ -1,6 +1,4 @@
-package org.mirna.annotations;
-
-import org.mirna.core.Align;
+package org.mirna;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,13 +7,9 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface StringField {
+public @interface DateTimeField {
 
     int position();
 
-    int length();
-
-    char fill() default ' ';
-
-    Align align() default Align.LEFT;
+    String format() default "ddMMyyyy";
 }

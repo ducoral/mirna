@@ -1,9 +1,6 @@
-package org.mirna.core;
+package org.mirna;
 
 import org.junit.jupiter.api.Test;
-import org.mirna.MirnaException;
-import org.mirna.Strs;
-import org.mirna.annotations.CustomField;
 
 import java.lang.reflect.Field;
 

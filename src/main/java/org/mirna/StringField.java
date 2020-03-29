@@ -1,4 +1,4 @@
-package org.mirna.annotations;
+package org.mirna;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,8 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface MirnaRecord {
+@Target(ElementType.FIELD)
+public @interface StringField {
 
-    String identifier();
+    int position();
+
+    int length();
+
+    char fill() default ' ';
+
+    Align align() default Align.LEFT;
 }

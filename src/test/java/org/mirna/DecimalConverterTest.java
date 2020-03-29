@@ -1,8 +1,6 @@
-package org.mirna.core;
+package org.mirna;
 
 import org.junit.jupiter.api.Test;
-import org.mirna.MirnaException;
-import org.mirna.annotations.DecimalField;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;

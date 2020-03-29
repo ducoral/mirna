@@ -1,6 +1,6 @@
 package org.mirna;
 
-public class MirnaException extends RuntimeException {
+class MirnaException extends RuntimeException {
 
     public MirnaException(String msg) {
         super(msg);

@@ -1,59 +1,68 @@
 package org.mirna;
 
-import org.mirna.annotations.MirnaRecord;
-import org.mirna.core.Record;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.io.BufferedWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.*;
+import static org.mirna.Utils.validate;
 
-public final class Mirna implements MirnaWriter, MirnaReader {
+public final class Mirna {
 
     private final Map<Class<?>, Record> records = new HashMap<>();
 
-    private final List<?> mirnaRecords;
+    private final List<Object> mirnaRecords = new ArrayList<>();
 
-    private Mirna(List<?> mirnaRecords) {
-        this.mirnaRecords = mirnaRecords;
+    Mirna() {
     }
 
-    public static MirnaWriter writer(List<?> mirnaRecords) {
-        Mirna mirna = new Mirna(mirnaRecords);
-        for (Object mirnaRecord : mirnaRecords)
-            mirna.register(mirnaRecord.getClass());
-        return mirna;
-    }
-
-    public static MirnaReader reader(Class<?>... mirnaRecordClasses) {
-        Mirna mirna = new Mirna(Collections.emptyList());
-        for (Class<?> mirnaRecordClass : mirnaRecordClasses)
-            mirna.register(mirnaRecordClass);
-        return mirna;
-    }
-
-    @Override
-    public List<?> read(Reader reader) {
-        return null;
-    }
-
-    @Override
-    public void write(Writer writer) {
+    void writeRecords(Writer writer) {
         try (BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
             for (Object mirnaRecord : mirnaRecords) {
-                Objects.requireNonNull(mirnaRecord);
                 bufferedWriter.write(records.get(mirnaRecord.getClass()).toText(mirnaRecord));
                 bufferedWriter.newLine();
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new MirnaException(e.getMessage(), e);
         }
     }
 
-    private void register(Class<?> mirnaRecordClass) {
+    List<Object> readRecords(Reader reader) {
+        List<Object> list = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(reader)) {
+            int line = 0;
+            String text = bufferedReader.readLine();
+            while (text != null) {
+                line++;
+                Record record = getRecord(text);
+                if (record == null)
+                    throw new MirnaException(Strs.MSG_UNMAPPED_RECORD, line, text);
+                list.add(record.fromText(text));
+                text = bufferedReader.readLine();
+            }
+        } catch (IOException e) {
+            throw new MirnaException(e.getMessage(), e);
+        }
+        return list;
+    }
+
+    Record getRecord(String text) {
+        for (Map.Entry<Class<?>, Record> entry : records.entrySet())
+            if (Utils.match(entry.getKey(), text))
+                return entry.getValue();
+        return null;
+    }
+
+    void register(Object mirnaRecord) {
+        mirnaRecords.add(mirnaRecord);
+        register(mirnaRecord.getClass());
+    }
+
+    void register(Class<?> mirnaRecordClass) {
         if (records.containsKey(mirnaRecordClass))
             return;
-        Record.validate(mirnaRecordClass);
+        validate(mirnaRecordClass);
         MirnaRecord config = mirnaRecordClass.getAnnotation(MirnaRecord.class);
         for (Map.Entry<Class<?>, Record> entry : records.entrySet())
             if (config.identifier().equals(entry.getValue().identifier()))

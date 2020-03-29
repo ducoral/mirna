@@ -1,4 +1,4 @@
-package org.mirna.core;
+package org.mirna;
 
 class CustomConverter extends StringConverter {
 

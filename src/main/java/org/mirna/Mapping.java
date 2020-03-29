@@ -1,7 +1,4 @@
-package org.mirna.core;
-
-import org.mirna.MirnaException;
-import org.mirna.annotations.*;
+package org.mirna;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -13,7 +10,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class Mapping {
+class Mapping {
 
     static final List<Class<? extends Annotation>> SUPPORT = Arrays.asList(
             MirnaRecord.class, StringField.class, IntegerField.class,

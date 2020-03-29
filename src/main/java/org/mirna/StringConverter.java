@@ -1,6 +1,4 @@
-package org.mirna.core;
-
-import org.mirna.Utils;
+package org.mirna;
 
 class StringConverter implements Converter {
 
