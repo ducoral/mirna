@@ -193,9 +193,31 @@ class MirnaTest {
         mirna.register(MirnaRecordType2.class);
         mirna.register(MirnaRecordType3.class);
 
-        String expected = Strs.MSG_UNMAPPED_RECORD.format(6, "4    456789250320******hijlmnop");
-
-        assertThrows(MirnaException.class, () -> mirna.readRecords(new StringReader(text)));
+        assertThrows(
+                MirnaException.class,
+                () -> mirna.readRecords(new StringReader(text)),
+                Strs.MSG_UNMAPPED_RECORD.format(6, "4    456789250320******hijlmnop"));
     }
 
+    @Test
+    void readerRecordsExceptionCase3() {
+        String text =
+                "100015string-test         01234\n" +
+                "2type2     24032020abc         \n" +
+                "3       12324XX20***string test\n" +
+                "100123another string      56789\n" +
+                "2value2    25032020efg         \n" +
+                "3    456789250320******hijlmnop\n";
+
+        Mirna mirna = new Mirna();
+
+        mirna.register(MirnaRecordType1.class);
+        mirna.register(MirnaRecordType2.class);
+        mirna.register(MirnaRecordType3.class);
+
+        assertThrows(
+                MirnaException.class,
+                () -> mirna.readRecords(new StringReader(text)),
+                Strs.MSG_ERROR_PARSING_TEXT.format(3));
+    }
 }

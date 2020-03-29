@@ -38,7 +38,11 @@ public final class Mirna {
                 Record record = getRecord(text);
                 if (record == null)
                     throw new MirnaException(Strs.MSG_UNMAPPED_RECORD, line, text);
-                list.add(record.fromText(text));
+                try {
+                    list.add(record.fromText(text));
+                } catch (Exception e) {
+                    throw new MirnaException(Strs.MSG_ERROR_PARSING_TEXT, line);
+                }
                 text = bufferedReader.readLine();
             }
         } catch (IOException e) {

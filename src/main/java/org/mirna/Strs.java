@@ -15,6 +15,7 @@ enum Strs {
     MSG_DUPLICATE_POSITION_CONFIG("msg.duplicate.position_config"),
     MSG_DUPLICATE_RECORD_IDENTIFIER("msg.duplicate.record.identifier"),
     MSG_UNMAPPED_RECORD("msg.unmapped.record"),
+    MSG_ERROR_PARSING_TEXT("msg.error.parsing.text"),
 
     RECORD_IDENTIFIER("record.identifier"),
 
