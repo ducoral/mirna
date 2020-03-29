@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DecimalConverterTest {
 
-    static class MirnaRecordCase {
+    static class LineCase {
 
         @DecimalField(position = 0, length = 12, fill = '0')
         float fieldCase1;
@@ -36,7 +36,7 @@ class DecimalConverterTest {
 
     Field getField(String field) {
         try {
-            return MirnaRecordCase.class.getDeclaredField(field);
+            return LineCase.class.getDeclaredField(field);
         } catch (NoSuchFieldException e) {
             throw new MirnaException(e.getMessage(), e);
         }

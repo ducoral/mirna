@@ -13,11 +13,11 @@ enum Strs {
     MSG_MISSING_POSITION_CONFIG("msg.missing.position.config"),
     MSG_MISSING_FIELD_CONFIG("msg.missing.field.config"),
     MSG_DUPLICATE_POSITION_CONFIG("msg.duplicate.position_config"),
-    MSG_DUPLICATE_RECORD_IDENTIFIER("msg.duplicate.record.identifier"),
-    MSG_UNMAPPED_RECORD("msg.unmapped.record"),
+    MSG_DUPLICATE_LINE_IDENTIFIER("msg.duplicate.line.identifier"),
+    MSG_UNMAPPED_LINE("msg.unmapped.line"),
     MSG_ERROR_PARSING_TEXT("msg.error.parsing.text"),
 
-    RECORD_IDENTIFIER("record.identifier"),
+    LINE_IDENTIFIER("line.identifier"),
 
     REPORT_FIELD("config.report.field"),
     REPORT_POSITION("config.report.position"),

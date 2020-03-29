@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 class Mapping {
 
     static final List<Class<? extends Annotation>> SUPPORT = Arrays.asList(
-            MirnaRecord.class, StringField.class, IntegerField.class,
+            Line.class, StringField.class, IntegerField.class,
             DecimalField.class, DateTimeField.class, CustomField.class
     );
 
@@ -39,7 +39,7 @@ class Mapping {
             this.configuration = annotation.annotationType();
             attributes(annotation, properties::put);
         });
-        if (configuration == MirnaRecord.class) properties.put(LENGTH, identifier().length());
+        if (configuration == Line.class) properties.put(LENGTH, identifier().length());
         else if (configuration == StringField.class) properties.put(CONVERTER, StringConverter.class);
         else if (configuration == IntegerField.class) properties.put(CONVERTER, IntegerConverter.class);
         else if (configuration == DecimalField.class) properties.put(CONVERTER, DecimalConverter.class);

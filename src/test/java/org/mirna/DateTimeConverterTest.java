@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DateTimeConverterTest {
 
-    static class MirnaRecordCase {
+    static class LineCase {
         @DateTimeField(position = 1) private Date fieldCase1;
         @DateTimeField(position = 2, format = "dd/MM/yyyy") private Date fieldCase2;
         @DateTimeField(position = 3, format = "yyyy/MM/dd") private Date fieldCase3;
@@ -19,7 +19,7 @@ class DateTimeConverterTest {
 
     private static DateTimeConverter converter(String field) {
         try {
-            return new DateTimeConverter(new Mapping(MirnaRecordCase.class.getDeclaredField(field)));
+            return new DateTimeConverter(new Mapping(LineCase.class.getDeclaredField(field)));
         } catch (NoSuchFieldException e) {
             throw new MirnaException(e.getMessage(), e);
         }

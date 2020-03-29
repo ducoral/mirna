@@ -62,7 +62,7 @@ final class Utils {
 
         if (maps.get(0).identifier().isEmpty())
             throw new MirnaException(
-                    Strs.MSG_ANNOTATION_NOT_PRESENT, MirnaRecord.class.getSimpleName(), mirnaClass.getSimpleName());
+                    Strs.MSG_ANNOTATION_NOT_PRESENT, Line.class.getSimpleName(), mirnaClass.getSimpleName());
 
         if (maps.size() == 1)
             throw new MirnaException(
@@ -93,14 +93,14 @@ final class Utils {
         }
     }
 
-    static boolean match(Class<?> mirnaRecordClass, String textRecord) {
-        MirnaRecord record = Objects.requireNonNull(mirnaRecordClass.getAnnotation(MirnaRecord.class));
+    static boolean match(Class<?> LineClass, String textRecord) {
+        Line record = Objects.requireNonNull(LineClass.getAnnotation(Line.class));
         return Objects.requireNonNull(textRecord).startsWith(record.identifier());
     }
 
-    static void mappings(Class<?> mirnaRecordClass, Consumer<Mapping> action) {
-        action.accept(new Mapping(mirnaRecordClass));
-        Arrays.stream(mirnaRecordClass.getDeclaredFields())
+    static void mappings(Class<?> LineClass, Consumer<Mapping> action) {
+        action.accept(new Mapping(LineClass));
+        Arrays.stream(LineClass.getDeclaredFields())
                 .filter(Mapping::isMapped)
                 .forEach(field -> action.accept(new Mapping(field)));
     }

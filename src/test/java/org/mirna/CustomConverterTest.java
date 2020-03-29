@@ -30,7 +30,7 @@ class CustomConverterTest {
         }
     }
 
-    static class MirnaRecordCase {
+    static class LineCase {
 
         @CustomField(position = 1, length = 10, converter = CustomConverterCase.class)
         CustomObject fieldCase1;
@@ -63,7 +63,7 @@ class CustomConverterTest {
 
     Field getField(String field) {
         try {
-            return MirnaRecordCase.class.getDeclaredField(field);
+            return LineCase.class.getDeclaredField(field);
         } catch (NoSuchFieldException e) {
             throw new MirnaException(Strs.MSG_INTERNAL_ERROR);
         }

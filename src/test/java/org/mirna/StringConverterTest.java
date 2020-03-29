@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StringConverterTest {
 
-    static class MirnaRecordCase {
+    static class LineCase {
         @StringField(position = 0, length = 10, fill = '*')
         String fieldCase1;
 
@@ -25,7 +25,7 @@ class StringConverterTest {
 
     Field getField(String field) {
         try {
-            return MirnaRecordCase.class.getDeclaredField(field);
+            return LineCase.class.getDeclaredField(field);
         } catch (NoSuchFieldException e) {
             throw new MirnaException(Strs.MSG_INTERNAL_ERROR);
         }

@@ -8,37 +8,37 @@ import static org.mirna.Utils.validate;
 
 class UtilsValidationTest {
 
-    @MirnaRecord(identifier = "id")
+    @Line(identifier = "id")
     static
-    class MirnaRecordValidCase {
+    class LineValidCase {
         @StringField(position = 1, length = 10)
         String fieldCase1;
     }
 
-    static class MirnaRecordInvalidCase1 {
+    static class LineInvalidCase1 {
     }
 
-    static class MirnaRecordInvalidCase2 {
+    static class LineInvalidCase2 {
         @StringField(position = 1, length = 10)
         String fieldCase1;
     }
 
-    @MirnaRecord(identifier = "id")
+    @Line(identifier = "id")
     static
-    class MirnaRecordInvalidCase3 {
+    class LineInvalidCase3 {
     }
 
-    @MirnaRecord(identifier = "id")
+    @Line(identifier = "id")
     static
-    class MirnaRecordInvalidCase4 {
+    class LineInvalidCase4 {
         @StringField(position = 1, length = 10)
         Integer fieldCase1;
     }
 
 
-    @MirnaRecord(identifier = "id")
+    @Line(identifier = "id")
     static
-    class MirnaRecordInvalidCase5 {
+    class LineInvalidCase5 {
         @StringField(position = 1, length = 10)
         String fieldCase1;
 
@@ -46,9 +46,9 @@ class UtilsValidationTest {
         String fieldCase2;
     }
 
-    @MirnaRecord(identifier = "id")
+    @Line(identifier = "id")
     static
-    class MirnaRecordInvalidCase6 {
+    class LineInvalidCase6 {
         @StringField(position = 1, length = 10)
         String fieldCase1;
 
@@ -58,38 +58,38 @@ class UtilsValidationTest {
 
     @Test
     void testValidate() {
-        assertDoesNotThrow(() -> validate(MirnaRecordValidCase.class));
+        assertDoesNotThrow(() -> validate(LineValidCase.class));
 
         assertThrows(
                 MirnaException.class,
-                () -> validate(MirnaRecordInvalidCase1.class),
-                Strs.MSG_MISSING_CONFIGURATION.format(MirnaRecordInvalidCase1.class));
+                () -> validate(LineInvalidCase1.class),
+                Strs.MSG_MISSING_CONFIGURATION.format(LineInvalidCase1.class));
 
         assertThrows(
                 MirnaException.class,
-                () -> validate(MirnaRecordInvalidCase2.class),
+                () -> validate(LineInvalidCase2.class),
                 Strs.MSG_ANNOTATION_NOT_PRESENT.format(
-                        MirnaRecord.class.getName(),
-                        MirnaRecordInvalidCase2.class.getName()));
+                        Line.class.getName(),
+                        LineInvalidCase2.class.getName()));
 
         assertThrows(
                 MirnaException.class,
-                () -> validate(MirnaRecordInvalidCase3.class),
-                Strs.MSG_MISSING_FIELD_CONFIG.format(MirnaRecordInvalidCase3.class.getName()));
+                () -> validate(LineInvalidCase3.class),
+                Strs.MSG_MISSING_FIELD_CONFIG.format(LineInvalidCase3.class.getName()));
 
         assertThrows(
                 MirnaException.class,
-                () -> validate(MirnaRecordInvalidCase4.class),
+                () -> validate(LineInvalidCase4.class),
                 Strs.MSG_INVALID_FIELD_TYPE.format("fieldCase1", StringField.class.getName()));
 
         assertThrows(
                 MirnaException.class,
-                () -> validate(MirnaRecordInvalidCase5.class),
+                () -> validate(LineInvalidCase5.class),
                 Strs.MSG_DUPLICATE_POSITION_CONFIG.format(2, "fieldCase2"));
 
         assertThrows(
                 MirnaException.class,
-                () -> validate(MirnaRecordInvalidCase6.class),
+                () -> validate(LineInvalidCase6.class),
                 Strs.MSG_MISSING_POSITION_CONFIG.format(2, "fieldCase2"));
     }
 }

@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MirnaTest {
 
-    @MirnaRecord(identifier = "1")
-    static class MirnaRecordType1 {
+    @Line(identifier = "1")
+    static class LineType1 {
 
         @IntegerField(position = 1, length = 5, fill = '0')
         int field1;
@@ -27,18 +27,18 @@ class MirnaTest {
         @DecimalField(position = 3, length = 5, fill = '0')
         BigDecimal field3;
 
-        public MirnaRecordType1() {
+        public LineType1() {
         }
 
-        public MirnaRecordType1(int field1, String field2, BigDecimal field3) {
+        public LineType1(int field1, String field2, BigDecimal field3) {
             this.field1 = field1;
             this.field2 = field2;
             this.field3 = field3;
         }
     }
 
-    @MirnaRecord(identifier = "2")
-    static class MirnaRecordType2 {
+    @Line(identifier = "2")
+    static class LineType2 {
 
         @StringField(position = 1, length = 10)
         String field1;
@@ -49,18 +49,18 @@ class MirnaTest {
         @StringField(position = 3, length = 12)
         String field3;
 
-        public MirnaRecordType2() {
+        public LineType2() {
         }
 
-        public MirnaRecordType2(String field1, Date field2, String field3) {
+        public LineType2(String field1, Date field2, String field3) {
             this.field1 = field1;
             this.field2 = field2;
             this.field3 = field3;
         }
     }
 
-    @MirnaRecord(identifier = "3")
-    static class MirnaRecordType3 {
+    @Line(identifier = "3")
+    static class LineType3 {
 
         @IntegerField(position = 1, length = 10)
         Integer field1;
@@ -71,10 +71,10 @@ class MirnaTest {
         @StringField(position = 3, length = 14, align = Align.RIGHT, fill = '*')
         String field3;
 
-        public MirnaRecordType3() {
+        public LineType3() {
         }
 
-        public MirnaRecordType3(Integer field1, Date field2, String field3) {
+        public LineType3(Integer field1, Date field2, String field3) {
             this.field1 = field1;
             this.field2 = field2;
             this.field3 = field3;
@@ -96,12 +96,12 @@ class MirnaTest {
 
         Mirna mirna = new Mirna();
 
-        mirna.register(new MirnaRecordType1(15, "string-test", new BigDecimal("12.34")));
-        mirna.register(new MirnaRecordType2("type2", date1, "abc"));
-        mirna.register(new MirnaRecordType3(123, date1, "string test"));
-        mirna.register(new MirnaRecordType1(123, "another string", new BigDecimal("567.89")));
-        mirna.register(new MirnaRecordType2("value2", date2, "efg"));
-        mirna.register(new MirnaRecordType3(456789, date2, "hijlmnop"));
+        mirna.register(new LineType1(15, "string-test", new BigDecimal("12.34")));
+        mirna.register(new LineType2("type2", date1, "abc"));
+        mirna.register(new LineType3(123, date1, "string test"));
+        mirna.register(new LineType1(123, "another string", new BigDecimal("567.89")));
+        mirna.register(new LineType2("value2", date2, "efg"));
+        mirna.register(new LineType3(456789, date2, "hijlmnop"));
 
         StringWriter writer = new StringWriter();
         mirna.writeRecords(writer);
@@ -123,40 +123,40 @@ class MirnaTest {
 
         Mirna mirna = new Mirna();
 
-        mirna.register(MirnaRecordType1.class);
-        mirna.register(MirnaRecordType2.class);
-        mirna.register(MirnaRecordType3.class);
+        mirna.register(LineType1.class);
+        mirna.register(LineType2.class);
+        mirna.register(LineType3.class);
 
         List<?> records = mirna.readRecords(new StringReader(text));
 
         assertEquals(6, records.size());
 
-        MirnaRecordType1 type1 = (MirnaRecordType1) records.get(0);
+        LineType1 type1 = (LineType1) records.get(0);
         assertEquals(15, type1.field1);
         assertEquals("string-test", type1.field2);
         assertEquals(new BigDecimal("12.34"), type1.field3);
 
-        MirnaRecordType2 type2 = (MirnaRecordType2) records.get(1);
+        LineType2 type2 = (LineType2) records.get(1);
         assertEquals("type2", type2.field1);
         assertEquals(date1, type2.field2);
         assertEquals("abc", type2.field3);
 
-        MirnaRecordType3 type3 = (MirnaRecordType3) records.get(2);
+        LineType3 type3 = (LineType3) records.get(2);
         assertEquals(123, type3.field1);
         assertEquals(date1, type3.field2);
         assertEquals("string test", type3.field3);
 
-        type1 = (MirnaRecordType1) records.get(3);
+        type1 = (LineType1) records.get(3);
         assertEquals(123, type1.field1);
         assertEquals("another string", type1.field2);
         assertEquals(new BigDecimal("567.89"), type1.field3);
 
-        type2 = (MirnaRecordType2) records.get(4);
+        type2 = (LineType2) records.get(4);
         assertEquals("value2", type2.field1);
         assertEquals(date2, type2.field2);
         assertEquals("efg", type2.field3);
 
-        type3 = (MirnaRecordType3) records.get(5);
+        type3 = (LineType3) records.get(5);
         assertEquals(456789, type3.field1);
         assertEquals(date2, type3.field2);
         assertEquals("hijlmnop", type3.field3);
@@ -168,14 +168,14 @@ class MirnaTest {
                 "400015string-test         01234\n";
 
         Mirna mirna = new Mirna();
-        mirna.register(MirnaRecordType1.class);
-        mirna.register(MirnaRecordType2.class);
-        mirna.register(MirnaRecordType3.class);
+        mirna.register(LineType1.class);
+        mirna.register(LineType2.class);
+        mirna.register(LineType3.class);
 
         assertThrows(
                 MirnaException.class,
                 () -> mirna.readRecords(new StringReader(text)),
-                Strs.MSG_UNMAPPED_RECORD.format(1, "400015string-test         01234"));
+                Strs.MSG_UNMAPPED_LINE.format(1, "400015string-test         01234"));
     }
 
     @Test
@@ -190,14 +190,14 @@ class MirnaTest {
 
         Mirna mirna = new Mirna();
 
-        mirna.register(MirnaRecordType1.class);
-        mirna.register(MirnaRecordType2.class);
-        mirna.register(MirnaRecordType3.class);
+        mirna.register(LineType1.class);
+        mirna.register(LineType2.class);
+        mirna.register(LineType3.class);
 
         assertThrows(
                 MirnaException.class,
                 () -> mirna.readRecords(new StringReader(text)),
-                Strs.MSG_UNMAPPED_RECORD.format(6, "4    456789250320******hijlmnop"));
+                Strs.MSG_UNMAPPED_LINE.format(6, "4    456789250320******hijlmnop"));
     }
 
     @Test
@@ -212,9 +212,9 @@ class MirnaTest {
 
         Mirna mirna = new Mirna();
 
-        mirna.register(MirnaRecordType1.class);
-        mirna.register(MirnaRecordType2.class);
-        mirna.register(MirnaRecordType3.class);
+        mirna.register(LineType1.class);
+        mirna.register(LineType2.class);
+        mirna.register(LineType3.class);
 
         assertThrows(
                 MirnaException.class,

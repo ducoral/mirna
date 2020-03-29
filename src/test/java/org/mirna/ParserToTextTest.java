@@ -10,10 +10,10 @@ import java.util.GregorianCalendar;
 import static java.util.Calendar.MARCH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class RecordToTextTest {
+class ParserToTextTest {
 
-    @MirnaRecord(identifier = "ident1")
-    static class MirnaRecordCase1 {
+    @Line(identifier = "ident1")
+    static class LineCase1 {
 
         @StringField(position = 1, length = 1)
         char fieldCase1 = 'c';
@@ -31,11 +31,11 @@ class RecordToTextTest {
                 + "c"
                 + "******str2"
                 + "str3-----------";
-        assertEquals(expected, new Record(MirnaRecordCase1.class).toText(new MirnaRecordCase1()));
+        assertEquals(expected, new Parser(LineCase1.class).toText(new LineCase1()));
     }
 
-    @MirnaRecord(identifier = "ident2")
-    static class MirnaRecordCase2 {
+    @Line(identifier = "ident2")
+    static class LineCase2 {
 
         @IntegerField(position = 1, length = 10, fill = '0')
         byte fieldCase1 = 123;
@@ -61,11 +61,11 @@ class RecordToTextTest {
                 + "_________________789"
                 + "1234567890***************"
                 + "000000000012345678901234567890";
-        assertEquals(expected, new Record(MirnaRecordCase2.class).toText(new MirnaRecordCase2()));
+        assertEquals(expected, new Parser(LineCase2.class).toText(new LineCase2()));
     }
 
-    @MirnaRecord(identifier = "ident3")
-    static class MirnaRecordCase3 {
+    @Line(identifier = "ident3")
+    static class LineCase3 {
 
         @DecimalField(position = 1, length = 10, fill = '0')
         float fieldCase1 = 12.34f;
@@ -91,11 +91,11 @@ class RecordToTextTest {
                 + "***********1234.5670"
                 + "              12345,67890"
                 + "000000000000123456789123456789";
-        assertEquals(expected, new Record(MirnaRecordCase3.class).toText(new MirnaRecordCase3()));
+        assertEquals(expected, new Parser(LineCase3.class).toText(new LineCase3()));
     }
 
-    @MirnaRecord(identifier = "ident4")
-    static class MirnaRecordCase4 {
+    @Line(identifier = "ident4")
+    static class LineCase4 {
 
         @DateTimeField(position = 1)
         Date fieldCase1 = new GregorianCalendar(2020, MARCH, 21).getTime();
@@ -117,7 +117,7 @@ class RecordToTextTest {
                 + "210320"
                 + "21/03/2020"
                 + "2020-03-21";
-        assertEquals(expected, new Record(MirnaRecordCase4.class).toText(new MirnaRecordCase4()));
+        assertEquals(expected, new Parser(LineCase4.class).toText(new LineCase4()));
     }
 
     static class CustomObject {
@@ -142,8 +142,8 @@ class RecordToTextTest {
         }
     }
 
-    @MirnaRecord(identifier = "ident5")
-    static class MirnaRecordCase5 {
+    @Line(identifier = "ident5")
+    static class LineCase5 {
 
         @CustomField(position = 1, length = 10, converter = CustomConverterCase.class)
         CustomObject fieldCase1 = new CustomObject("ten", 10);
@@ -157,6 +157,6 @@ class RecordToTextTest {
         String expected = "ident5"
                 + "ten10     "
                 + "************twenty20";
-        assertEquals(expected, new Record(MirnaRecordCase5.class).toText(new MirnaRecordCase5()));
+        assertEquals(expected, new Parser(LineCase5.class).toText(new LineCase5()));
     }
 }

@@ -8,24 +8,24 @@ import static org.mirna.Utils.match;
 
 public class UtilsMatchTest {
 
-    @MirnaRecord(identifier = "ident1")
-    static class MirnaRecordCase1 { }
+    @Line(identifier = "ident1")
+    static class LineCase1 { }
 
-    @MirnaRecord(identifier = "other")
-    static class MirnaRecordCase2 { }
+    @Line(identifier = "other")
+    static class LineCase2 { }
 
-    @MirnaRecord(identifier = "123")
-    static class MirnaRecordCase3 { }
+    @Line(identifier = "123")
+    static class LineCase3 { }
 
     @Test
     void testMatch() {
-        assertTrue(match(MirnaRecordCase1.class, "ident1string"));
-        assertFalse(match(MirnaRecordCase1.class, "identstring"));
+        assertTrue(match(LineCase1.class, "ident1string"));
+        assertFalse(match(LineCase1.class, "identstring"));
 
-        assertTrue(match(MirnaRecordCase2.class, "otherstring"));
-        assertFalse(match(MirnaRecordCase2.class, "iotherstring"));
+        assertTrue(match(LineCase2.class, "otherstring"));
+        assertFalse(match(LineCase2.class, "iotherstring"));
 
-        assertTrue(match(MirnaRecordCase3.class, "123string"));
-        assertFalse(match(MirnaRecordCase3.class, "1123identstring"));
+        assertTrue(match(LineCase3.class, "123string"));
+        assertFalse(match(LineCase3.class, "1123identstring"));
    }
 }
