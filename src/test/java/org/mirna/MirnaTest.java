@@ -219,6 +219,6 @@ class MirnaTest {
         assertThrows(
                 MirnaException.class,
                 () -> mirna.readRecords(new StringReader(text)),
-                Strs.MSG_ERROR_PARSING_TEXT.format(3));
+                Strs.MSG_ERROR_PARSING_LINE.format(3));
     }
 }

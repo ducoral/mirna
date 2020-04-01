@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import static java.util.GregorianCalendar.MARCH;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ParserFromTextTest {
 
@@ -144,5 +144,21 @@ class ParserFromTextTest {
         assertEquals(2, ((LineCase5) record).fieldCase2.integer);
         assertEquals("three", ((LineCase5) record).fieldCase3.string);
         assertEquals(3, ((LineCase5) record).fieldCase3.integer);
+    }
+
+    @Line(identifier = "id6")
+    static class LineCase6 {
+
+        @IntegerField(position = 1, length = 10)
+        Integer fieldCase1;
+    }
+
+    @Test
+    void testParseException() {
+        String text = "id6      abcd";
+        assertThrows(
+                MirnaException.class,
+                () -> new Parser(LineCase6.class).fromText(text),
+                Strs.MSG_ERROR_PARSING_FIELD.format("      abcd", "fieldCase1"));
     }
 }

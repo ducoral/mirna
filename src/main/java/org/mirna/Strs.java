@@ -3,6 +3,7 @@ package org.mirna;
 import static org.mirna.Utils.resource;
 
 enum Strs {
+    LINE_IDENTIFIER("line.identifier"),
 
     MSG_ANY_FIELD_ANNOTATION("msg.any.field.annotation"),
     MSG_INTERNAL_ERROR("msg.internal.error"),
@@ -15,18 +16,21 @@ enum Strs {
     MSG_DUPLICATE_POSITION_CONFIG("msg.duplicate.position_config"),
     MSG_DUPLICATE_LINE_IDENTIFIER("msg.duplicate.line.identifier"),
     MSG_UNMAPPED_LINE("msg.unmapped.line"),
-    MSG_ERROR_PARSING_TEXT("msg.error.parsing.text"),
+    MSG_ERROR_PARSING_LINE("msg.error.parsing.line"),
+    MSG_ERROR_PARSING_FIELD("msg.error.parsing.field"),
 
-    LINE_IDENTIFIER("line.identifier"),
 
-    REPORT_FIELD("config.report.field"),
-    REPORT_POSITION("config.report.position"),
-    REPORT_FROM("config.report.from"),
-    REPORT_TO("config.report.to"),
-    REPORT_SIZE("config.report.size"),
-    REPORT_VALUE("config.report.value"),
+    REPORT("report"),
+    REPORT_FIELD("report.field"),
+    REPORT_POSITION("report.position"),
+    REPORT_FROM("report.from"),
+    REPORT_TO("report.to"),
+    REPORT_SIZE("report.size"),
+    REPORT_VALUE("report.value"),
 
-    TEST_MSG_WITH_PARAMETERS("test.msg.with.parameters");
+    TEST_MSG_WITH_PARAMETERS("test.msg.with.parameters"),
+
+    VERSION("version");
 
     public String format(Object... args) {
         String message = toString();

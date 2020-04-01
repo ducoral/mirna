@@ -39,8 +39,12 @@ class Parser {
         for (int pos = 1; pos < columns.size(); pos++) {
             mapping = columns.get(pos);
             String substring = text.substring(0, mapping.length());
-            Object value = mapping.converter().fromText(substring);
-            setValue(record, mapping, value);
+            try {
+                Object value = mapping.converter().fromText(substring);
+                setValue(record, mapping, value);
+            } catch (Exception e) {
+                throw new MirnaException(e, Strs.MSG_ERROR_PARSING_FIELD, substring, mapping.field().getName());
+            }
             text = text.substring(mapping.length());
         }
         return record;
