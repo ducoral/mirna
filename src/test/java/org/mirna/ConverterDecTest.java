@@ -7,38 +7,38 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DecimalConverterTest {
+class ConverterDecTest {
 
     static class LineCase {
 
-        @DecimalField(position = 0, length = 12, fill = '0')
+        @FieldDec(position = 0, length = 12, fill = '0')
         float fieldCase1;
 
-        @DecimalField(position = 0, length = 12, fill = '0', separator = '.', decimals = 3)
+        @FieldDec(position = 0, length = 12, fill = '0', separator = '.', decimals = 3)
         Float fieldCase2;
 
-        @DecimalField(position = 0, length = 12, separator = ',', decimals = 4)
+        @FieldDec(position = 0, length = 12, separator = ',', decimals = 4)
         double fieldCase3;
 
-        @DecimalField(position = 0, length = 12, fill = '0', align = Align.LEFT, decimals = 0)
+        @FieldDec(position = 0, length = 12, fill = '0', align = Align.LEFT, decimals = 0)
         Double fieldCase4;
 
-        @DecimalField(position = 0, length = 12, fill = '0', separator = '.', align = Align.LEFT, decimals = 1)
+        @FieldDec(position = 0, length = 12, fill = '0', separator = '.', align = Align.LEFT, decimals = 1)
         BigDecimal fieldCase5;
 
-        @DecimalField(position = 0, length = 12, separator = ',', align = Align.LEFT)
+        @FieldDec(position = 0, length = 12, separator = ',', align = Align.LEFT)
         BigDecimal fieldCase6;
     }
 
-    DecimalConverter converter(String field) {
-        return new DecimalConverter(new Mapping(getField(field)));
+    ConverterDec converter(String field) {
+        return new ConverterDec(new Fielded(getField(field)));
     }
 
     Field getField(String field) {
         try {
             return LineCase.class.getDeclaredField(field);
         } catch (NoSuchFieldException e) {
-            throw new MirnaException(e.getMessage(), e);
+            throw new Oops(e.getMessage(), e);
         }
     }
 

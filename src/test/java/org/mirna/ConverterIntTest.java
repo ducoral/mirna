@@ -7,46 +7,46 @@ import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class IntegerConverterTest {
+class ConverterIntTest {
 
     static class LineCase {
-        @IntegerField(position = 0, length = 10, fill = '0')
+        @FieldInt(position = 0, length = 10, fill = '0')
         byte fieldCase1;
 
-        @IntegerField(position = 1, length = 10, align = Align.LEFT)
+        @FieldInt(position = 1, length = 10, align = Align.LEFT)
         Byte fieldCase2;
 
-        @IntegerField(position = 0, length = 10, fill = '0')
+        @FieldInt(position = 0, length = 10, fill = '0')
         short fieldCase3;
 
-        @IntegerField(position = 1, length = 10, align = Align.LEFT)
+        @FieldInt(position = 1, length = 10, align = Align.LEFT)
         Short fieldCase4;
 
-        @IntegerField(position = 0, length = 10, fill = '0')
+        @FieldInt(position = 0, length = 10, fill = '0')
         int fieldCase5;
 
-        @IntegerField(position = 1, length = 10, align = Align.LEFT)
+        @FieldInt(position = 1, length = 10, align = Align.LEFT)
         Integer fieldCase6;
 
-        @IntegerField(position = 0, length = 10, fill = '0')
+        @FieldInt(position = 0, length = 10, fill = '0')
         long fieldCase7;
 
-        @IntegerField(position = 1, length = 10, align = Align.LEFT)
+        @FieldInt(position = 1, length = 10, align = Align.LEFT)
         Long fieldCase8;
 
-        @IntegerField(position = 0, length = 10, fill = '0')
+        @FieldInt(position = 0, length = 10, fill = '0')
         BigInteger fieldCase9;
     }
 
-    IntegerConverter converter(String field) {
-        return new IntegerConverter(new Mapping(getField(field)));
+    ConverterInt converter(String field) {
+        return new ConverterInt(new Fielded(getField(field)));
     }
 
     Field getField(String field) {
         try {
             return LineCase.class.getDeclaredField(field);
         } catch (NoSuchFieldException e) {
-            throw new MirnaException(Strs.MSG_INTERNAL_ERROR);
+            throw new Oops(Strs.MSG_INTERNAL_ERROR);
         }
     }
 

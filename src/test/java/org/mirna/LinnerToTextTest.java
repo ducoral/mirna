@@ -10,18 +10,18 @@ import java.util.GregorianCalendar;
 import static java.util.Calendar.MARCH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ParserToTextTest {
+class LinnerToTextTest {
 
     @Line(identifier = "ident1")
     static class LineCase1 {
 
-        @StringField(position = 1, length = 1)
+        @FieldStr(position = 1, length = 1)
         char fieldCase1 = 'c';
 
-        @StringField(position = 2, length = 10, fill = '*', align = Align.RIGHT)
+        @FieldStr(position = 2, length = 10, fill = '*', align = Align.RIGHT)
         String fieldCase2 = "str2";
 
-        @StringField(position = 3, length = 15, fill = '-')
+        @FieldStr(position = 3, length = 15, fill = '-')
         String fieldCase3 = "str3";
     }
 
@@ -31,25 +31,25 @@ class ParserToTextTest {
                 + "c"
                 + "******str2"
                 + "str3-----------";
-        assertEquals(expected, new Parser(LineCase1.class).toText(new LineCase1()));
+        assertEquals(expected, new Linner(LineCase1.class).toText(new LineCase1()));
     }
 
     @Line(identifier = "ident2")
     static class LineCase2 {
 
-        @IntegerField(position = 1, length = 10, fill = '0')
+        @FieldInt(position = 1, length = 10, fill = '0')
         byte fieldCase1 = 123;
 
-        @IntegerField(position = 2, length = 15, align = Align.LEFT)
+        @FieldInt(position = 2, length = 15, align = Align.LEFT)
         short fieldCase2 = 456;
 
-        @IntegerField(position = 3, length = 20, fill = '_')
+        @FieldInt(position = 3, length = 20, fill = '_')
         int fieldCase3 = 789;
 
-        @IntegerField(position = 4, length = 25, fill = '*', align = Align.LEFT)
+        @FieldInt(position = 4, length = 25, fill = '*', align = Align.LEFT)
         long fieldCase4 = 1234567890;
 
-        @IntegerField(position = 5, length = 30, fill = '0')
+        @FieldInt(position = 5, length = 30, fill = '0')
         BigInteger fieldCase5 = new BigInteger("12345678901234567890");
     }
 
@@ -61,25 +61,25 @@ class ParserToTextTest {
                 + "_________________789"
                 + "1234567890***************"
                 + "000000000012345678901234567890";
-        assertEquals(expected, new Parser(LineCase2.class).toText(new LineCase2()));
+        assertEquals(expected, new Linner(LineCase2.class).toText(new LineCase2()));
     }
 
     @Line(identifier = "ident3")
     static class LineCase3 {
 
-        @DecimalField(position = 1, length = 10, fill = '0')
+        @FieldDec(position = 1, length = 10, fill = '0')
         float fieldCase1 = 12.34f;
 
-        @DecimalField(position = 2, length = 15, decimals = 3, align = Align.LEFT)
+        @FieldDec(position = 2, length = 15, decimals = 3, align = Align.LEFT)
         double fieldCase2 = 56.789;
 
-        @DecimalField(position = 3, length = 20, decimals = 4, fill = '*', separator = '.')
+        @FieldDec(position = 3, length = 20, decimals = 4, fill = '*', separator = '.')
         float fieldCase3 = 1234.567f;
 
-        @DecimalField(position = 4, length = 25, decimals = 5, separator = ',')
+        @FieldDec(position = 4, length = 25, decimals = 5, separator = ',')
         double fieldCase4 = 12345.67890;
 
-        @DecimalField(position = 5, length = 30, decimals = 9, fill = '0')
+        @FieldDec(position = 5, length = 30, decimals = 9, fill = '0')
         BigDecimal fieldCase5 = new BigDecimal("123456789.123456789");
     }
 
@@ -91,22 +91,22 @@ class ParserToTextTest {
                 + "***********1234.5670"
                 + "              12345,67890"
                 + "000000000000123456789123456789";
-        assertEquals(expected, new Parser(LineCase3.class).toText(new LineCase3()));
+        assertEquals(expected, new Linner(LineCase3.class).toText(new LineCase3()));
     }
 
     @Line(identifier = "ident4")
     static class LineCase4 {
 
-        @DateTimeField(position = 1)
+        @FieldDtm(position = 1)
         Date fieldCase1 = new GregorianCalendar(2020, MARCH, 21).getTime();
 
-        @DateTimeField(position = 2, format = "ddMMyy")
+        @FieldDtm(position = 2, format = "ddMMyy")
         Date fieldCase2 = new GregorianCalendar(2020, MARCH, 21).getTime();
 
-        @DateTimeField(position = 3, format = "dd/MM/yyyy")
+        @FieldDtm(position = 3, format = "dd/MM/yyyy")
         Date fieldCase3 = new GregorianCalendar(2020, MARCH, 21).getTime();
 
-        @DateTimeField(position = 4, format = "yyyy-MM-dd")
+        @FieldDtm(position = 4, format = "yyyy-MM-dd")
         Date fieldCase4 = new GregorianCalendar(2020, MARCH, 21).getTime();
     }
 
@@ -117,7 +117,7 @@ class ParserToTextTest {
                 + "210320"
                 + "21/03/2020"
                 + "2020-03-21";
-        assertEquals(expected, new Parser(LineCase4.class).toText(new LineCase4()));
+        assertEquals(expected, new Linner(LineCase4.class).toText(new LineCase4()));
     }
 
     static class CustomObject {
@@ -145,10 +145,10 @@ class ParserToTextTest {
     @Line(identifier = "ident5")
     static class LineCase5 {
 
-        @CustomField(position = 1, length = 10, converter = CustomConverterCase.class)
+        @FieldCtm(position = 1, length = 10, converter = CustomConverterCase.class)
         CustomObject fieldCase1 = new CustomObject("ten", 10);
 
-        @CustomField(position = 2, length = 20, fill = '*', align = Align.RIGHT, converter = CustomConverterCase.class)
+        @FieldCtm(position = 2, length = 20, fill = '*', align = Align.RIGHT, converter = CustomConverterCase.class)
         CustomObject fieldCase2 = new CustomObject("twenty", 20);
     }
 
@@ -157,6 +157,6 @@ class ParserToTextTest {
         String expected = "ident5"
                 + "ten10     "
                 + "************twenty20";
-        assertEquals(expected, new Parser(LineCase5.class).toText(new LineCase5()));
+        assertEquals(expected, new Linner(LineCase5.class).toText(new LineCase5()));
     }
 }

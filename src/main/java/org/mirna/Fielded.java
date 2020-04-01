@@ -10,11 +10,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-class Mapping {
+class Fielded {
 
     static final List<Class<? extends Annotation>> SUPPORT = Arrays.asList(
-            Line.class, StringField.class, IntegerField.class,
-            DecimalField.class, DateTimeField.class, CustomField.class
+            Line.class, FieldStr.class, FieldInt.class,
+            FieldDec.class, FieldDtm.class, FieldCtm.class
     );
 
     static final String IDENTIFIER = "identifier";
@@ -33,18 +33,18 @@ class Mapping {
 
     private final Field field;
 
-    public Mapping(Object target) {
+    public Fielded(Object target) {
         field = target instanceof Field ? (Field) target : null;
         annotation(target, annotation -> {
             this.configuration = annotation.annotationType();
             attributes(annotation, properties::put);
         });
         if (configuration == Line.class) properties.put(LENGTH, identifier().length());
-        else if (configuration == StringField.class) properties.put(CONVERTER, StringConverter.class);
-        else if (configuration == IntegerField.class) properties.put(CONVERTER, IntegerConverter.class);
-        else if (configuration == DecimalField.class) properties.put(CONVERTER, DecimalConverter.class);
-        else if (configuration == DateTimeField.class) {
-            properties.put(CONVERTER, DateTimeConverter.class);
+        else if (configuration == FieldStr.class) properties.put(CONVERTER, ConverterStr.class);
+        else if (configuration == FieldInt.class) properties.put(CONVERTER, ConverterInt.class);
+        else if (configuration == FieldDec.class) properties.put(CONVERTER, ConverterDec.class);
+        else if (configuration == FieldDtm.class) {
+            properties.put(CONVERTER, ConverterDtm.class);
             properties.put(LENGTH, format().length());
         }
     }
@@ -100,12 +100,12 @@ class Mapping {
     public Converter converter() {
         Class<?> converterClass = (Class<?>) properties.get(CONVERTER);
         try {
-            if (configuration == CustomField.class)
-                return new CustomConverter(this, (Converter) converterClass.newInstance());
+            if (configuration == FieldCtm.class)
+                return new ConverterCtm(this, (Converter) converterClass.newInstance());
             else
-                return (Converter) converterClass.getConstructor(Mapping.class).newInstance(this);
+                return (Converter) converterClass.getConstructor(Fielded.class).newInstance(this);
         } catch (Exception e) {
-            throw new MirnaException(e.getMessage(), e);
+            throw new Oops(e.getMessage(), e);
         }
     }
 
@@ -118,20 +118,20 @@ class Mapping {
         return SUPPORT.stream()
                 .filter(target::isAnnotationPresent)
                 .allMatch(annotation -> {
-                    if (annotation == StringField.class)
+                    if (annotation == FieldStr.class)
                         return Stream.of(Character.TYPE, Character.class, String.class).anyMatch(type::isAssignableFrom);
-                    if (annotation == IntegerField.class)
+                    if (annotation == FieldInt.class)
                         return Stream
                                 .of(Byte.TYPE, Short.TYPE, Integer.TYPE, Long.TYPE,
                                     Byte.class, Short.class, Integer.class, Long.class, BigInteger.class)
                                 .anyMatch(type::isAssignableFrom);
-                    if (annotation == DecimalField.class)
+                    if (annotation == FieldDec.class)
                         return Stream
                                 .of(Float.TYPE, Float.class, Double.TYPE, Double.class, BigDecimal.class)
                                 .anyMatch(type::isAssignableFrom);
-                    if (annotation == DateTimeField.class)
+                    if (annotation == FieldDtm.class)
                         return Stream.of(Date.class).anyMatch(type::isAssignableFrom);
-                    return annotation == CustomField.class;
+                    return annotation == FieldCtm.class;
                 });
     }
 
@@ -140,7 +140,7 @@ class Mapping {
             try {
                 action.accept(method.getName(), method.invoke(annotation));
             } catch (Exception e) {
-                throw new MirnaException(e.getMessage(), e);
+                throw new Oops(e.getMessage(), e);
             }
         });
     }

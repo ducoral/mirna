@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mirna.Utils.match;
+import static org.mirna.Rule.match;
 
-public class UtilsMatchTest {
+public class RuleMatchTest {
 
     @Line(identifier = "ident1")
     static class LineCase1 { }

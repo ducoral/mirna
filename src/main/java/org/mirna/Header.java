@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
+@Item(order = Rule.HEADER_ORDER)
 public @interface Header {
 
 }

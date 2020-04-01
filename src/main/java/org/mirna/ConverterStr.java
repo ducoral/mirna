@@ -1,18 +1,18 @@
 package org.mirna;
 
-class StringConverter implements Converter {
+class ConverterStr implements Converter {
 
-    protected final Mapping mapping;
+    protected final Fielded fielded;
 
     private boolean removeFill = true;
 
-    public StringConverter(Mapping mapping) {
-        this.mapping = mapping;
+    public ConverterStr(Fielded fielded) {
+        this.fielded = fielded;
     }
 
     @Override
     public String toText(Object value) {
-        return Utils.fixStr(String.valueOf(value), mapping.length(), mapping.fill(), mapping.align());
+        return Utils.fixStr(String.valueOf(value), fielded.length(), fielded.fill(), fielded.align());
     }
 
     @Override
@@ -20,15 +20,15 @@ class StringConverter implements Converter {
         int begin = 0;
         int end = text.length();
         if (removeFill)
-            if (mapping.align() == Align.RIGHT)
-                while (begin < end - 1 && text.charAt(begin) == mapping.fill()) {
+            if (fielded.align() == Align.RIGHT)
+                while (begin < end - 1 && text.charAt(begin) == fielded.fill()) {
                     begin++;
                 }
             else
-                while (end > 1 && text.charAt(end - 1) == mapping.fill())
+                while (end > 1 && text.charAt(end - 1) == fielded.fill())
                     end--;
         String result = text.substring(begin, end);
-        Class<?> type = mapping.field().getType();
+        Class<?> type = fielded.field().getType();
         if (type == Character.TYPE || type == Character.class)
             return result.charAt(0);
         return result;

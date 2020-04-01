@@ -2,35 +2,35 @@ package org.mirna;
 
 import java.math.BigDecimal;
 
-class DecimalConverter extends StringConverter {
+class ConverterDec extends ConverterStr {
 
-    public DecimalConverter(Mapping mapping) {
-        super(mapping);
+    public ConverterDec(Fielded fielded) {
+        super(fielded);
     }
 
     @Override
     public String toText(Object value) {
         String txt = new BigDecimal(String.valueOf(value))
-                .setScale(mapping.decimals(), BigDecimal.ROUND_DOWN)
+                .setScale(fielded.decimals(), BigDecimal.ROUND_DOWN)
                 .toString();
-        if (mapping.separator() == '\0')
+        if (fielded.separator() == '\0')
             txt = txt.replace(".", "");
-        else if (mapping.separator() != '.')
-            txt = txt.replace(".", String.valueOf(mapping.separator()));
+        else if (fielded.separator() != '.')
+            txt = txt.replace(".", String.valueOf(fielded.separator()));
         return super.toText(txt);
     }
 
     @Override
     public Object fromText(String text) {
-        setRemoveFill(mapping.fill() != '0' || mapping.align() == Align.LEFT || mapping.decimals() == 0);
+        setRemoveFill(fielded.fill() != '0' || fielded.align() == Align.LEFT || fielded.decimals() == 0);
         String value = (String) super.fromText(text);
-        if (mapping.separator() == '\0')
+        if (fielded.separator() == '\0')
             value = new StringBuilder(value)
-                    .insert(value.length() - mapping.decimals(), '.')
+                    .insert(value.length() - fielded.decimals(), '.')
                     .toString();
-        else if (mapping.separator() != '.')
-            value = value.replace(mapping.separator(), '.');
-        Class<?> type = mapping.field().getType();
+        else if (fielded.separator() != '.')
+            value = value.replace(fielded.separator(), '.');
+        Class<?> type = fielded.field().getType();
         if (type == Float.TYPE)
             return Float.parseFloat(value);
         else if (type == Float.class)

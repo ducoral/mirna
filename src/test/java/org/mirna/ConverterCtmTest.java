@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CustomConverterTest {
+class ConverterCtmTest {
 
     static class CustomObject {
         String string = "string";
@@ -32,10 +32,10 @@ class CustomConverterTest {
 
     static class LineCase {
 
-        @CustomField(position = 1, length = 10, converter = CustomConverterCase.class)
+        @FieldCtm(position = 1, length = 10, converter = CustomConverterCase.class)
         CustomObject fieldCase1;
 
-        @CustomField(position = 2, length = 20, fill = '*', align = Align.RIGHT, converter = CustomConverterCase.class)
+        @FieldCtm(position = 2, length = 20, fill = '*', align = Align.RIGHT, converter = CustomConverterCase.class)
         CustomObject fieldCase2;
     }
 
@@ -57,15 +57,15 @@ class CustomConverterTest {
         assertEquals(10, obj.integer);
     }
 
-    CustomConverter converter(String field) {
-        return new CustomConverter(new Mapping(getField(field)), new CustomConverterCase());
+    ConverterCtm converter(String field) {
+        return new ConverterCtm(new Fielded(getField(field)), new CustomConverterCase());
     }
 
     Field getField(String field) {
         try {
             return LineCase.class.getDeclaredField(field);
         } catch (NoSuchFieldException e) {
-            throw new MirnaException(Strs.MSG_INTERNAL_ERROR);
+            throw new Oops(Strs.MSG_INTERNAL_ERROR);
         }
     }
 

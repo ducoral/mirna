@@ -2,10 +2,10 @@ package org.mirna;
 
 import java.math.BigInteger;
 
-class IntegerConverter extends StringConverter {
+class ConverterInt extends ConverterStr {
 
-    public IntegerConverter(Mapping mapping) {
-        super(mapping);
+    public ConverterInt(Fielded fielded) {
+        super(fielded);
     }
 
     @Override
@@ -16,7 +16,7 @@ class IntegerConverter extends StringConverter {
     @Override
     public Object fromText(String text) {
         text = (String) super.fromText(text);
-        Class<?> type = mapping.field().getType();
+        Class<?> type = fielded.field().getType();
         if (type == Byte.TYPE)
             return Byte.parseByte(text);
         else if (type == Byte.class)

@@ -9,19 +9,19 @@ import java.util.GregorianCalendar;
 import static java.util.Calendar.MARCH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DateTimeConverterTest {
+class ConverterDtmTest {
 
     static class LineCase {
-        @DateTimeField(position = 1) private Date fieldCase1;
-        @DateTimeField(position = 2, format = "dd/MM/yyyy") private Date fieldCase2;
-        @DateTimeField(position = 3, format = "yyyy/MM/dd") private Date fieldCase3;
+        @FieldDtm(position = 1) private Date fieldCase1;
+        @FieldDtm(position = 2, format = "dd/MM/yyyy") private Date fieldCase2;
+        @FieldDtm(position = 3, format = "yyyy/MM/dd") private Date fieldCase3;
     }
 
-    private static DateTimeConverter converter(String field) {
+    private static ConverterDtm converter(String field) {
         try {
-            return new DateTimeConverter(new Mapping(LineCase.class.getDeclaredField(field)));
+            return new ConverterDtm(new Fielded(LineCase.class.getDeclaredField(field)));
         } catch (NoSuchFieldException e) {
-            throw new MirnaException(e.getMessage(), e);
+            throw new Oops(e.getMessage(), e);
         }
     }
 

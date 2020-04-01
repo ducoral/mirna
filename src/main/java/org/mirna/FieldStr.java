@@ -7,7 +7,13 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Detail {
+public @interface FieldStr {
 
-    int order() default 0;
+    int position();
+
+    int length();
+
+    char fill() default ' ';
+
+    Align align() default Align.LEFT;
 }

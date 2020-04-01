@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
-public @interface CustomField {
+@Target(ElementType.FIELD)
+public @interface FieldInt {
 
     int position();
 
@@ -15,7 +15,5 @@ public @interface CustomField {
 
     char fill() default ' ';
 
-    Align align() default Align.LEFT;
-
-    Class<? extends Converter> converter();
+    Align align() default Align.RIGHT;
 }

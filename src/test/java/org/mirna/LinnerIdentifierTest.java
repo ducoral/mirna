@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ParserIdentifierTest {
+class LinnerIdentifierTest {
 
     @Line(identifier = "ident1")
     static class LineCase1 {
@@ -20,8 +20,8 @@ class ParserIdentifierTest {
 
     @Test
     void identifier() {
-        assertEquals("ident1", new Parser(LineCase1.class).identifier());
-        assertEquals("ident2", new Parser(LineCase2.class).identifier());
-        assertEquals("ident3", new Parser(LineCase3.class).identifier());
+        assertEquals("ident1", new Linner(LineCase1.class).identifier());
+        assertEquals("ident2", new Linner(LineCase2.class).identifier());
+        assertEquals("ident3", new Linner(LineCase3.class).identifier());
     }
 }

@@ -1,11 +1,11 @@
 package org.mirna;
 
-class CustomConverter extends StringConverter {
+class ConverterCtm extends ConverterStr {
 
     private final Converter custom;
 
-    public CustomConverter(Mapping mapping, Converter custom) {
-        super(mapping);
+    public ConverterCtm(Fielded fielded, Converter custom) {
+        super(fielded);
         this.custom = custom;
     }
 
