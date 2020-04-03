@@ -104,7 +104,7 @@ class MirnaTest {
         mirna.register(new LineType3(456789, date2, "hijlmnop"));
 
         StringWriter writer = new StringWriter();
-        mirna.writeLines(writer);
+        mirna.write(writer);
         assertEquals(expected, writer.toString());
     }
 
@@ -127,7 +127,7 @@ class MirnaTest {
         mirna.register(LineType2.class);
         mirna.register(LineType3.class);
 
-        List<?> records = mirna.readLines(new StringReader(text));
+        List<?> records = mirna.read(new StringReader(text));
 
         assertEquals(6, records.size());
 
@@ -174,7 +174,7 @@ class MirnaTest {
 
         assertThrows(
                 Oops.class,
-                () -> mirna.readLines(new StringReader(text)),
+                () -> mirna.read(new StringReader(text)),
                 Strs.MSG_UNMAPPED_LINE.format(1, "400015string-test         01234"));
     }
 
@@ -196,7 +196,7 @@ class MirnaTest {
 
         assertThrows(
                 Oops.class,
-                () -> mirna.readLines(new StringReader(text)),
+                () -> mirna.read(new StringReader(text)),
                 Strs.MSG_UNMAPPED_LINE.format(6, "4    456789250320******hijlmnop"));
     }
 
@@ -218,7 +218,7 @@ class MirnaTest {
 
         assertThrows(
                 Oops.class,
-                () -> mirna.readLines(new StringReader(text)),
+                () -> mirna.read(new StringReader(text)),
                 Strs.MSG_ERROR_PARSING_LINE.format(3));
     }
 }

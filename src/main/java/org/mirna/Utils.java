@@ -2,10 +2,14 @@ package org.mirna;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 final class Utils {
 
@@ -69,4 +73,42 @@ final class Utils {
             throw new Oops(e.getMessage(), e);
         }
     }
+
+    static void attributes(Annotation annotation, BiConsumer<String, Object> action) {
+        Arrays.stream(annotation.annotationType().getDeclaredMethods()).forEach(method -> {
+            try {
+                action.accept(method.getName(), method.invoke(annotation));
+            } catch (Exception e) {
+                throw new Oops(e.getMessage(), e);
+            }
+        });
+    }
+
+    static void fieldAnnotations(Object target, Consumer<Annotation> action) {
+        AnnotatedElement element = target instanceof AnnotatedElement
+                ? (AnnotatedElement) target
+                : target.getClass();
+        Rule.FIELD_SUPPORT.forEach(annotation -> {
+            if (element.isAnnotationPresent(annotation))
+                action.accept(element.getAnnotation(annotation));
+        });
+    }
+
+    static void print(String text) {
+        List<String> colors = Arrays.asList(
+                "#0#", "\033[0m",       // reset
+                "#r#", "\033[38;5;9m",  // red
+                "#g#", "\033[38;5;10m", // greem
+                "#y#", "\033[38;5;11m", // yellow
+                "#b#", "\033[38;5;12m", // blue
+                "#p#", "\033[38;5;13m", // pink
+                "#c#", "\033[38;5;14m", // cyan
+                "#t#", "\033[38;5;6m",  // teal
+                "#s#", "\033[38;5;7m",  // silver
+                "#a#", "\033[38;5;8m"); // gray
+        for (int index = 0; index < colors.size() - 1; index += 2)
+            text = text.replaceAll(colors.get(index), colors.get(index + 1));
+        System.out.print(text);
+    }
+
 }

@@ -1,21 +1,14 @@
 package org.mirna;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mirna.Utils.attributes;
+import static org.mirna.Utils.fieldAnnotations;
 
 class Fielded {
-
-    static final List<Class<? extends Annotation>> SUPPORT = Arrays.asList(
-            Line.class, FieldStr.class, FieldInt.class,
-            FieldDec.class, FieldDtm.class, FieldCtm.class
-    );
 
     static final String IDENTIFIER = "identifier";
     static final String POSITION = "position";
@@ -35,7 +28,7 @@ class Fielded {
 
     public Fielded(Object target) {
         field = target instanceof Field ? (Field) target : null;
-        annotation(target, annotation -> {
+        fieldAnnotations(target, annotation -> {
             this.configuration = annotation.annotationType();
             attributes(annotation, properties::put);
         });
@@ -107,51 +100,5 @@ class Fielded {
         } catch (Exception e) {
             throw new Oops(e.getMessage(), e);
         }
-    }
-
-    static boolean isMapped(AnnotatedElement element) {
-        return SUPPORT.stream().anyMatch(element::isAnnotationPresent);
-    }
-
-    static boolean isTypeSupported(Field target) {
-        final Class<?> type = target.getType();
-        return SUPPORT.stream()
-                .filter(target::isAnnotationPresent)
-                .allMatch(annotation -> {
-                    if (annotation == FieldStr.class)
-                        return Stream.of(Character.TYPE, Character.class, String.class).anyMatch(type::isAssignableFrom);
-                    if (annotation == FieldInt.class)
-                        return Stream
-                                .of(Byte.TYPE, Short.TYPE, Integer.TYPE, Long.TYPE,
-                                    Byte.class, Short.class, Integer.class, Long.class, BigInteger.class)
-                                .anyMatch(type::isAssignableFrom);
-                    if (annotation == FieldDec.class)
-                        return Stream
-                                .of(Float.TYPE, Float.class, Double.TYPE, Double.class, BigDecimal.class)
-                                .anyMatch(type::isAssignableFrom);
-                    if (annotation == FieldDtm.class)
-                        return Stream.of(Date.class).anyMatch(type::isAssignableFrom);
-                    return annotation == FieldCtm.class;
-                });
-    }
-
-    static void attributes(Annotation annotation, BiConsumer<String, Object> action) {
-        Arrays.stream(annotation.annotationType().getDeclaredMethods()).forEach(method -> {
-            try {
-                action.accept(method.getName(), method.invoke(annotation));
-            } catch (Exception e) {
-                throw new Oops(e.getMessage(), e);
-            }
-        });
-    }
-
-    static void annotation(Object target, Consumer<Annotation> action) {
-        AnnotatedElement element = target instanceof AnnotatedElement
-                ? (AnnotatedElement) target
-                : target.getClass();
-        SUPPORT.forEach(annotation -> {
-            if (element.isAnnotationPresent(annotation))
-                action.accept(element.getAnnotation(annotation));
-        });
     }
 }

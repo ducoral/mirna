@@ -1,12 +1,14 @@
 package org.mirna;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.mirna.Utils.*;
 
 public final class Mirna {
-
 
     private final Map<Class<?>, Linner> linners = new HashMap<>();
 
@@ -15,7 +17,21 @@ public final class Mirna {
     Mirna() {
     }
 
-    void writeLines(Writer writer) {
+    public static void write(Object document, Writer writer) {
+        Rule.validateDocument(document.getClass());
+        Mirna mirna = new Mirna();
+        new Documented<>(document).lines(mirna::register);
+        mirna.write(writer);
+    }
+
+    public static <T> T read(Class<T> documentClass, Reader reader) {
+        Mirna mirna = new Mirna();
+        return new Documented<>(documentClass)
+                .types(mirna::register)
+                .parse(mirna.lines);
+    }
+
+    void write(Writer writer) {
         try (BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
             for (Object line : lines) {
                 bufferedWriter.write(linners.get(line.getClass()).toText(line));
@@ -26,14 +42,14 @@ public final class Mirna {
         }
     }
 
-    List<Object> readLines(Reader reader) {
+    List<?> read(Reader reader) {
         List<Object> list = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(reader)) {
             int line = 0;
             String text = bufferedReader.readLine();
             while (text != null) {
                 line++;
-                Linner linner = getLinner(text);
+                Linner linner = liner(text);
                 if (linner == null)
                     throw new Oops(Strs.MSG_UNMAPPED_LINE, line, text);
                 try {
@@ -49,7 +65,7 @@ public final class Mirna {
         return list;
     }
 
-    Linner getLinner(String text) {
+    Linner liner(String text) {
         for (Map.Entry<Class<?>, Linner> entry : linners.entrySet())
             if (Rule.match(entry.getKey(), text))
                 return entry.getValue();
@@ -85,22 +101,52 @@ public final class Mirna {
                 "   #t#:: flat-file parser ::#c#" + str + "#0#\n\n" +
                 "=== #p#" + fixLeft(Strs.REPORT.toString() + "#0# ", 33, '=') + "\n\n";
         print(str);
+
+        List<Class<?>> items = new ArrayList<>();
     }
 
-    private static void print(String text) {
-        List<String> colors = Arrays.asList(
-                "#0#", "\033[0m",       // reset
-                "#r#", "\033[38;5;9m",  // red
-                "#g#", "\033[38;5;10m", // greem
-                "#y#", "\033[38;5;11m", // yellow
-                "#b#", "\033[38;5;12m", // blue
-                "#p#", "\033[38;5;13m", // pink
-                "#c#", "\033[38;5;14m", // cyan
-                "#t#", "\033[38;5;6m",  // teal
-                "#s#", "\033[38;5;7m",  // silver
-                "#a#", "\033[38;5;8m"); // gray
-        for (int index = 0; index < colors.size() - 1; index += 2)
-            text = text.replaceAll(colors.get(index), colors.get(index + 1));
-        System.out.print(text);
+    public static void main(String[] args) {
+        new Documented<>(Temp.class).types(Mirna::printclass);
+        report(Temp.class);
     }
+
+    private static void printclass(Class<?> type) {
+        System.out.println(type);
+    }
+
+    @Document
+    static class Temp {
+
+        @Header
+        Line1 line1;
+
+        @Item
+        List<Line2> line2s;
+
+        @Footer
+        Line3 line3;
+    }
+
+    @Line(identifier = "line1")
+    static class Line1 {
+
+    }
+
+    @Line(identifier = "line2")
+    static class Line2 {
+
+    }
+
+    @Line(identifier = "line3")
+    static class Line3 {
+
+        @Item
+        Line4 line4;
+    }
+
+    @Line(identifier = "line4")
+    static class Line4 {
+
+    }
+
 }

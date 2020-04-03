@@ -75,15 +75,15 @@ class FieldedTest {
 
     @Test
     void isTypeSupported() throws NoSuchFieldException {
-        assertTrue(Fielded.isTypeSupported(validCaseField("fieldCase1")));
-        assertTrue(Fielded.isTypeSupported(validCaseField("fieldCase2")));
-        assertTrue(Fielded.isTypeSupported(validCaseField("fieldCase3")));
-        assertTrue(Fielded.isTypeSupported(validCaseField("fieldCase4")));
-        assertTrue(Fielded.isTypeSupported(validCaseField("fieldCase5")));
-        assertFalse(Fielded.isTypeSupported(invalidCaseField("fieldCase1")));
-        assertFalse(Fielded.isTypeSupported(invalidCaseField("fieldCase2")));
-        assertFalse(Fielded.isTypeSupported(invalidCaseField("fieldCase3")));
-        assertFalse(Fielded.isTypeSupported(invalidCaseField("fieldCase4")));
+        assertTrue(Rule.isFieldTypeSupported(validCaseField("fieldCase1")));
+        assertTrue(Rule.isFieldTypeSupported(validCaseField("fieldCase2")));
+        assertTrue(Rule.isFieldTypeSupported(validCaseField("fieldCase3")));
+        assertTrue(Rule.isFieldTypeSupported(validCaseField("fieldCase4")));
+        assertTrue(Rule.isFieldTypeSupported(validCaseField("fieldCase5")));
+        assertFalse(Rule.isFieldTypeSupported(invalidCaseField("fieldCase1")));
+        assertFalse(Rule.isFieldTypeSupported(invalidCaseField("fieldCase2")));
+        assertFalse(Rule.isFieldTypeSupported(invalidCaseField("fieldCase3")));
+        assertFalse(Rule.isFieldTypeSupported(invalidCaseField("fieldCase4")));
     }
 
     @Test

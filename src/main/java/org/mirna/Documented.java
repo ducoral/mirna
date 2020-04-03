@@ -1,102 +1,76 @@
 package org.mirna;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 
-import static org.mirna.Utils.*;
+import static org.mirna.Utils.getValue;
+import static org.mirna.Utils.setValue;
 
-class Documented {
+class Documented<T> {
 
-    @Line(identifier = "id1")
-    static class Linha1 {
-    }
-
-    @Line(identifier = "id2detail")
-    static class Linha2Detail {
-    }
-
-    @Line(identifier = "id2")
-    static class Linha2 {
-        @Item(order = 2)
-        Linha2Detail detail;
-    }
-
-    @Line(identifier = "id3")
-    static class Linha3 {
-    }
-
-    @Document
-    static class Teste {
-        @Header
-        Linha1 header;
-
-        @Item
-        List<Linha2> detalhes;
-
-        @Item(order = 1)
-        Linha2Detail detail;
-
-        @Footer
-        Linha3 footer;
-    }
-
-    public static void main(String[] args) {
-        List<String> items1 = Arrays.asList("um", "dois", "tres");
-        List<String> items2 = Arrays.asList("um", "dois", "tres");
-
-        System.out.println(items1.equals(items2));
-        System.out.println(Objects.deepEquals(items1, items2));
-    }
-
-    public static void main3(String[] args) throws Exception {
-        Annotation header = Teste.class.getDeclaredField("header").getAnnotation(Header.class).annotationType().getAnnotation(Item.class);
-        Annotation footer = Teste.class.getDeclaredField("footer").getAnnotation(Footer.class).annotationType().getAnnotation(Item.class);
-
-        System.out.println(header);
-        System.out.println(footer);
-    }
-
-    public static void main2(String[] args) throws Exception {
-        Field field = Teste.class.getDeclaredField("detalhes");
-        ParameterizedType type = (ParameterizedType) field.getGenericType();
-        Type typeArgument = type.getActualTypeArguments()[0];
-        if (typeArgument instanceof Class<?>) {
-            Class<?> genericType = (Class<?>) typeArgument;
-            System.out.println(genericType);
-            System.out.println(genericType.isAnnotationPresent(Line.class));
-        } else {
-            System.out.println("não é");
-        }
-    }
-
-    private final Object instance;
+    private final T instance;
 
     private final List<Field> items = new ArrayList<>();
 
-    Documented(Object instance) {
-        this.instance = instance;
-        Arrays.stream(instance.getClass().getDeclaredFields()).forEach(this::add);
+    Documented(Class<T> documentClass) {
+        this(instantiate(documentClass));
     }
 
-    List<Object> getLines() {
-        List<Object> lines = new ArrayList<>();
-        items.forEach(item -> loadLines(lines, item));
-        return lines;
+    Documented(T document) {
+        this.instance = document;
+        Arrays.stream(document.getClass().getDeclaredFields()).forEach(this::add);
     }
 
-    private void loadLines(List<Object> lines, Field field) {
-        Object value = getValue(instance, field);
-        if (value == null)
+    Documented<T> types(Consumer<Class<?>> action) {
+        items(item -> types(item, action));
+        return this;
+    }
+
+    private void types(Object item, Consumer<Class<?>> action) {
+        if (item instanceof Field)
+            if (((Field) item).getType() == List.class)
+                types(((ParameterizedType) ((Field) item).getGenericType()).getActualTypeArguments()[0], action);
+            else
+                types(((Field) item).getType(), action);
+        else if (item instanceof Class<?>) {
+            action.accept((Class<?>) item);
+            new Documented<>((Class<?>) item).types(action);
+        }
+    }
+
+    void lines(Consumer<Object> action) {
+        items(item -> lines(item, action));
+    }
+
+    private void lines(Object item, Consumer<Object> action) {
+        if (item instanceof Field)
+            item = getValue(instance, (Field) item);
+        if (item == null)
             return;
-        if (value instanceof List) {
-            ((List<?>) value).forEach(item -> lines.addAll(new Documented(item).getLines()));
-        } else
-            lines.add(value);
+        if (item instanceof List) {
+            List<?> subItems = (List<?>) item;
+            subItems.forEach(subItem -> lines(subItem, action));
+        } else {
+            action.accept(item);
+            new Documented<>(item).lines(action);
+        }
     }
 
-    void setLines(List<Object> lines) {
+    void accept(Object line) {
+        // TODO implementing accept
 
+        throw new Oops("parse exception");
+    }
+
+    T parse(List<Object> lines) {
+        initialize(instance);
+        lines.forEach(this::accept);
+        return instance;
     }
 
     boolean hasHeader() {
@@ -107,20 +81,31 @@ class Documented {
         return index(Rule.FOOTER_ORDER) > -1;
     }
 
+    private void items(Consumer<Field> action) {
+        int headerIndex = index(Rule.HEADER_ORDER);
+        if (headerIndex > -1)
+            action.accept(items.get(headerIndex));
+        for (int index = headerIndex + 1; index < items.size(); index++)
+            action.accept(items.get(index));
+        int footerIndex = index(Rule.FOOTER_ORDER);
+        if (footerIndex > -1)
+            action.accept(items.get(footerIndex));
+    }
+
     private int index(int order) {
         for (int index = 0; index < items.size(); index++)
-            if (item(items.get(index)).order() == order)
+            if (getAnnotation(items.get(index)).order() == order)
                 return index;
         return -1;
     }
 
     private void add(Field field) {
-        Item item = item(field);
+        Item item = getAnnotation(field);
         if (item == null)
             return;
         int index = 0;
         while (index < items.size()) {
-            Item compared = item(items.get(index));
+            Item compared = getAnnotation(items.get(index));
             if (compared != null && item.order() < compared.order())
                 break;
             index++;
@@ -128,12 +113,24 @@ class Documented {
         items.add(index, field);
     }
 
-    private Item item(AnnotatedElement element) {
+    private Item getAnnotation(AnnotatedElement element) {
         if (element.isAnnotationPresent(Header.class))
-            return item(element.getAnnotation(Header.class).annotationType());
+            return getAnnotation(element.getAnnotation(Header.class).annotationType());
         else if (element.isAnnotationPresent(Footer.class))
-            return item(element.getAnnotation(Footer.class).annotationType());
+            return getAnnotation(element.getAnnotation(Footer.class).annotationType());
         else
             return element.getAnnotation(Item.class);
+    }
+
+    private static <T> T instantiate(Class<T> documentClass) {
+        try {
+            return documentClass.newInstance();
+        } catch (Exception e) {
+            throw new Oops(e.getMessage(), e);
+        }
+    }
+
+    private static void initialize(Object instance) {
+        Rule.items(instance, item -> setValue(instance, item, item.getType() == List.class ? new ArrayList<>() : null));
     }
 }

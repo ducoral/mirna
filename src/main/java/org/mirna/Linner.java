@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mirna.Rule.fields;
-import static org.mirna.Utils.*;
+import static org.mirna.Utils.getValue;
+import static org.mirna.Utils.setValue;
 
 class Linner {
 
@@ -12,16 +13,16 @@ class Linner {
 
     private final Class<?> LineClass;
 
-    public Linner(Class<?> LineClass) {
+    Linner(Class<?> LineClass) {
         fields(LineClass, this::add);
         this.LineClass = LineClass;
     }
 
-    public String identifier() {
+    String identifier() {
         return fields.get(0).identifier();
     }
 
-    public String toText(Object Line) {
+    String toText(Object Line) {
         StringBuilder text = new StringBuilder(fields.get(0).identifier());
         for (int pos = 1; pos < fields.size(); pos++) {
             Fielded fielded = fields.get(pos);
@@ -32,7 +33,7 @@ class Linner {
         return text.toString();
     }
 
-    public Object fromText(String text) {
+    Object fromText(String text) {
         Object record = Line();
         Fielded fielded = fields.get(0);
         text = text.substring(fielded.length());
