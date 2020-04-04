@@ -12,6 +12,8 @@ import static org.mirna.Utils.*;
 
 class Documented {
 
+    static final int INDENT = 2;
+
     private final Object document;
 
     private final List<Field> items = new ArrayList<>();
@@ -44,7 +46,7 @@ class Documented {
 
     private void lines(Object item, Consumer<Object> action) {
         if (item instanceof Field)
-            item = getField(document, (Field) item);
+            item = get(document, (Field) item);
         if (item == null)
             return;
         if (item instanceof List) {
@@ -61,19 +63,17 @@ class Documented {
         Class<?> type = line.getClass();
         if (field.getType() == type)
             if (isNull(document, field)) {
-                setField(document, field, line);
+                set(document, field, line);
                 return true;
-            }
-            else
+            } else
                 throw new Oops(Strs.MSG_INVALID_LINE, line);
         else if (field.getType() == List.class) {
-            List<Object> list = (List<Object>) getField(document, field);
-            if (type == ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]) {
-                list.add(line);
+            if (type == generic(field)) {
+                ((List<Object>) get(document, field)).add(line);
                 return true;
             }
         } else if (!isNull(document, field)) {
-            Documented documented = new Documented(getField(document, field));
+            Documented documented = new Documented(get(document, field));
             List<Field> items = new ArrayList<>();
             documented.items(items::add);
             for (Field item : items)
@@ -97,7 +97,7 @@ class Documented {
     }
 
     void parse(List<Object> lines) {
-        items(item -> setField(document, item, item.getType() == List.class ? new ArrayList<>() : null));
+        items(item -> set(document, item, item.getType() == List.class ? new ArrayList<>() : null));
         int position = 0;
         try {
             for (Object line : lines) {
@@ -107,6 +107,27 @@ class Documented {
         } catch (Exception e) {
             throw new Oops(e, Strs.MSG_ERROR_PARSING_LINE, position);
         }
+    }
+
+    void report(int indent, Consumer<String[]> action) {
+        items(field -> report(indent, field, action));
+    }
+
+    void report(int indent, Field field, Consumer<String[]> action) {
+        String desc = "#y#"
+                + (field.getType() == List.class ? "list of " : "")
+                + (field.isAnnotationPresent(Header.class)
+                        ? "header"
+                        : field.isAnnotationPresent(Footer.class)
+                            ? "footer"
+                            : "item")
+                + "#0#";
+        report(indent, field.getType() == List.class ? generic(field) : field.getType(), desc, action);
+    }
+
+    private void report(int indent, Class<?> type, String desc, Consumer<String[]> action) {
+        action.accept(new String[]{chars(indent, ' '), type.getName(), " ", desc, "\n"});
+        new Documented(create(type)).report(indent + INDENT, action);
     }
 
     boolean hasHeader() {

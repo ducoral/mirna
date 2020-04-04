@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -56,7 +57,7 @@ final class Utils {
         }
     }
 
-    static void setField(Object instance, Field field, Object value) {
+    static void set(Object instance, Field field, Object value) {
         try {
             field.setAccessible(true);
             field.set(instance, value);
@@ -65,7 +66,7 @@ final class Utils {
         }
     }
 
-    static Object getField(Object instance, Field field) {
+    static Object get(Object instance, Field field) {
         try {
             field.setAccessible(true);
             return field.get(instance);
@@ -75,7 +76,11 @@ final class Utils {
     }
 
     static boolean isNull(Object instance, Field field) {
-        return getField(instance, field) == null;
+        return get(instance, field) == null;
+    }
+
+    static Class<?> generic(Field field) {
+        return (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
     }
 
     static void attributes(Annotation annotation, BiConsumer<String, Object> action) {
@@ -103,7 +108,6 @@ final class Utils {
         for (String s : texts)
             str.append(s);
         String text = str.toString();
-
         List<String> colors = Arrays.asList(
                 "#0#", "\033[0m",       // reset
                 "#r#", "\033[38;5;9m",  // red
@@ -120,4 +124,11 @@ final class Utils {
         System.out.print(text);
     }
 
+    static <T> T create(Class<T> type) {
+        try {
+            return type.newInstance();
+        } catch (Exception e) {
+            throw new Oops(e.getMessage(), e);
+        }
+    }
 }

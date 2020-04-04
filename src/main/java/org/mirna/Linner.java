@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mirna.Rule.fields;
-import static org.mirna.Utils.getField;
-import static org.mirna.Utils.setField;
+import static org.mirna.Utils.get;
+import static org.mirna.Utils.set;
 
 class Linner {
 
@@ -27,7 +27,7 @@ class Linner {
         for (int pos = 1; pos < fieldeds.size(); pos++) {
             Fielded fielded = fieldeds.get(pos);
             Converter converter = fielded.converter();
-            Object value = getField(line, fielded.field());
+            Object value = get(line, fielded.field());
             text.append(converter.toText(value));
         }
         return text.toString();
@@ -42,7 +42,7 @@ class Linner {
             String substring = text.substring(0, fielded.length());
             try {
                 Object value = fielded.converter().fromText(substring);
-                setField(line, fielded.field(), value);
+                set(line, fielded.field(), value);
             } catch (Exception e) {
                 throw new Oops(e, Strs.MSG_ERROR_PARSING_FIELD, substring, fielded.field().getName());
             }

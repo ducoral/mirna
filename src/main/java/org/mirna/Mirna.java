@@ -136,20 +136,21 @@ public final class Mirna {
                 "=== #p#" + fixLeft(REPORT.toString() + "#0# ", 34, '=') + "\n\n";
         print(str);
 
-        List<Class<?>> types = new ArrayList<>();
-        try {
-            new Documented(documentClass.newInstance()).types(types::add);
-        } catch (Exception e) {
-            throw new Oops(e.getMessage(), e);
-        }
+        Documented documented = new Documented(create(documentClass));
+        print("#c#", documentClass.getName(), "#y# document#0#\n");
+        documented.report(Documented.INDENT, Utils::print);
+        print("\n");
 
+        List<Class<?>> types = new ArrayList<>();
+        documented.types(types::add);
         for (Class<?> type : types) {
             List<List<String>> table = table(type);
             int[] lengths = lengths(table);
             Align[] aligns = {LEFT, RIGHT, RIGHT, RIGHT, LEFT};
             int width = Arrays.stream(lengths).reduce(lengths.length - 1, Integer::sum);
+
             print("+", chars(width, '-'), "+\n");
-            print("|#g#", fixLeft(" " + type.getSimpleName(), width, ' '), "#0#|\n");
+            print("|#g#", fixLeft(" " + type.getName(), width, ' '), "#0#|\n");
             printRow(lengths);
 
             List<String> row = table.get(0);
@@ -185,10 +186,12 @@ public final class Mirna {
     static class Temp {
         @Header
         Line1 line1;
-        @Item
+        @Item(order = 1)
         List<Line2> line2s;
         @Footer
         Line3 line3;
+        @Item(order = 2)
+        Line4 line4;
     }
 
     @Line(identifier = "line1")
