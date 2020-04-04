@@ -8,25 +8,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static org.mirna.Utils.getValue;
-import static org.mirna.Utils.setValue;
+import static org.mirna.Utils.*;
 
-class Documented<T> {
+class Documented {
 
-    private final T instance;
+    private final Object document;
 
     private final List<Field> items = new ArrayList<>();
 
-    Documented(Class<T> documentClass) {
-        this(instantiate(documentClass));
-    }
-
-    Documented(T document) {
-        this.instance = document;
+    Documented(Object document) {
+        this.document = document;
         Arrays.stream(document.getClass().getDeclaredFields()).forEach(this::add);
     }
 
-    Documented<T> types(Consumer<Class<?>> action) {
+    Documented types(Consumer<Class<?>> action) {
         items(item -> types(item, action));
         return this;
     }
@@ -39,7 +34,7 @@ class Documented<T> {
                 types(((Field) item).getType(), action);
         else if (item instanceof Class<?>) {
             action.accept((Class<?>) item);
-            new Documented<>((Class<?>) item).types(action);
+            new Documented(item).types(action);
         }
     }
 
@@ -49,7 +44,7 @@ class Documented<T> {
 
     private void lines(Object item, Consumer<Object> action) {
         if (item instanceof Field)
-            item = getValue(instance, (Field) item);
+            item = getField(document, (Field) item);
         if (item == null)
             return;
         if (item instanceof List) {
@@ -57,20 +52,61 @@ class Documented<T> {
             subItems.forEach(subItem -> lines(subItem, action));
         } else {
             action.accept(item);
-            new Documented<>(item).lines(action);
+            new Documented(item).lines(action);
         }
     }
 
-    void accept(Object line) {
-        // TODO implementing accept
-
-        throw new Oops("parse exception");
+    @SuppressWarnings("unchecked")
+    private boolean accept(Field field, Object line) {
+        Class<?> type = line.getClass();
+        if (field.getType() == type)
+            if (isNull(document, field)) {
+                setField(document, field, line);
+                return true;
+            }
+            else
+                throw new Oops(Strs.MSG_INVALID_LINE, line);
+        else if (field.getType() == List.class) {
+            List<Object> list = (List<Object>) getField(document, field);
+            if (type == ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]) {
+                list.add(line);
+                return true;
+            }
+        } else if (!isNull(document, field)) {
+            Documented documented = new Documented(getField(document, field));
+            List<Field> items = new ArrayList<>();
+            documented.items(items::add);
+            for (Field item : items)
+                if (documented.accept(item, line))
+                    return true;
+        }
+        return false;
     }
 
-    T parse(List<Object> lines) {
-        initialize(instance);
-        lines.forEach(this::accept);
-        return instance;
+    private void accept(Object line) {
+        boolean accepted = false;
+        List<Field> fields = new ArrayList<>();
+        items(fields::add);
+        for (Field field : fields)
+            if (accept(field, line)) {
+                accepted = true;
+                break;
+            }
+        if (!accepted)
+            throw new Oops(Strs.MSG_INVALID_LINE, line);
+    }
+
+    void parse(List<Object> lines) {
+        items(item -> setField(document, item, item.getType() == List.class ? new ArrayList<>() : null));
+        int position = 0;
+        try {
+            for (Object line : lines) {
+                position++;
+                accept(line);
+            }
+        } catch (Exception e) {
+            throw new Oops(e, Strs.MSG_ERROR_PARSING_LINE, position);
+        }
     }
 
     boolean hasHeader() {
@@ -120,17 +156,5 @@ class Documented<T> {
             return getAnnotation(element.getAnnotation(Footer.class).annotationType());
         else
             return element.getAnnotation(Item.class);
-    }
-
-    private static <T> T instantiate(Class<T> documentClass) {
-        try {
-            return documentClass.newInstance();
-        } catch (Exception e) {
-            throw new Oops(e.getMessage(), e);
-        }
-    }
-
-    private static void initialize(Object instance) {
-        Rule.items(instance, item -> setValue(instance, item, item.getType() == List.class ? new ArrayList<>() : null));
     }
 }

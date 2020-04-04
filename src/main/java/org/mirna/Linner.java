@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mirna.Rule.fields;
-import static org.mirna.Utils.getValue;
-import static org.mirna.Utils.setValue;
+import static org.mirna.Utils.getField;
+import static org.mirna.Utils.setField;
 
 class Linner {
 
@@ -22,19 +22,19 @@ class Linner {
         return fields.get(0).identifier();
     }
 
-    String toText(Object Line) {
+    String toText(Object line) {
         StringBuilder text = new StringBuilder(fields.get(0).identifier());
         for (int pos = 1; pos < fields.size(); pos++) {
             Fielded fielded = fields.get(pos);
             Converter converter = fielded.converter();
-            Object value = getValue(Line, fielded.field());
+            Object value = getField(line, fielded.field());
             text.append(converter.toText(value));
         }
         return text.toString();
     }
 
     Object fromText(String text) {
-        Object record = Line();
+        Object line = line();
         Fielded fielded = fields.get(0);
         text = text.substring(fielded.length());
         for (int pos = 1; pos < fields.size(); pos++) {
@@ -42,16 +42,16 @@ class Linner {
             String substring = text.substring(0, fielded.length());
             try {
                 Object value = fielded.converter().fromText(substring);
-                setValue(record, fielded.field(), value);
+                setField(line, fielded.field(), value);
             } catch (Exception e) {
                 throw new Oops(e, Strs.MSG_ERROR_PARSING_FIELD, substring, fielded.field().getName());
             }
             text = text.substring(fielded.length());
         }
-        return record;
+        return line;
     }
 
-    private Object Line() {
+    private Object line() {
         try {
             return LineClass.newInstance();
         } catch (Exception e) {

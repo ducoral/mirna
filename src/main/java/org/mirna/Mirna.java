@@ -20,15 +20,19 @@ public final class Mirna {
     public static void write(Object document, Writer writer) {
         Rule.validateDocument(document.getClass());
         Mirna mirna = new Mirna();
-        new Documented<>(document).lines(mirna::register);
+        new Documented(document).lines(mirna::register);
         mirna.write(writer);
     }
 
     public static <T> T read(Class<T> documentClass, Reader reader) {
-        Mirna mirna = new Mirna();
-        return new Documented<>(documentClass)
-                .types(mirna::register)
-                .parse(mirna.lines);
+        try {
+            Mirna mirna = new Mirna();
+            T document = documentClass.newInstance();
+            new Documented(document).types(mirna::register).parse(mirna.lines);
+            return document;
+        } catch (Exception e) {
+            throw new Oops(e.getMessage(), e);
+        }
     }
 
     void write(Writer writer) {
@@ -98,16 +102,16 @@ public final class Mirna {
                 "   | '_ ` _ \\| | '__| '_ \\ / _` |\n" +
                 "   | | | | | | | |  | | | | (_| |\n" +
                 "   |_| |_| |_|_|_|  |_| |_|\\__,_|\n" +
-                "   #t#:: flat-file parser ::#c#" + str + "#0#\n\n" +
-                "=== #p#" + fixLeft(Strs.REPORT.toString() + "#0# ", 33, '=') + "\n\n";
+                "   #t#:: flat-file parser ::" + str + "#0#\n\n" +
+                "=== #p#" + fixLeft(Strs.REPORT.toString() + "#0# ", 34, '=') + "\n\n";
         print(str);
 
         List<Class<?>> items = new ArrayList<>();
     }
 
     public static void main(String[] args) {
-        new Documented<>(Temp.class).types(Mirna::printclass);
         report(Temp.class);
+        new Documented(new Temp()).types(Mirna::printclass);
     }
 
     private static void printclass(Class<?> type) {

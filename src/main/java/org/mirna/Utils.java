@@ -56,22 +56,26 @@ final class Utils {
         }
     }
 
-    static Object getValue(Object object, Field field) {
+    static void setField(Object instance, Field field, Object value) {
         try {
             field.setAccessible(true);
-            return field.get(object);
+            field.set(instance, value);
+        } catch (Exception e) {
+            throw new Oops(e.getMessage(), e);
+        }
+    }
+
+    static Object getField(Object instance, Field field) {
+        try {
+            field.setAccessible(true);
+            return field.get(instance);
         } catch (IllegalAccessException e) {
             throw new Oops(e.getMessage(), e);
         }
     }
 
-    static void setValue(Object object, Field field, Object value) {
-        try {
-            field.setAccessible(true);
-            field.set(object, value);
-        } catch (Exception e) {
-            throw new Oops(e.getMessage(), e);
-        }
+    static boolean isNull(Object instance, Field field) {
+        return getField(instance, field) == null;
     }
 
     static void attributes(Annotation annotation, BiConsumer<String, Object> action) {

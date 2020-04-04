@@ -74,12 +74,6 @@ final class Rule {
                 .forEach(field -> action.accept(new Fielded(field)));
     }
 
-    static void items(Object instance, Consumer<Field> action) {
-        Arrays.stream(instance.getClass().getDeclaredFields())
-                .filter(Rule::isItemSupported)
-                .forEach(action);
-    }
-
     static boolean match(Class<?> LineClass, String lineText) {
         Line line = Objects.requireNonNull(LineClass.getAnnotation(Line.class));
         return Objects.requireNonNull(lineText).startsWith(line.identifier());

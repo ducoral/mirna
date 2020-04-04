@@ -192,15 +192,15 @@ class DocumentedTest {
         }
     }
 
-    static Documented<DocumentCase1> newTestedCase1() {
-        return new Documented<>(new DocumentCase1(
+    static Documented newTestedCase1() {
+        return new Documented(new DocumentCase1(
                 new LineCase1(2020, 4, 1),
                 new LineCase1(2021, 5, 2),
                 new LineCase2(10), new LineCase2(20), new LineCase2(30)));
     }
 
-    static Documented<DocumentCase2> newTestedCase2() {
-        return new Documented<>(new DocumentCase2(
+    static Documented newTestedCase2() {
+        return new Documented(new DocumentCase2(
                 new LineCase3("lineCase1", new LineCase2(10)),
                 new LineCase4(
                         new BigDecimal("123.456"),
