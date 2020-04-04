@@ -1,11 +1,11 @@
 package org.mirna;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static org.mirna.Align.LEFT;
+import static org.mirna.Align.RIGHT;
+import static org.mirna.Strs.*;
 import static org.mirna.Utils.*;
 
 public final class Mirna {
@@ -55,11 +55,11 @@ public final class Mirna {
                 line++;
                 Linner linner = liner(text);
                 if (linner == null)
-                    throw new Oops(Strs.MSG_UNMAPPED_LINE, line, text);
+                    throw new Oops(MSG_UNMAPPED_LINE, line, text);
                 try {
                     list.add(linner.fromText(text));
                 } catch (Exception e) {
-                    throw new Oops(Strs.MSG_ERROR_PARSING_LINE, line);
+                    throw new Oops(MSG_ERROR_PARSING_LINE, line);
                 }
                 text = bufferedReader.readLine();
             }
@@ -89,68 +89,121 @@ public final class Mirna {
         for (Map.Entry<Class<?>, Linner> entry : linners.entrySet())
             if (config.identifier().equals(entry.getValue().identifier()))
                 throw new Oops(
-                        Strs.MSG_DUPLICATE_LINE_IDENTIFIER,
+                        MSG_DUPLICATE_LINE_IDENTIFIER,
                         config.identifier(), lineClass.getSimpleName(), entry.getKey().getSimpleName());
         linners.put(lineClass, new Linner(lineClass));
     }
 
+    private static List<List<String>> table(Class<?> lineClass) {
+        List<List<String>> table = new ArrayList<>();
+        table.add(Arrays.asList(
+                REPORT_FIELD.toString(), REPORT_FROM.toString(), REPORT_TO.toString(),
+                REPORT_SIZE.toString(), REPORT_VALUE.toString()));
+        int from = 1;
+        for (Fielded fielded : new Linner(lineClass).fieldeds) {
+            String name = fielded.field() == null ? LINE_IDENTIFIER.toString() : fielded.field().getName();
+            String value = fielded.field() == null ? fielded.identifier() : fielded.field().getType().getSimpleName();
+            table.add(Arrays.asList(
+                    name,
+                    String.valueOf(from),
+                    String.valueOf(from + fielded.length() - 1),
+                    String.valueOf(fielded.length()),
+                    value));
+            from += fielded.length();
+        }
+        return table;
+    }
+
+    private static int[] lengths(List<List<String>> table) {
+        int[] lengths = {0, 0, 0, 0, 0};
+        for (List<String> row : table)
+            for (int col = 0; col < lengths.length; col++)
+                lengths[col] = Math.max(lengths[col], row.get(col).length() + 2);
+        return lengths;
+    }
+
     public static void report(Class<?> documentClass) {
-        String str = fixRight("(v" + Strs.VERSION.toString() + ")", 8, ' ');
+        Rule.validateDocument(documentClass);
+
+        String str = fixRight("(v" + VERSION.toString() + ")", 8, ' ');
         str =
-                "              _                  \n" +
-                "    _ __ ___ (_)_ __ _ __   __ _ \n" +
+                "              _\n" +
+                "    _ __ ___ (_)_ __ _ __   __ _\n" +
                 "   | '_ ` _ \\| | '__| '_ \\ / _` |\n" +
                 "   | | | | | | | |  | | | | (_| |\n" +
                 "   |_| |_| |_|_|_|  |_| |_|\\__,_|\n" +
                 "   #t#:: flat-file parser ::" + str + "#0#\n\n" +
-                "=== #p#" + fixLeft(Strs.REPORT.toString() + "#0# ", 34, '=') + "\n\n";
+                "=== #p#" + fixLeft(REPORT.toString() + "#0# ", 34, '=') + "\n\n";
         print(str);
 
-        List<Class<?>> items = new ArrayList<>();
+        List<Class<?>> types = new ArrayList<>();
+        try {
+            new Documented(documentClass.newInstance()).types(types::add);
+        } catch (Exception e) {
+            throw new Oops(e.getMessage(), e);
+        }
+
+        for (Class<?> type : types) {
+            List<List<String>> table = table(type);
+            int[] lengths = lengths(table);
+            Align[] aligns = {LEFT, RIGHT, RIGHT, RIGHT, LEFT};
+            int width = Arrays.stream(lengths).reduce(lengths.length - 1, Integer::sum);
+            print("+", chars(width, '-'), "+\n");
+            print("|#g#", fixLeft(" " + type.getSimpleName(), width, ' '), "#0#|\n");
+            printRow(lengths);
+
+            List<String> row = table.get(0);
+            print("|");
+            for (int index = 0; index < row.size(); index++)
+                print("#b#", fixStr(" " + row.get(index) + " ", lengths[index], ' ', aligns[index]) + "#0#|");
+            print("\n");
+            printRow(lengths);
+            for (int i = 1; i < table.size(); i++) {
+                row = table.get(i);
+                print("|");
+                for (int index = 0; index < row.size(); index++)
+                    print(fixStr(" " + row.get(index) + " ", lengths[index], ' ', aligns[index]) + "|");
+                print("\n");
+                printRow(lengths);
+            }
+            print("\n");
+        }
+    }
+
+    private static void printRow(int[] lengths) {
+        print("+");
+        for (int length : lengths)
+            print(chars(length, '-'), "+");
+        print("\n");
     }
 
     public static void main(String[] args) {
         report(Temp.class);
-        new Documented(new Temp()).types(Mirna::printclass);
-    }
-
-    private static void printclass(Class<?> type) {
-        System.out.println(type);
     }
 
     @Document
     static class Temp {
-
         @Header
         Line1 line1;
-
         @Item
         List<Line2> line2s;
-
         @Footer
         Line3 line3;
     }
 
     @Line(identifier = "line1")
-    static class Line1 {
-
-    }
+    static class Line1 { }
 
     @Line(identifier = "line2")
-    static class Line2 {
-
-    }
+    static class Line2 { }
 
     @Line(identifier = "line3")
     static class Line3 {
-
         @Item
         Line4 line4;
     }
 
     @Line(identifier = "line4")
-    static class Line4 {
-
-    }
+    static class Line4 { }
 
 }

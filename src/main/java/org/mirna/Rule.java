@@ -24,7 +24,8 @@ final class Rule {
     }
 
     static void validateDocument(Class<?> documentClass) {
-        throw new Oops("invalid");
+        if (documentClass == null)
+            throw new Oops("invalid");
     }
 
     static void validateLine(Class<?> mirnaClass) {

@@ -98,7 +98,12 @@ final class Utils {
         });
     }
 
-    static void print(String text) {
+    static void print(String... texts) {
+        StringBuilder str = new StringBuilder();
+        for (String s : texts)
+            str.append(s);
+        String text = str.toString();
+
         List<String> colors = Arrays.asList(
                 "#0#", "\033[0m",       // reset
                 "#r#", "\033[38;5;9m",  // red

@@ -9,23 +9,23 @@ import static org.mirna.Utils.setField;
 
 class Linner {
 
-    private final List<Fielded> fields = new ArrayList<>();
+    final List<Fielded> fieldeds = new ArrayList<>();
 
-    private final Class<?> LineClass;
+    final Class<?> type;
 
-    Linner(Class<?> LineClass) {
-        fields(LineClass, this::add);
-        this.LineClass = LineClass;
+    Linner(Class<?> type) {
+        fields(type, this::add);
+        this.type = type;
     }
 
     String identifier() {
-        return fields.get(0).identifier();
+        return fieldeds.get(0).identifier();
     }
 
     String toText(Object line) {
-        StringBuilder text = new StringBuilder(fields.get(0).identifier());
-        for (int pos = 1; pos < fields.size(); pos++) {
-            Fielded fielded = fields.get(pos);
+        StringBuilder text = new StringBuilder(fieldeds.get(0).identifier());
+        for (int pos = 1; pos < fieldeds.size(); pos++) {
+            Fielded fielded = fieldeds.get(pos);
             Converter converter = fielded.converter();
             Object value = getField(line, fielded.field());
             text.append(converter.toText(value));
@@ -35,10 +35,10 @@ class Linner {
 
     Object fromText(String text) {
         Object line = line();
-        Fielded fielded = fields.get(0);
+        Fielded fielded = fieldeds.get(0);
         text = text.substring(fielded.length());
-        for (int pos = 1; pos < fields.size(); pos++) {
-            fielded = fields.get(pos);
+        for (int pos = 1; pos < fieldeds.size(); pos++) {
+            fielded = fieldeds.get(pos);
             String substring = text.substring(0, fielded.length());
             try {
                 Object value = fielded.converter().fromText(substring);
@@ -53,7 +53,7 @@ class Linner {
 
     private Object line() {
         try {
-            return LineClass.newInstance();
+            return type.newInstance();
         } catch (Exception e) {
             throw new Oops(e.getMessage(), e);
         }
@@ -61,12 +61,12 @@ class Linner {
 
     private void add(Fielded fielded) {
         int index = 0;
-        while (index < fields.size())
-            if (fielded.position() < fields.get(index).position()) {
-                fields.add(index, fielded);
+        while (index < fieldeds.size())
+            if (fielded.position() < fieldeds.get(index).position()) {
+                fieldeds.add(index, fielded);
                 return;
             } else index++;
-        fields.add(index, fielded);
+        fieldeds.add(index, fielded);
     }
 }
 
