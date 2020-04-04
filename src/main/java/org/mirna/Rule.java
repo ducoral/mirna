@@ -9,8 +9,9 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-final class Rule {
+import static org.mirna.Utils.generic;
 
+final class Rule {
     static final int HEADER_ORDER = -1;
     static final int FOOTER_ORDER = -2;
 
@@ -24,8 +25,18 @@ final class Rule {
     }
 
     static void validateDocument(Class<?> documentClass) {
-        if (documentClass == null)
-            throw new Oops("invalid");
+        boolean hasHeader = false;
+        boolean hasFooter = false;
+        for (Field field : documentClass.getDeclaredFields()) {
+            Class<?> type = field.getType();
+            if (isSupported(type, Arrays.asList(Header.class, Footer.class)) && type == List.class)
+                throw new Oops(Strs.MSG_INVALID_CONFIGURATION, type.getName(), Strs.MSG_HEADER_FOOTER_NOT_ALLOWED);
+            if (type == List.class)
+                type = generic(field);
+            if (!isItemSupported(type))
+                throw new Oops(Strs.MSG_ANNOTATION_NOT_PRESENT, Strs.MSG_ANY_ITEM_ANNOTATION, field.getName());
+            validateLine(type);
+        }
     }
 
     static void validateLine(Class<?> mirnaClass) {
@@ -80,17 +91,22 @@ final class Rule {
         return Objects.requireNonNull(lineText).startsWith(line.identifier());
     }
 
+    static boolean isSupported(AnnotatedElement element, List<Class<? extends Annotation>> support) {
+        return support.stream().anyMatch(element::isAnnotationPresent);
+    }
+
     static boolean isFieldSupported(AnnotatedElement element) {
-        return FIELD_SUPPORT.stream().anyMatch(element::isAnnotationPresent);
+        return isSupported(element, FIELD_SUPPORT);
     }
 
     static boolean isItemSupported(AnnotatedElement element) {
-        return ITEM_SUPPORT.stream().anyMatch(element::isAnnotationPresent);
+        return isSupported(element, ITEM_SUPPORT);
     }
 
     static boolean isFieldTypeSupported(Field target) {
         final Class<?> type = target.getType();
-        return FIELD_SUPPORT.stream()
+        return FIELD_SUPPORT
+                .stream()
                 .filter(target::isAnnotationPresent)
                 .allMatch(annotation -> {
                     if (annotation == FieldStr.class)
