@@ -96,7 +96,7 @@ class Documented {
             throw new Oops(Strs.MSG_INVALID_LINE, line);
     }
 
-    void parse(List<Object> lines) {
+    void parse(List<?> lines) {
         items(item -> set(document, item, item.getType() == List.class ? new ArrayList<>() : null));
         int position = 0;
         try {

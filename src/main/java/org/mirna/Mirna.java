@@ -18,29 +18,30 @@ public final class Mirna {
     Mirna() {
     }
 
-    public static void write(Object document, Writer writer) {
+    public static void writeDocument(Object document, Writer writer) {
         Objects.requireNonNull(document);
         Objects.requireNonNull(writer);
         validateDocument(document.getClass());
         Mirna mirna = new Mirna();
         new Documented(document).lines(mirna::register);
-        mirna.write(writer);
+        mirna.writeLines(writer);
     }
 
-    public static <T> T read(Class<T> documentClass, Reader reader) {
+    public static <T> T readDocument(Class<T> documentClass, Reader reader) {
         Objects.requireNonNull(documentClass);
         Objects.requireNonNull(reader);
+        validateDocument(documentClass);
         try {
             Mirna mirna = new Mirna();
             T document = documentClass.newInstance();
-            new Documented(document).types(mirna::register).parse(mirna.lines);
+            new Documented(document).types(mirna::register).parse(mirna.readLines(reader));
             return document;
         } catch (Exception e) {
             throw new Oops(e.getMessage(), e);
         }
     }
 
-    void write(Writer writer) {
+    void writeLines(Writer writer) {
         try (BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
             for (Object line : lines) {
                 bufferedWriter.write(linners.get(line.getClass()).toText(line));
@@ -51,7 +52,7 @@ public final class Mirna {
         }
     }
 
-    List<?> read(Reader reader) {
+    List<?> readLines(Reader reader) {
         List<Object> list = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(reader)) {
             int line = 0;

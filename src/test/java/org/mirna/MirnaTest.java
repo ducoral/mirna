@@ -81,8 +81,59 @@ class MirnaTest {
         }
     }
 
+    @Document
+    static class DocumentCase {
+
+        @Header
+        LineType1 header;
+
+        @Item
+        LineType2 item;
+
+        @Footer
+        LineType3 footer;
+
+        DocumentCase() {
+        }
+
+        public DocumentCase(LineType1 header, LineType2 item, LineType3 footer) {
+            this.header = header;
+            this.item = item;
+            this.footer = footer;
+        }
+    }
+
     @Test
-    void writeRecords() {
+    void writeDocument() {
+        Date date = new GregorianCalendar(2020, MARCH, 24).getTime();
+        DocumentCase document = new DocumentCase(
+                new LineType1(15, "string-test", new BigDecimal("12.34")),
+                new LineType2("type2", date, "abc"),
+                new LineType3(123, date, "string test"));
+        String expected =
+                "100015string-test         01234\n" +
+                "2type2     24032020abc         \n" +
+                "3       123240320***string test\n";
+        StringWriter writer = new StringWriter();
+        Mirna.writeDocument(document, writer);
+        assertEquals(expected, writer.toString());
+
+        date = new GregorianCalendar(2020, MARCH, 25).getTime();
+        document = new DocumentCase(
+                new LineType1(123, "another string", new BigDecimal("567.89")),
+                new LineType2("value2", date, "efg"),
+                new LineType3(456789, date, "hijlmnop"));
+        expected =
+                "100123another string      56789\n" +
+                "2value2    25032020efg         \n" +
+                "3    456789250320******hijlmnop\n";
+        writer = new StringWriter();
+        Mirna.writeDocument(document, writer);
+        assertEquals(expected, writer.toString());
+    }
+
+    @Test
+    void writeLines() {
         Date date1 = new GregorianCalendar(2020, MARCH, 24).getTime();
         Date date2 = new GregorianCalendar(2020, MARCH, 25).getTime();
 
@@ -104,12 +155,55 @@ class MirnaTest {
         mirna.register(new LineType3(456789, date2, "hijlmnop"));
 
         StringWriter writer = new StringWriter();
-        mirna.write(writer);
+        mirna.writeLines(writer);
         assertEquals(expected, writer.toString());
     }
 
     @Test
-    void readerRecords() {
+    void readerDocument() {
+        String text =
+            "100015string-test         01234\n" +
+            "2type2     24032020abc         \n" +
+            "3       123240320***string test\n";
+
+        DocumentCase document = Mirna.readDocument(DocumentCase.class, new StringReader(text));
+
+        assertEquals(15, document.header.field1);
+        assertEquals("string-test", document.header.field2);
+        assertEquals(new BigDecimal("12.34"), document.header.field3);
+
+        Date date = new GregorianCalendar(2020, MARCH, 24).getTime();
+        assertEquals("type2", document.item.field1);
+        assertEquals(date, document.item.field2);
+        assertEquals("abc", document.item.field3);
+
+        assertEquals(123, document.footer.field1);
+        assertEquals(date, document.footer.field2);
+        assertEquals("string test", document.footer.field3);
+
+        text =
+            "100123another string      56789\n" +
+            "2value2    25032020efg         \n" +
+            "3    456789250320******hijlmnop\n";
+
+        document = Mirna.readDocument(DocumentCase.class, new StringReader(text));
+
+        assertEquals(123, document.header.field1);
+        assertEquals("another string", document.header.field2);
+        assertEquals(new BigDecimal("567.89"), document.header.field3);
+
+        date = new GregorianCalendar(2020, MARCH, 25).getTime();
+        assertEquals("value2", document.item.field1);
+        assertEquals(date, document.item.field2);
+        assertEquals("efg", document.item.field3);
+
+        assertEquals(456789, document.footer.field1);
+        assertEquals(date, document.footer.field2);
+        assertEquals("hijlmnop", document.footer.field3);
+    }
+
+    @Test
+    void readerLines() {
         Date date1 = new GregorianCalendar(2020, MARCH, 24).getTime();
         Date date2 = new GregorianCalendar(2020, MARCH, 25).getTime();
 
@@ -127,7 +221,7 @@ class MirnaTest {
         mirna.register(LineType2.class);
         mirna.register(LineType3.class);
 
-        List<?> records = mirna.read(new StringReader(text));
+        List<?> records = mirna.readLines(new StringReader(text));
 
         assertEquals(6, records.size());
 
@@ -174,7 +268,7 @@ class MirnaTest {
 
         assertThrows(
                 Oops.class,
-                () -> mirna.read(new StringReader(text)),
+                () -> mirna.readLines(new StringReader(text)),
                 Strs.MSG_UNMAPPED_LINE.format(1, "400015string-test         01234"));
     }
 
@@ -182,11 +276,11 @@ class MirnaTest {
     void readerRecordsExceptionCase2() {
         String text =
                 "100015string-test         01234\n" +
-                "2type2     24032020abc         \n" +
-                "3       123240320***string test\n" +
-                "100123another string      56789\n" +
-                "2value2    25032020efg         \n" +
-                "4    456789250320******hijlmnop\n";
+                        "2type2     24032020abc         \n" +
+                        "3       123240320***string test\n" +
+                        "100123another string      56789\n" +
+                        "2value2    25032020efg         \n" +
+                        "4    456789250320******hijlmnop\n";
 
         Mirna mirna = new Mirna();
 
@@ -196,7 +290,7 @@ class MirnaTest {
 
         assertThrows(
                 Oops.class,
-                () -> mirna.read(new StringReader(text)),
+                () -> mirna.readLines(new StringReader(text)),
                 Strs.MSG_UNMAPPED_LINE.format(6, "4    456789250320******hijlmnop"));
     }
 
@@ -204,11 +298,11 @@ class MirnaTest {
     void readerRecordsExceptionCase3() {
         String text =
                 "100015string-test         01234\n" +
-                "2type2     24032020abc         \n" +
-                "3       12324XX20***string test\n" +
-                "100123another string      56789\n" +
-                "2value2    25032020efg         \n" +
-                "3    456789250320******hijlmnop\n";
+                        "2type2     24032020abc         \n" +
+                        "3       12324XX20***string test\n" +
+                        "100123another string      56789\n" +
+                        "2value2    25032020efg         \n" +
+                        "3    456789250320******hijlmnop\n";
 
         Mirna mirna = new Mirna();
 
@@ -218,7 +312,7 @@ class MirnaTest {
 
         assertThrows(
                 Oops.class,
-                () -> mirna.read(new StringReader(text)),
+                () -> mirna.readLines(new StringReader(text)),
                 Strs.MSG_ERROR_PARSING_LINE.format(3));
     }
 }
