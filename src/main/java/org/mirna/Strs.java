@@ -8,6 +8,8 @@ enum Strs {
     MSG_ANNOTATION_NOT_PRESENT("msg.annotation.not.present"),
     MSG_ANY_FIELD_ANNOTATION("msg.any.field.annotation"),
     MSG_ANY_ITEM_ANNOTATION("msg.any.item.annotation"),
+    MSG_DUPLICATE_FOOTER_CONFIG("msg.duplicate.footer.config"),
+    MSG_DUPLICATE_HEADER_CONFIG("msg.duplicate.header.config"),
     MSG_DUPLICATE_LINE_IDENTIFIER("msg.duplicate.line.identifier"),
     MSG_DUPLICATE_POSITION_CONFIG("msg.duplicate.position.config"),
     MSG_ERROR_PARSING_FIELD("msg.error.parsing.field"),

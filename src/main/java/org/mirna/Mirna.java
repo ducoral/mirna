@@ -5,6 +5,7 @@ import java.util.*;
 
 import static org.mirna.Align.LEFT;
 import static org.mirna.Align.RIGHT;
+import static org.mirna.Rule.*;
 import static org.mirna.Strs.*;
 import static org.mirna.Utils.*;
 
@@ -18,13 +19,17 @@ public final class Mirna {
     }
 
     public static void write(Object document, Writer writer) {
-        Rule.validateDocument(document.getClass());
+        Objects.requireNonNull(document);
+        Objects.requireNonNull(writer);
+        validateDocument(document.getClass());
         Mirna mirna = new Mirna();
         new Documented(document).lines(mirna::register);
         mirna.write(writer);
     }
 
     public static <T> T read(Class<T> documentClass, Reader reader) {
+        Objects.requireNonNull(documentClass);
+        Objects.requireNonNull(reader);
         try {
             Mirna mirna = new Mirna();
             T document = documentClass.newInstance();
@@ -71,7 +76,7 @@ public final class Mirna {
 
     Linner liner(String text) {
         for (Map.Entry<Class<?>, Linner> entry : linners.entrySet())
-            if (Rule.match(entry.getKey(), text))
+            if (match(entry.getKey(), text))
                 return entry.getValue();
         return null;
     }
@@ -84,7 +89,7 @@ public final class Mirna {
     void register(Class<?> lineClass) {
         if (linners.containsKey(lineClass))
             return;
-        Rule.validateLine(lineClass);
+        validateLine(lineClass);
         Line config = lineClass.getAnnotation(Line.class);
         for (Map.Entry<Class<?>, Linner> entry : linners.entrySet())
             if (config.identifier().equals(entry.getValue().identifier()))
@@ -123,7 +128,7 @@ public final class Mirna {
     }
 
     public static void report(Class<?> documentClass) {
-        Rule.validateDocument(documentClass);
+        validateDocument(documentClass);
 
         String str = fixRight("(v" + VERSION.toString() + ")", 8, ' ');
         str =
@@ -177,36 +182,4 @@ public final class Mirna {
             print(chars(length, '-'), "+");
         print("\n");
     }
-
-    public static void main(String[] args) {
-        report(Temp.class);
-    }
-
-    @Document
-    static class Temp {
-        @Header
-        Line1 line1;
-        @Item(order = 1)
-        List<Line2> line2s;
-        @Footer
-        Line3 line3;
-        @Item(order = 2)
-        Line4 line4;
-    }
-
-    @Line(identifier = "line1")
-    static class Line1 { }
-
-    @Line(identifier = "line2")
-    static class Line2 { }
-
-    @Line(identifier = "line3")
-    static class Line3 {
-        @Item
-        Line4 line4;
-    }
-
-    @Line(identifier = "line4")
-    static class Line4 { }
-
 }

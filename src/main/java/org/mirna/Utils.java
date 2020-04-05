@@ -12,8 +12,6 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static org.mirna.Rule.FIELD_SUPPORT;
-
 final class Utils {
 
     private Utils() {
@@ -99,7 +97,7 @@ final class Utils {
         AnnotatedElement element = target instanceof AnnotatedElement
                 ? (AnnotatedElement) target
                 : target.getClass();
-        FIELD_SUPPORT.forEach(annotation -> {
+        Support.FIELD.stream().forEach(annotation -> {
             if (element.isAnnotationPresent(annotation))
                 action.accept(element.getAnnotation(annotation));
         });

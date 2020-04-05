@@ -12,7 +12,7 @@ import static org.mirna.Utils.*;
 
 class Documented {
 
-    static final int INDENT = 2;
+    static final int INDENT = 4;
 
     private final Object document;
 
@@ -115,12 +115,13 @@ class Documented {
 
     void report(int indent, Field field, Consumer<String[]> action) {
         String desc = "#y#"
-                + (field.getType() == List.class ? "list of " : "")
+                + (field.getType() == List.class ? "list<" : "")
                 + (field.isAnnotationPresent(Header.class)
                         ? "header"
                         : field.isAnnotationPresent(Footer.class)
                             ? "footer"
                             : "item")
+                + (field.getType() == List.class ? ">" : "")
                 + "#0#";
         report(indent, field.getType() == List.class ? generic(field) : field.getType(), desc, action);
     }
