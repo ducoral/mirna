@@ -93,7 +93,7 @@ class MirnaTest {
         @Footer
         LineType3 footer;
 
-        DocumentCase() {
+        public DocumentCase() {
         }
 
         public DocumentCase(LineType1 header, LineType2 item, LineType3 footer) {

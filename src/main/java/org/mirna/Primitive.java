@@ -6,7 +6,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.stream.Stream;
 
-public enum Primitive {
+enum Primitive {
 
     STRING(Character.TYPE, Character.class, String.class),
 

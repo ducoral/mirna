@@ -3,7 +3,7 @@ package org.mirna;
 import java.lang.annotation.Annotation;
 import java.util.stream.Stream;
 
-public enum Support {
+enum Support {
 
     FIELD(Line.class, FieldStr.class, FieldInt.class, FieldDec.class, FieldDtm.class, FieldCtm.class),
 

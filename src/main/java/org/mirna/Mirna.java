@@ -18,6 +18,12 @@ public final class Mirna {
     Mirna() {
     }
 
+    public static String toText(Object document) {
+        StringWriter writer = new StringWriter();
+        writeDocument(document, writer);
+        return writer.toString();
+    }
+
     public static void writeDocument(Object document, Writer writer) {
         Objects.requireNonNull(document);
         Objects.requireNonNull(writer);
@@ -25,6 +31,10 @@ public final class Mirna {
         Mirna mirna = new Mirna();
         new Documented(document).lines(mirna::register);
         mirna.writeLines(writer);
+    }
+
+    public static <T> T fromText(Class<T> documentClass, String text) {
+        return readDocument(documentClass, new StringReader(text));
     }
 
     public static <T> T readDocument(Class<T> documentClass, Reader reader) {
@@ -157,27 +167,27 @@ public final class Mirna {
 
             print("+", chars(width, '-'), "+\n");
             print("|#g#", fixLeft(" " + type.getName(), width, ' '), "#0#|\n");
-            printRow(lengths);
+            printRowBorder(lengths);
 
             List<String> row = table.get(0);
             print("|");
             for (int index = 0; index < row.size(); index++)
                 print("#b#", fixStr(" " + row.get(index) + " ", lengths[index], ' ', aligns[index]) + "#0#|");
             print("\n");
-            printRow(lengths);
+            printRowBorder(lengths);
             for (int i = 1; i < table.size(); i++) {
                 row = table.get(i);
                 print("|");
                 for (int index = 0; index < row.size(); index++)
                     print(fixStr(" " + row.get(index) + " ", lengths[index], ' ', aligns[index]) + "|");
                 print("\n");
-                printRow(lengths);
+                printRowBorder(lengths);
             }
             print("\n");
         }
     }
 
-    private static void printRow(int[] lengths) {
+    private static void printRowBorder(int[] lengths) {
         print("+");
         for (int length : lengths)
             print(chars(length, '-'), "+");

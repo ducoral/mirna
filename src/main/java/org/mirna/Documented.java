@@ -36,7 +36,7 @@ class Documented {
                 types(((Field) item).getType(), action);
         else if (item instanceof Class<?>) {
             action.accept((Class<?>) item);
-            new Documented(item).types(action);
+            new Documented(create((Class<?>) item)).types(action);
         }
     }
 
@@ -69,7 +69,12 @@ class Documented {
                 throw new Oops(Strs.MSG_INVALID_LINE, line);
         else if (field.getType() == List.class) {
             if (type == generic(field)) {
-                ((List<Object>) get(document, field)).add(line);
+                List<Object> list = (List<Object>) get(document, field);
+                if (list == null) {
+                    list = new ArrayList<>();
+                    set(document, field, list);
+                }
+                list.add(line);
                 return true;
             }
         } else if (!isNull(document, field)) {
