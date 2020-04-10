@@ -427,11 +427,9 @@ O texto dessa linha sempre começará com o literal `myidvalue`:
 
 > O valor de `identifier` pode ser qualquer _string_.
 
-_  |  _ 
----|---
-**Tipo** | `String` 
-**Valor** | qualquer _string_ 
-**Utilizado por** | `@Line`
+Tipo | Valor | Utilizado por 
+-----|-------|--------------
+`String` | qualquer _string_ | `@Line`
 
 ### Configurando posição do campo com `position`.
 
@@ -490,11 +488,9 @@ em `position`, do menor para o maior, da seguinte forma:
      +---------------------------> identifier (position = 0)
 ```
 
-_  |  _ 
----|---
-**Tipo** | `int` 
-**Valor** | `1`, `2`, ..., `Integer.MAX_VALUE` 
-**Utilizado por** | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldDtm` `@FieldCtm`
+Tipo | Valor | Utilizado por 
+-----|-------|--------------
+`int` | `1`, `2`, ..., `Integer.MAX_VALUE` | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldDtm` `@FieldCtm`
 
 ### Configurando comprimento do campo em texto com `length`.
 
@@ -503,11 +499,9 @@ _  |  _
 
 > `length` define a largura em caracateres que o campo irá reservar no texto da linha para o valor formatado.    
 
-_  |  _ 
----|---
-**Tipo** | `int` 
-**Valor** | `1`, `2`, ..., `Integer.MAX_VALUE` 
-**Utilizado por** | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldCtm`
+Tipo | Valor | Utilizado por 
+-----|-------|--------------
+`int` | `1`, `2`, ..., `Integer.MAX_VALUE` | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldCtm`
 
 ### Configurando alinhamento do valor do campo com `align`.
 
@@ -525,12 +519,9 @@ Align.LEFT  -> "abc*******"
 Align.RIGHT -> "*******abc"
 ``` 
 
-_  |  _ 
----|---
-**Tipo** | `com.github.ducoral.Align` 
-**Valor** | `Align.LEFT` ou `Align.RIGHT` 
-**_Default_** | `Align.RIGHT` nos campos numéricos e `Align.LEFT` nos demais tipos
-**Utilizado por** | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldDtm` `@FieldCtm`
+Tipo | Valor | _Default_ | Utilizado por 
+-----|-------|-----------|--------------
+`com.github.ducoral.Align` | `LEFT`, `RIGHT` | `RIGHT` nos campos numéricos e `LEFT` nos demais | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldDtm` `@FieldCtm`
 > 
 
 ### Configurando preenchimento do campo com `fill`.
@@ -539,47 +530,35 @@ _  |  _
 > em [`length`](#configurando-comprimento-do-campo-em-texto-com-length). Nesse caso, o _framework_ irá concatenar
 > o valor definido em `fill` ao valor do campo até que a _string_ atinja o comprimento determinado.
 
-_  |  _   
----|---
-**Tipo** | `char` 
-**Valor** | qualquer _char_ 
-**_Default_** | `' '`
-**Utilizado por** | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldCtm`
+Tipo | Valor | _Default_ | Utilizado por 
+-----|-------|-----------|--------------
+`char` | qualquer _char_ | `' '` | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldCtm`
 
 ### Configurando formato para data com `format`.
 
 > Define o formato de data para campo com valor do tipo `java.util.Date`. 
 
-_  |  _ 
----|---
-**Tipo** | `String` 
-**Valor** | `"dd/MM/yyyy"`, `"ddMMyy"`, padrão `SimpleDateFormat` 
-**_Default_** | `"ddMMyyyy"`
-**Utilizado por** | `@FieldDtm`
+Tipo | Valor | _Default_ | Utilizado por 
+-----|-------|-----------|--------------
+`String` | `"dd/MM/yyyy"`, `"ddMMyy"`, padrão `SimpleDateFormat` | `"ddMMyyyy"` | `@FieldDtm`
 
 ### Configurando quantidade de casas decimais com `decimal`.
 
 > Define a quantidade de casas decimais aplicada na formatação do valor de 
 > determinado campo decimal.
 
-_  |  _ 
----|---
-**Tipo** | `int` 
-**Valor** | `1`, `2`, ..., mais do que `6` não é possível que precise 
-**_Default_** | `2`
-**Utilizado por** | `@FieldDec`
+Tipo | Valor | _Default_ | Utilizado por 
+-----|-------|-----------|--------------
+`int` | `1`, `2`, ..., mais do que `6` não é possível que precise | `2` | `@FieldDec`
 
 ### Configurando separador de casas decimais com `separator`.
 
 > Define o _char_ que será utilizado para separar as casas decimais na formatação do valor de
 > determinado campo decimal. O valor `'\0'` indica que não será utilizado separador.
 
-_  |  _ 
----|---
-**Tipo** | `char` 
-**Valor** | `'.'`, `','`, etc. 
-**_Default_** | `'\0'`
-**Utilizado por** | `@FieldDec`
+Tipo | Valor | _Default_ | Utilizado por 
+-----|-------|-----------|--------------
+`char` | `'.'`, `','`, etc. | `'\0'` | `@FieldDec`
 
 ### Configurando ordem do _item_ no documento com `order`.
 
@@ -591,12 +570,9 @@ primeiro a [Linha](#linha) correspondente do _item_ anotado com [@Header](#confi
 se existir, depois as linhas dos itens anotados com [@Item](#configurando-itens-com-item)
 e, por último, a linha do _item_ anotado com [@Footer](#configurando-rodap-com-footer).
 
-_  |  _ 
----|---
-**Tipo** | `int` 
-**Valor** | `1`, `2`, ..., `Integer.MAX_VALUE` 
-**_Default_** | `0`
-**Utilizado por** | `@Item`
+Tipo | Valor | _Default_ | Utilizado por 
+-----|-------|-----------|--------------
+`int` | `1`, `2`, ..., `Integer.MAX_VALUE` | `0` | `@Item`
 
 ## Escrevendo e lendo documentos.
 
