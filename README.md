@@ -122,18 +122,14 @@ public class FooterLine {
     @FieldDtm(position = 1)
     private Date fieldDtm;
 
-    @FieldStr(position = 2, length = 6)
-    private String fieldStr;
-
-    @FieldInt(position = 3, length = 5, fill = '0')
-    private int fieldInt;
+    @FieldCtm(position = 2, length = 11, align = Align.RIGHT, converter = ColorConverter.class)
+    private Color fieldCtm;
 
     public FooterLine() { }
 
-    public FooterLine(Date fieldDtm, String fieldStr, int fieldInt) {
+    public FooterLine(Date fieldDtm, Color fieldCtm) {
         this.fieldDtm = fieldDtm;
-        this.fieldStr = fieldStr;
-        this.fieldInt = fieldInt;
+        this.fieldCtm = fieldCtm;
     }
 
     // getters and setters
@@ -198,19 +194,17 @@ com.github.ducoral.mirna.sample.MyDocument document
 | fieldDec   |   11 | 20 |  10 | '0'  | RIGHT |        |   2 | '\0' | BigDecimal |
 +------------+------+----+-----+------+-------+--------+-----+------+------------+
 
-+------------------------------------------------------------------------------+
-| com.github.ducoral.mirna.sample.FooterLine                                   |
-+------------+------+----+-----+------+-------+----------+-----+------+--------+
-| field      | from | to | len | fill | align | format   | dec | sep  | value  |
-+------------+------+----+-----+------+-------+----------+-----+------+--------+
-| identifier |    1 |  1 |   1 | '\0' | LEFT  |          |   0 | '\0' | F      |
-+------------+------+----+-----+------+-------+----------+-----+------+--------+
-| fieldDtm   |    2 |  9 |   8 | '\0' | LEFT  | ddMMyyyy |   0 | '\0' | Date   |
-+------------+------+----+-----+------+-------+----------+-----+------+--------+
-| fieldStr   |   10 | 15 |   6 | ' '  | LEFT  |          |   0 | '\0' | String |
-+------------+------+----+-----+------+-------+----------+-----+------+--------+
-| fieldInt   |   16 | 20 |   5 | '0'  | RIGHT |          |   0 | '\0' | int    |
-+------------+------+----+-----+------+-------+----------+-----+------+--------+
++-----------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.FooterLine                                  |
++------------+------+----+-----+------+-------+----------+-----+------+-------+
+| field      | from | to | len | fill | align | format   | dec | sep  | value |
++------------+------+----+-----+------+-------+----------+-----+------+-------+
+| identifier |    1 |  1 |   1 | '\0' | LEFT  |          |   0 | '\0' | F     |
++------------+------+----+-----+------+-------+----------+-----+------+-------+
+| fieldDtm   |    2 |  9 |   8 | '\0' | LEFT  | ddMMyyyy |   0 | '\0' | Date  |
++------------+------+----+-----+------+-------+----------+-----+------+-------+
+| fieldCtm   |   10 | 20 |  11 | ' '  | LEFT  |          |   0 | '\0' | Color |
++------------+------+----+-----+------+-------+----------+-----+------+-------+
 ``` 
 
 ## Documentação
@@ -587,63 +581,167 @@ Segue abaixo declaração de instância de [MyDocument](#mydocument), configurad
 [HeaderLine](#headerline), [DetailLine](#detailline) e [FooterLine](#footerline) para ser utilizada
 como caso para explicação abaixo dos métodos `Mirna.toText()` e `Mirna.writeDocument()`.
 
+###### myDoc 
 ```java
-MyDocument myDocument = new MyDocument(
+MyDocument myDoc = new MyDocument(
     new HeaderLine("header", 123),
     Arrays.asList(
             new DetailLine("str1", 10, BigDecimal.valueOf(1.23)),
             new DetailLine("str2", 20, BigDecimal.valueOf(4.56)),
             new DetailLine("str3", 30, BigDecimal.valueOf(7.89))),
-    new FooterLine(new GregorianCalendar(2020, Calendar.APRIL, 10).getTime(), "footer", 456)
+    new FooterLine(new GregorianCalendar(2020, Calendar.APRIL, 10).getTime(), Color.MAGENTA)
 );
 ```
 
 ### Convertendo documento para texto com `Mirna.toText()`.
+
 O método `Mirna.toText()` recebe por parâmetro uma instância de [Documento](#documento) e retorna uma
 _string_ correspondente ao contendo do arquivo texto gerado a partir dos dados do objeto. 
-Para a instância de [MyDocument](#mydocument) declarada acima na variável `myDocument`, ao executar
+Para a instância de [MyDocument](#mydocument) declarada acima na variável `myDoc`, ao executar
 o trecho de código abaixo:
+
 ```java
-System.out.println(Mirna.toText(myDocument));
+System.out.println(Mirna.toText(myDoc));
 ```
+
 Seria impresso o seguinte texto no _console_:
+
 ```
 Hheader        00123
 Dstr1000100000000123
 Dstr2000200000000456
 Dstr3000300000000789
-F10042020footer00456
+F10042020  255:0:255
 ```
 
 ### Escrevendo documento para texto com `Mirna.writeDocument()`.
+
 O método recebe por parâmetro uma instância de [Documento](#documento), que será convertida para texto,
 e uma instância de `java.io.Writer`, em que o texto resultante será escrito.
-> Para escrever o documento em arquivo, basta passar uma instância de `java.io.FileWriter` para o
+
+> Para escrever o documento em arquivo, basta atribuir uma instância de `java.io.FileWriter` ao
 > parâmetro `writer`.
-Para a instância de [MyDocument](#mydocument) declarada acima na variável `myDocument`, ao executar
+
+Para a instância de [MyDocument](#mydocument) declarada acima na variável `myDoc`, ao executar
 o trecho de código abaixo:
+
 ```java
-Mirna.writeDocument(myDocument, new PrintWriter(System.out));
+Mirna.writeDocument(myDoc, new PrintWriter(System.out));
 ```
+
 Seria impresso o seguinte texto no _console_:
+
 ```
 Hheader        00123
 Dstr1000100000000123
 Dstr2000200000000456
 Dstr3000300000000789
-F10042020footer00456
+F10042020  255:0:255
 ```
 
 ### Convertendo texto para documento com `Mirna.fromText()`.
 
+O método `Mirna.fromText()` recebe por parâmetro uma _string_ correspondente ao conteúdo em texto
+do documento e retorna instância do objeto configurado com os dados carregados.
+
+Por exemplo, se fosse executado o trecho de código abaixo:
+
+```java
+String text =
+    "Hheader        00123\n" +
+    "Dstr1000100000000123\n" +
+    "Dstr2000200000000456\n" +
+    "Dstr3000300000000789\n" +
+    "F10042020  255:0:255\n";
+
+MyDocument myDocFromText = Mirna.fromText(MyDocument.class, text);
+``` 
+
+A instância de [MyDocument](#mydocument) resultante atribuída na variável `myDocFromText` teria a 
+mesma configuração da instância configurada na variável [myDoc](#mydoc).
+
 ### Lendo documento a partir de texto com `Mirna.readDocument()`.
+
+O método `Mirna.readDocument()` recebe por parâmetro uma instância de `java.lang.Class`, correspondente ao
+[Documento](#documento) que será recuperado, e uma instância de `java.io.Reader`, de onde o _framework_
+fará a leitura do texto a ser convertido para objeto.
+
+> Para efetuar leitura diretamente de arquivo, basta atribuir uma instância de `java.io.FileReader`
+> ao parâmetro `reader`. 
+
+Por exemplo, se fosse executado o seguinte trecho de código:
+
+```java
+String text =
+    "Hheader        00123\n" +
+    "Dstr1000100000000123\n" +
+    "Dstr2000200000000456\n" +
+    "Dstr3000300000000789\n" +
+    "F10042020  255:0:255\n";
+
+MyDocument myDocFromReader = Mirna.readDocument(MyDocument.class, new StringReader(text));
+```
+
+A instância de [MyDocument](#mydocument) resultante atribuída na variável `myDocFromReader` teria a 
+mesma configuração da instância configurada na variável [myDoc](#mydoc).
 
 ## Personalizando a configuração.
 
+`mirna` permite a extensão de funcionalidade através de especilização da _interface_ `Converter`, que
+pode ser utilizada na configuração de campo personalizado anotado com `@FieldCtm`.
+
 ## Personalizando a conversão objeto/texto implementando a _interface_ `Converter`.
+
+A _interface_ `Converter` requer que sejam implementados dois métodos: `Converter.toText()` e
+`Converter.fromText()`. O método `Converter.toText()` deverá retornar _string_ correspondente
+da conversão para texto do objeto especificado no parâmetro `value`. O método `Converter.fromText()`, 
+por sua, deverá retornar instância do objeto personalizado com valores carregados da _string_ 
+especificada no parâmetro `text`.
+
+Segue abaixo a declaração de `ColorConverter`, implementação de `Converter` utilizada na configuração
+de campo personalizado em [FooterLine](#footerline), que dá suporte a campo do tipo `java.awt.Color`:
+
+###### ColorConverter
+```java
+import com.github.ducoral.mirna.Converter;
+
+import java.awt.*;
+
+import static java.lang.Integer.*;
+
+public class ColorConverter implements Converter {
+
+    @Override
+    public String toText(Object value) {
+        Color color = (Color) value;
+        return color.getRed() + ":" + color.getGreen() + ":" + color.getBlue();
+    }
+
+    @Override
+    public Object fromText(String text) {
+        String[] rgb = text.split(":");
+        return new Color(parseInt(rgb[0]), parseInt(rgb[1]), parseInt(rgb[2]));
+    }
+} 
+```  
 
 ### Configurando campo personalizado com `@FieldCtm`.
 
+Dada a implementação de [`Converter`](#personalizando-a-converso-objetotexto-implementando-a-_interface_-converter)
+para determinado tipo personalizado, basta especificar a classe correspondente ao 
+atributo `converter` da anotação `@FieldCtm`, ao configurar o campo da linha, 
+da forma com foi utilizado no exemplo [FooterLine](#footerline):
+
+```java
+@FieldCtm(position = 2, length = 11, align = Align.RIGHT, converter = ColorConverter.class)
+private Color fieldCtm;
+```   
+
 ### Configurando conversor personalizado com `converter`.
 
+O atributo `converter`, da anotação `@FieldCtm`, requer a instância de `java.lang.Class` 
+correspondente à implementação de `Converter` que deverá ser utilizada pelo _framework_ ao
+efetuar a conversão objeto/texto para o tipo declarado no campo personalizado.
+
 ## Valores `null` e textos vazios.
+
