@@ -1,8 +1,8 @@
 # `mirna`
 
-(documentação incompleta)
+# **_[DOCUMENTAÇÃO INCOMPLETA]_**
 
-Bem vindo ao projeto **mirna**.
+Bem-vindo ao projeto **mirna**.
  
 > Um _framework_ simples escrito em Java para manipulação de arquivos textos tipo 
 > _flat-file_, em que são utilizadas annotações e classes para mapear a relação
@@ -25,20 +25,26 @@ Segue abaixo um exemplo de configuração de um documento **mirna**:
 
 ```java
 @Document
-public class Remessa {
+public class MyDocument {
 
     @Header
-    private Cabecalho cabecalho;
+    private HeaderLine header;
 
     @Item
-    private List<Titulo> titulos;
+    private List<DetailLine> details;
 
     @Footer
-    private Rodape rodape;
+    private FooterLine footer;
 
-    // constructor
-    // getters
-    // setters
+    public MyDocument() { }
+
+    public MyDocument(HeaderLine header, List<DetailLine> details, FooterLine footer) {
+        this.header = header;
+        this.details = details;
+        this.footer = footer;
+    }
+
+    // getters and setters
 }
 ``` 
 
@@ -60,50 +66,79 @@ Segue abaixo a declaração das classes `Cabecalho`, `Titulo` e `Rodape`,
 correspondentes às linhas configuradas no documento acima:
 
 ```java
-@Line(identifier = "1")
-public class Cabecalho {
+@Line(identifier = "H")
+public class HeaderLine {
 
-    @FieldDtm(position = 1, format = "ddMMyy")
-    private Date dataCriacao;
+    @FieldStr(position = 1, length = 14)
+    private String fieldStr;
 
-    @FieldStr(position = 2, length = 13)
-    private String descricao;
+    @FieldInt(position = 2, length = 5, fill = '0')
+    private int fieldInt;
+
+    public HeaderLine() { }
+
+    public HeaderLine(String fieldStr, int fieldInt) {
+        this.fieldStr = fieldStr;
+        this.fieldInt = fieldInt;
+    }
     
-    // [...] construtores, getters e setters.
+    // getters and setters
 }
 ```
   
 ```java
-@Line(identifier = "2")
-public class Titulo {
+@Line(identifier = "D")
+public class DetailLine {
 
-    @FieldStr(position = 1, length = 14)
-    private String cpfCnpj;
+    @FieldStr(position = 1, length = 4)
+    private String fieldStr;
 
-    @FieldDec(position = 2, length = 5)
-    private BigDecimal valor;
+    @FieldInt(position = 2, length = 5, fill = '0')
+    private int fieldInt;
 
-    // [...] construtores, getters e setters.
+    @FieldDec(position = 3, length = 10, fill = '0')
+    private BigDecimal fieldDec;
+
+    public DetailLine() { }
+
+    public DetailLine(String fieldStr, int fieldInt, BigDecimal fieldDec) {
+        this.fieldStr = fieldStr;
+        this.fieldInt = fieldInt;
+        this.fieldDec = fieldDec;
+    }
+
+    // getters and setters
 }
 ```
 
 ```java
-@Line(identifier = "3")
-public class Rodape {
+@Line(identifier = "F")
+public class FooterLine {
 
-    @FieldStr(position = 1, length = 15)
-    private String texto;
+    @FieldDtm(position = 1)
+    private Date fieldDtm;
 
-    @FieldInt(position = 2, length = 5)
-    private Integer qtdeItens;
+    @FieldStr(position = 2, length = 6)
+    private String fieldStr;
 
-    // [...] construtores, getters e setters.
+    @FieldInt(position = 3, length = 5, fill = '0')
+    private int fieldInt;
+
+    public FooterLine() { }
+
+    public FooterLine(Date fieldDtm, String fieldStr, int fieldInt) {
+        this.fieldDtm = fieldDtm;
+        this.fieldStr = fieldStr;
+        this.fieldInt = fieldInt;
+    }
+
+    // getters and setters
 }
 ```
 
-> A anotação [@FieldCtm](#fieldctm) é utilizada para configurar campos personalizados.
-> Para configurar campos personalizados, é necessário implementar a _interface_ 
->[Converter](#personalizando-converso-objetotexto-implementando-interface-converter) 
+> A anotação [@FieldCtm](#configurando-campo-personalizado-com-fieldctm) é utilizada para configurar campos 
+> personalizados. Para configurar campos personalizados, é necessário implementar a _interface_ 
+> [Converter](#personalizando-a-converso-objetotexto-implementando-a-_interface_-converter) 
 > e especificar no atributo [converter](#configurando-conversor-personalizado-com-converter).
 
 ## Campo
@@ -116,7 +151,7 @@ public class Rodape {
 > de configuração de um [Documento](#documento), da classe correspondente especificada
 > por parâmetro.
 
-Segue abaixo a saída da execução de `Mirna.report(Remessa.class)`:
+Segue abaixo a saída da execução de `Mirna.report(MyDocument.class)`:
 
 ```
               _
@@ -126,48 +161,52 @@ Segue abaixo a saída da execução de `Mirna.report(Remessa.class)`:
    |_| |_| |_|_|_|  |_| |_|\__,_|
    :: flat-file parser ::  (v1.0)
 
-=== Relatório de Configuração =====
+=== configuration report ==========
 
-Remessa document
-    Cabecalho header
-    Titulo list<item>
-    Rodape footer
+com.github.ducoral.mirna.sample.MyDocument document
+    com.github.ducoral.mirna.sample.HeaderLine header
+    com.github.ducoral.mirna.sample.DetailLine list<item>
+    com.github.ducoral.mirna.sample.FooterLine footer
 
-+-------------------------------------------+
-| Cabecalho                |
-+-------------+----+-----+---------+--------+
-| Campo       | De | Até | Tamanho | Valor  |
-+-------------+----+-----+---------+--------+
-| ID da linha |  1 |   1 |       1 | 1      |
-+-------------+----+-----+---------+--------+
-| dataCriacao |  2 |   7 |       6 | Date   |
-+-------------+----+-----+---------+--------+
-| descricao   |  8 |  20 |      13 | String |
-+-------------+----+-----+---------+--------+
++-----------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.HeaderLine                                  |
++-------------+------+----+-----+------+-------+--------+-----+------+--------+
+| field       | from | to | len | fill | align | format | dec | sep  | value  |
++-------------+------+----+-----+------+-------+--------+-----+------+--------+
+| ID da linha |    1 |  1 |   1 | '\0' | LEFT  |        |   0 | '\0' | H      |
++-------------+------+----+-----+------+-------+--------+-----+------+--------+
+| fieldStr    |    2 | 15 |  14 | ' '  | LEFT  |        |   0 | '\0' | String |
++-------------+------+----+-----+------+-------+--------+-----+------+--------+
+| fieldInt    |   16 | 20 |   5 | '0'  | RIGHT |        |   0 | '\0' | int    |
++-------------+------+----+-----+------+-------+--------+-----+------+--------+
 
-+-----------------------------------------------+
-| Titulo                       |
-+-------------+----+-----+---------+------------+
-| Campo       | De | Até | Tamanho | Valor      |
-+-------------+----+-----+---------+------------+
-| ID da linha |  1 |   1 |       1 | 2          |
-+-------------+----+-----+---------+------------+
-| cpfCnpj     |  2 |  15 |      14 | String     |
-+-------------+----+-----+---------+------------+
-| valor       | 16 |  20 |       5 | BigDecimal |
-+-------------+----+-----+---------+------------+
++---------------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.DetailLine                                      |
++-------------+------+----+-----+------+-------+--------+-----+------+------------+
+| field       | from | to | len | fill | align | format | dec | sep  | value      |
++-------------+------+----+-----+------+-------+--------+-----+------+------------+
+| ID da linha |    1 |  1 |   1 | '\0' | LEFT  |        |   0 | '\0' | D          |
++-------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldStr    |    2 |  5 |   4 | ' '  | LEFT  |        |   0 | '\0' | String     |
++-------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldInt    |    6 | 10 |   5 | '0'  | RIGHT |        |   0 | '\0' | int        |
++-------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldDec    |   11 | 20 |  10 | '0'  | RIGHT |        |   2 | '\0' | BigDecimal |
++-------------+------+----+-----+------+-------+--------+-----+------+------------+
 
-+--------------------------------------------+
-| Rodape                    |
-+-------------+----+-----+---------+---------+
-| Campo       | De | Até | Tamanho | Valor   |
-+-------------+----+-----+---------+---------+
-| ID da linha |  1 |   1 |       1 | 3       |
-+-------------+----+-----+---------+---------+
-| texto       |  2 |  15 |      14 | String  |
-+-------------+----+-----+---------+---------+
-| qtdeItens   | 16 |  20 |       5 | Integer |
-+-------------+----+-----+---------+---------+
++-------------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.FooterLine                                    |
++-------------+------+----+-----+------+-------+----------+-----+------+--------+
+| field       | from | to | len | fill | align | format   | dec | sep  | value  |
++-------------+------+----+-----+------+-------+----------+-----+------+--------+
+| ID da linha |    1 |  1 |   1 | '\0' | LEFT  |          |   0 | '\0' | F      |
++-------------+------+----+-----+------+-------+----------+-----+------+--------+
+| fieldDtm    |    2 |  9 |   8 | '\0' | LEFT  | ddMMyyyy |   0 | '\0' | Date   |
++-------------+------+----+-----+------+-------+----------+-----+------+--------+
+| fieldStr    |   10 | 15 |   6 | ' '  | LEFT  |          |   0 | '\0' | String |
++-------------+------+----+-----+------+-------+----------+-----+------+--------+
+| fieldInt    |   16 | 20 |   5 | '0'  | RIGHT |          |   0 | '\0' | int    |
++-------------+------+----+-----+------+-------+----------+-----+------+--------+
 ``` 
 
 ## Documentação
@@ -191,14 +230,14 @@ Remessa document
     - [Configurando formato para data com `format`](#configurando-formato-para-data-com-format)
     - [Configurando quantidade de casas decimais com `decimal`](#configurando-quantidade-de-casas-decimais-com-decimal)
     - [Configurando separador de casas decimais com `separator`](#configurando-separador-de-casas-decimais-com-separator)
-    - [Configurando ordem do item no documento com `order`](#configurando-ordem-do-item-no-documento-com-order)
+    - [Configurando ordem do item no documento com `order`](#configurando-ordem-do-_item_-no-documento-com-order)
 - [Escrevendo e lendo documentos](#escrevendo-e-lendo-documentos)
     - [Convertendo documento para texto com `Main.toText()`](#convertendo-documento-para-texto-com-maintotext)
     - [Escrevendo documento para texto com `Main.writeDocument()`](#escrevendo-documento-para-texto-com-mainwritedocument)
     - [Convertendo texto para documento com `Main.fromText()`](#convertendo-texto-para-documento-com-mainfromtext)
     - [Lendo documento a partir de texto com `Main.readDocument()`](#lendo-documento-a-partir-de-texto-com-mainreaddocument)
-- [Personalização de configuração](#personalizao-de-configurao)
-    - [Personalizando a conversão objeto/texto implementando a interface `Converter`](#personalizando-a-converso-objetotexto-implementando-a-interface-converter)
+- [Personalização de configuração](#personalizando-a-configurao)
+    - [Personalizando a conversão objeto/texto implementando a interface `Converter`](#personalizando-a-converso-objetotexto-implementando-a-_interface_-converter)
     - [Configurando campo personalizado com `@FieldCtm`](#configurando-campo-personalizado-com-fieldctm)
     - [Configurando conversor personalizado com `converter`](#configurando-conversor-personalizado-com-converter)
 - [Valores `null` e texto vazio](#valores-null-e-textos-vazios)
@@ -217,40 +256,38 @@ public class MyDocument {
 }
 ```
 
-> A partir do exemplo, um objeto MyFlatFile pode ser convertido para texto ou,
-> um texto ser pode convertido para objeto MyFlatFile, da sequinte forma:
+> A partir do exemplo, escrita e leitura de um objeto MyDocument pode ser feita da sequinte forma:
 
 ```java
 public class Main {
     public static void main(String... args) {
-        MyDocument myDocument = new MyDocument();
+        // converting to text
+        Mirna.writeDocument(new MyDocument(), new FileWriter("/path/flat-file.txt"));
+        // or
+        String text = Mirna.toText(new MyDocument());
         
-        // convertendo objeto para texto
-        Mirna.writeDocument(myDocument, new FileWriter("/path/flat-file.txt"));
-        String text = Mirna.toText(myDocument);
-        
-        // convertendo texto para objeto
-        myDocument = Mirna.readDocument(MyDocument.class, new FileReader("/path/flat-file.txt"));
-        myDocument = Mirna.fromText(MyDocument.class, "flat file text");
+        // converting from text
+        MyDocument document = Mirna.readDocument(MyDocument.class, new FileReader("/path/flat-file.txt"));
+        // or
+        MyDocument document = Mirna.fromText(MyDocument.class, "flat file text");
     }
 }
 ```
 
 ### Configurando cabeçalho com `@Header`
 
-> A anotação **@Header** configura a linha do documento que deverá ocorrer 
-> primeiro e uma única vez no Documento. 
+> A anotação **@Header** configura a linha que deverá ocorrer primeiro e uma única 
+> vez no [Documento](#documento). 
 >
 > O campo do [Documento](#documento) anotado com **@Header** deve ser uma 
 > classe anotada com [@Line](#configurando-classe-linha-com-line).
 
 ### Configurando rodapé com `@Footer`
 
-> A anotação **@Footer** configura a linha do documento que deverá ocorrer
-> uma única vez e por último no Documento.
+> A anotação **@Footer** configura a linha que deverá ocorrer uma única vez e por 
+> último no [Documento](#documento).
 >
-> O campo do [Documento](#documento) anotado com **@Footer** deve ser uma 
-> classe anotada com [@Line](#configurando-classe-linha-com-line).
+> O campo do [Documento](#documento) anotado com **@Footer** deve ser uma [Linha](#linha). 
 
 ### Configurando itens com `@Item`
 
@@ -275,7 +312,7 @@ public class MyDocument {
 }
 ```
 
-> O atributo opcional [`order`](#configurando-ordem-do-item-no-documento-com-order) 
+> O atributo opcional [`order`](#configurando-ordem-do-_item_-no-documento-com-order) 
 > permite configurar a ordem em que determinada linha deverá ser escrita, em relação 
 > às outras linhas do [Documento](#documento), quando houver mais de uma linha anotada com
 > `@Item`.
@@ -286,14 +323,14 @@ public class MyDocument {
 
 > Anotação utilizada para configurar determinada classe para ser tratada como uma 
 > [Linha](#linha) pelo _framework_. Essa configuração requer valor para o atributo
-> [`identifier`](#identificando-uma-linha-com-identifier), pois é necessário para 
+> [`identifier`](#identificando-uma-linha-com-identifier), pois, é necessário para 
 > identificação do tipo da [Linha](#linha) quando representada em texto.
 >
 > Uma classe anotada com `@Line` deve ter, obrigatoriamente, um construtor _default_. 
 > Segundo a especificação [8.8.9. Default Constructor](https://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.8.9) 
 > do Java, um construtor _default_ será gerado pelo compilador automaticamente se não
-> houver nenhum construtor declarado na classe implementada pelo usuário. Portanto,
-> nesse caso, deixar a classe sem nenhum construtor está OK também.
+> houver nenhum outro declarado na classe implementada. Portanto, nesse caso, deixar 
+> a classe sem nenhum construtor está OK também.
 
 A classe, portanto, pode estar sem construtora:
 
@@ -305,8 +342,7 @@ public class MyLine {
 }
 ```
 
-Ou deve ter uma construtora _default_ declarada, quando houver outra construtora com
-parâmetros definida:
+Senão deverá ter uma construtora _default_ declarada, quando houver outra com parâmetros:
 
  ```java
 @Line(identifier = "id")
@@ -329,13 +365,9 @@ public class MyLine {
 > A anotação `@FieldStr` é utilizada para configurar campos _string_, dando 
 > suporte para os tipos Java `char`, `Character` e `String`.
 
-> **Configuração obrigatória:** 
-> [`position`](#configurando-posio-do-campo-com-position)
-> [`length`](#configurando-comprimento-do-campo-em-texto-com-length)
-> 
-> **Configuração opcional:**
-> [`align`](#configurando-alinhamento-do-valor-do-campo-com-align)
-> [`fill`](#configurando-preenchimento-do-campo-com-fill)
+Requer | Opcional
+-------|---------
+[`position`](#configurando-posio-do-campo-com-position) [`length`](#configurando-comprimento-do-campo-em-texto-com-length) | [`align`](#configurando-alinhamento-do-valor-do-campo-com-align) [`fill`](#configurando-preenchimento-do-campo-com-fill)
 
 ### Configurando campo inteiro com `@FieldInt`
 
@@ -343,39 +375,27 @@ public class MyLine {
 > suporte para os tipos Java `byte`, `short`, `int`, `long`, `Byte`, `Short`,
 > `Integer`, `Long` e `BigInteger`.
 
-> **Configuração obrigatória:** 
-> [`position`](#configurando-posio-do-campo-com-position)
-> [`length`](#configurando-comprimento-do-campo-em-texto-com-length)
-> 
-> **Configuração opcional:**
-> [`align`](#configurando-alinhamento-do-valor-do-campo-com-align)
-> [`fill`](#configurando-preenchimento-do-campo-com-fill)
+Requer | Opcional
+-------|---------
+[`position`](#configurando-posio-do-campo-com-position) [`length`](#configurando-comprimento-do-campo-em-texto-com-length) | [`align`](#configurando-alinhamento-do-valor-do-campo-com-align) [`fill`](#configurando-preenchimento-do-campo-com-fill)
 
 ### Configurando campo decimal com `@FieldDec`
 
 > A anotação `@FieldDec` é utilizada para configurar campos decimais, dando 
 > suporte para os tipos Java `float`, `double`, `Float`, `Double`, e `BigDecimal`.
 
-> **Configuração obrigatória:** 
-> [`position`](#configurando-posio-do-campo-com-position)
-> [`length`](#configurando-comprimento-do-campo-em-texto-com-length)
-> 
-> **Configuração opcional:**
-> [`align`](#configurando-alinhamento-do-valor-do-campo-com-align)
-> [`decimals`](#configurando-quantidade-de-casas-decimais-com-decimal)
-> [`fill`](#configurando-preenchimento-do-campo-com-fill)
-> [`separator`](#configurando-separador-de-casas-decimais-com-separator)
+Requer | Opcional
+-------|---------
+[`position`](#configurando-posio-do-campo-com-position) [`length`](#configurando-comprimento-do-campo-em-texto-com-length) | [`align`](#configurando-alinhamento-do-valor-do-campo-com-align) [`decimals`](#configurando-quantidade-de-casas-decimais-com-decimal) [`fill`](#configurando-preenchimento-do-campo-com-fill) [`separator`](#configurando-separador-de-casas-decimais-com-separator)
 
 ### Configurando campo data com `@FieldDtm`
 
 > A anotação `@FieldDtm` é utilizada para configurar campos de data, dando 
 > suporte para o tipo Java `java.util.Date`.
 
-> **Configuração obrigatória:** 
-> [`position`](#configurando-posio-do-campo-com-position)
-> 
-> **Configuração opcional:**
-> [`format`](#configurando-formato-para-data-com-format)
+Requer | Opcional
+-------|---------
+[`position`](#configurando-posio-do-campo-com-position)| [`format`](#configurando-formato-para-data-com-format)
 
 ## Atributos de configuração
 
@@ -400,29 +420,34 @@ O texto dessa linha sempre começará com o literal `myidvalue`:
    "myidvalue<field-1><field-2><field-3>..."
 ```
 
-> Quando o _framework_ estiver efetuando a conversão de texto para objeto, ao 
-> identificar que determinada linha texto começa com o literal `myidvalue`, ele
+> Quando o _framework_ efetuar a conversão de texto para objeto, ao 
+> identificar que determinada linha começa com o literal `myidvalue`, ele
 > saberá que deverá ser criada uma instância de `MyLine` para carregar os
 > campos dessa linha.
 
 > O valor de `identifier` pode ser qualquer _string_.
 
-### Configurando posição do campo com `position`
+_  |  _ 
+---|---
+**Tipo** | `String` 
+**Valor** | qualquer _string_ 
+**Utilizado por** | `@Line`
+
+### Configurando posição do campo com `position`.
 
 > Ao converter os [Campos](#campo) de determinada [Linha](#linha) para texto, o
 > _framework_ iniciará uma _string_ com o literal configurado em 
 > [`identifier`](#identificando-uma-linha-com-identifier) e, para cada campo 
 > declarado na [Linha](#linha), seguindo a ordem crescente do valor configurado
 > em `position`, a partir da `position` com valor `1`, irá concatenar à direita dessa _string_
-> o valor do campo convertido para texto, conforme sua configuração.
+> o valor do campo convertido para texto, conforme a sua configuração.
 
 > Em vez de ter essa configuração, o _framework_ poderia apenas seguir a ordem de
-> cima para baixo em que o campos fossem declarados na classe. Porém, a especificação
+> cima para baixo em que os campos fossem declarados na classe. Todavia, a especificação
 > do Java não define, ou garante, a ordem em que os campos recuperados de uma
-> classe via _reflection_ são retornados. Dessa forma essa implementação ficaria 
->dependente da implementação do JDK. Por isso a necessidade desse atributo. 
->A configuração 
-> [`order`](#configurando-ordem-do-item-no-documento-com-order) existe pelo mesmo
+> classe via _reflection_ são retornados. Dessa forma essa abordagem ficaria 
+>dependente da implementação do JDK. A configuração 
+> [`order`](#configurando-ordem-do-_item_-no-documento-com-order) existe pelo mesmo
 > motivo.
 
 Portanto, idependentemente da ordem em que os campos são declarados em uma
@@ -453,7 +478,7 @@ public class MyLine {
 }
 ```
 
-Ao converter para texto eles serão concatenados seguindo a ordem configurada
+Ao converter para texto eles serão concatenados conforme a ordem configurada
 em `position`, do menor para o maior, da seguinte forma:
 
 ```
@@ -465,38 +490,130 @@ em `position`, do menor para o maior, da seguinte forma:
      +---------------------------> identifier (position = 0)
 ```
 
-### Configurando comprimento do campo em texto com `length`
+_  |  _ 
+---|---
+**Tipo** | `int` 
+**Valor** | `1`, `2`, ..., `Integer.MAX_VALUE` 
+**Utilizado por** | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldDtm` `@FieldCtm`
 
-> sa
+### Configurando comprimento do campo em texto com `length`.
 
-### Configurando alinhamento do valor do campo com `align`
+> Um [Campo](#campo) corresponde a um trecho de texto da linha em determinada posição inicial e final, conforme
+> valor configurado em [`position`](#configurando-posio-do-campo-com-position), e comprimento em `length`.
 
-### Configurando preenchimento do campo com `fill`
+> `length` define a largura em caracateres que o campo irá reservar no texto da linha para o valor formatado.    
 
-### Configurando formato para data com `format`
+_  |  _ 
+---|---
+**Tipo** | `int` 
+**Valor** | `1`, `2`, ..., `Integer.MAX_VALUE` 
+**Utilizado por** | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldCtm`
 
-### Configurando quantidade de casas decimais com `decimal`
+### Configurando alinhamento do valor do campo com `align`.
 
-### Configurando separador de casas decimais com `separator`
+> A propriedade `align` define se a _string_ resultante da conversão do valor do campo
+> para texto ficará posicionada à esquerda ou à direita no espaço reservado de 
+> determinada linha.
 
-### Configurando ordem do item no documento com `order`
+Por exemplo, se um campo _string_ com valor `"abc"`, configurado com comprimento 
+`10` e preenchimento `'*'`, será convertido para texto como o seguinte, conforme
+configuração de alinhamento:
 
-## Escrevendo e lendo documentos
+```
+                1234567890
+Align.LEFT  -> "abc*******"
+Align.RIGHT -> "*******abc"
+``` 
 
-### Convertendo documento para texto com `Main.toText()`
+_  |  _ 
+---|---
+**Tipo** | `com.github.ducoral.Align` 
+**Valor** | `Align.LEFT` ou `Align.RIGHT` 
+**_Default_** | `Align.RIGHT` nos campos numéricos e `Align.LEFT` nos demais tipos
+**Utilizado por** | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldDtm` `@FieldCtm`
+> 
 
-### Escrevendo documento para texto com `Main.writeDocument()`
+### Configurando preenchimento do campo com `fill`.
 
-### Convertendo texto para documento com `Main.fromText()`
+> Provavelmente a _string_ resultante da conversão do valor do campo terá comprimento menor que o configurado
+> em [`length`](#configurando-comprimento-do-campo-em-texto-com-length). Nesse caso, o _framework_ irá concatenar
+> o valor definido em `fill` ao valor do campo até que a _string_ atinja o comprimento determinado.
 
-### Lendo documento a partir de texto com `Main.readDocument()`
+_  |  _   
+---|---
+**Tipo** | `char` 
+**Valor** | qualquer _char_ 
+**_Default_** | `' '`
+**Utilizado por** | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldCtm`
 
-## Personalização de configuração
+### Configurando formato para data com `format`.
 
-## Personalizando a conversão objeto/texto implementando a interface `Converter`
+> Define o formato de data para campo com valor do tipo `java.util.Date`. 
 
-### Configurando campo personalizado com `@FieldCtm`
+_  |  _ 
+---|---
+**Tipo** | `String` 
+**Valor** | `"dd/MM/yyyy"`, `"ddMMyy"`, padrão `SimpleDateFormat` 
+**_Default_** | `"ddMMyyyy"`
+**Utilizado por** | `@FieldDtm`
 
-### Configurando conversor personalizado com `converter`
+### Configurando quantidade de casas decimais com `decimal`.
 
-## Valores `null` e textos vazios
+> Define a quantidade de casas decimais aplicada na formatação do valor de 
+> determinado campo decimal.
+
+_  |  _ 
+---|---
+**Tipo** | `int` 
+**Valor** | `1`, `2`, ..., mais do que `6` não é possível que precise 
+**_Default_** | `2`
+**Utilizado por** | `@FieldDec`
+
+### Configurando separador de casas decimais com `separator`.
+
+> Define o _char_ que será utilizado para separar as casas decimais na formatação do valor de
+> determinado campo decimal. O valor `'\0'` indica que não será utilizado separador.
+
+_  |  _ 
+---|---
+**Tipo** | `char` 
+**Valor** | `'.'`, `','`, etc. 
+**_Default_** | `'\0'`
+**Utilizado por** | `@FieldDec`
+
+### Configurando ordem do _item_ no documento com `order`.
+
+> Define a ordem em que a [Linha](#linha) corrrespondente de determinado _item_ será 
+> gerado no arquivo em relação aos demais itens do [Documento](#documento). 
+
+Ao converter determinado [Documento](#documento) em arquivo texto, o _framework_ esreverá
+primeiro a [Linha](#linha) correspondente do _item_ anotado com [@Header](#configurando-cabealho-com-header),
+se existir, depois as linhas dos itens anotados com [@Item](#configurando-itens-com-item)
+e, por último, a linha do _item_ anotado com [@Footer](#configurando-rodap-com-footer).
+
+_  |  _ 
+---|---
+**Tipo** | `int` 
+**Valor** | `1`, `2`, ..., `Integer.MAX_VALUE` 
+**_Default_** | `0`
+**Utilizado por** | `@Item`
+
+## Escrevendo e lendo documentos.
+
+### Convertendo documento para texto com `Main.toText()`.
+
+### Escrevendo documento para texto com `Main.writeDocument()`.
+
+### Convertendo texto para documento com `Main.fromText()`.
+
+### Lendo documento a partir de texto com `Main.readDocument()`.
+
+## Personalizando a configuração.
+
+## Personalizando a conversão objeto/texto implementando a _interface_ `Converter`.
+
+### Configurando campo personalizado com `@FieldCtm`.
+
+### Configurando conversor personalizado com `converter`.
+
+## Valores `null` e textos vazios.

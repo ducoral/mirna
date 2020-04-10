@@ -30,7 +30,12 @@ enum Strs {
     REPORT_POSITION("report.position"),
     REPORT_FROM("report.from"),
     REPORT_TO("report.to"),
-    REPORT_SIZE("report.size"),
+    REPORT_LENGTH("report.length"),
+    REPORT_FILL("report.fill"),
+    REPORT_ALIGN("report.align"),
+    REPORT_FORMAT("report.format"),
+    REPORT_DECIMALS("report.decimals"),
+    REPORT_SEPARATOR("report.separator"),
     REPORT_VALUE("report.value"),
 
     TEST_MSG_WITH_PARAMETERS("test.msg.with.parameters"),

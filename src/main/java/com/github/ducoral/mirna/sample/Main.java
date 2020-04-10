@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Mirna.report(Remessa.class);
+        Mirna.report(MyDocument.class);
 
     }
 }

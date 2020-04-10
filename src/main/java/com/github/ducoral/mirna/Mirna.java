@@ -114,7 +114,9 @@ public final class Mirna {
         List<List<String>> table = new ArrayList<>();
         table.add(Arrays.asList(
                 REPORT_FIELD.toString(), REPORT_FROM.toString(), REPORT_TO.toString(),
-                REPORT_SIZE.toString(), REPORT_VALUE.toString()));
+                REPORT_LENGTH.toString(), REPORT_FILL.toString(), REPORT_ALIGN.toString(),
+                REPORT_FORMAT.toString(), REPORT_DECIMALS.toString(), REPORT_SEPARATOR.toString(),
+                REPORT_VALUE.toString()));
         int from = 1;
         for (Fielded fielded : new Linner(lineClass).fieldeds) {
             String name = fielded.field() == null ? LINE_IDENTIFIER.toString() : fielded.field().getName();
@@ -124,17 +126,32 @@ public final class Mirna {
                     String.valueOf(from),
                     String.valueOf(from + fielded.length() - 1),
                     String.valueOf(fielded.length()),
+                    stringOf(fielded.fill()),
+                    String.valueOf(fielded.align()),
+                    String.valueOf(fielded.format()),
+                    String.valueOf(fielded.decimals()),
+                    stringOf(fielded.separator()),
                     value));
             from += fielded.length();
         }
         return table;
     }
 
+    private static String stringOf(char value) {
+        if (value == '\0')
+            return "'\\0'";
+        else
+            return "'" + value + "'";
+    }
+
     private static int[] lengths(List<List<String>> table) {
-        int[] lengths = {0, 0, 0, 0, 0};
-        for (List<String> row : table)
+        int[] lengths = null;
+        for (List<String> row : table) {
+            if (lengths == null)
+                lengths = new int[row.size()];
             for (int col = 0; col < lengths.length; col++)
                 lengths[col] = Math.max(lengths[col], row.get(col).length() + 2);
+        }
         return lengths;
     }
 
@@ -159,7 +176,8 @@ public final class Mirna {
 
         List<Class<?>> types = new ArrayList<>();
         documented.types(types::add);
-        Align[] aligns = {LEFT, RIGHT, RIGHT, RIGHT, LEFT};
+        Align[] aligns = {LEFT, RIGHT, RIGHT, RIGHT, LEFT, LEFT, LEFT, RIGHT, LEFT, LEFT};
+
         for (Class<?> type : types) {
             List<List<String>> table = table(type);
             int[] lengths = lengths(table);
