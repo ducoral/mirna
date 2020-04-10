@@ -23,6 +23,7 @@ Bem-vindo ao projeto **mirna**.
  
 Segue abaixo um exemplo de configuração de um documento **mirna**:
 
+###### MyDocument
 ```java
 @Document
 public class MyDocument {
@@ -62,9 +63,10 @@ public class MyDocument {
 > [@FieldCtm](#configurando-campo-personalizado-com-fieldctm) 
 > para configurar como o objeto será convertido para texto.
 
-Segue abaixo a declaração das classes `Cabecalho`, `Titulo` e `Rodape`, 
-correspondentes às linhas configuradas no documento acima:
+Segue abaixo a declaração das classes [`HeaderLine`](#headerline), [`DetailLine`](#detailline) 
+e [`FooterLine`](#footerline), correspondentes aos itens configurados no [Documento](#documento) acima:
 
+###### HeaderLine
 ```java
 @Line(identifier = "H")
 public class HeaderLine {
@@ -86,6 +88,7 @@ public class HeaderLine {
 }
 ```
   
+###### DetailLine
 ```java
 @Line(identifier = "D")
 public class DetailLine {
@@ -111,6 +114,7 @@ public class DetailLine {
 }
 ```
 
+###### FooterLine
 ```java
 @Line(identifier = "F")
 public class FooterLine {
@@ -168,45 +172,45 @@ com.github.ducoral.mirna.sample.MyDocument document
     com.github.ducoral.mirna.sample.DetailLine list<item>
     com.github.ducoral.mirna.sample.FooterLine footer
 
-+-----------------------------------------------------------------------------+
-| com.github.ducoral.mirna.sample.HeaderLine                                  |
-+-------------+------+----+-----+------+-------+--------+-----+------+--------+
-| field       | from | to | len | fill | align | format | dec | sep  | value  |
-+-------------+------+----+-----+------+-------+--------+-----+------+--------+
-| ID da linha |    1 |  1 |   1 | '\0' | LEFT  |        |   0 | '\0' | H      |
-+-------------+------+----+-----+------+-------+--------+-----+------+--------+
-| fieldStr    |    2 | 15 |  14 | ' '  | LEFT  |        |   0 | '\0' | String |
-+-------------+------+----+-----+------+-------+--------+-----+------+--------+
-| fieldInt    |   16 | 20 |   5 | '0'  | RIGHT |        |   0 | '\0' | int    |
-+-------------+------+----+-----+------+-------+--------+-----+------+--------+
++----------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.HeaderLine                                 |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| field      | from | to | len | fill | align | format | dec | sep  | value  |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| identifier |    1 |  1 |   1 | '\0' | LEFT  |        |   0 | '\0' | H      |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| fieldStr   |    2 | 15 |  14 | ' '  | LEFT  |        |   0 | '\0' | String |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| fieldInt   |   16 | 20 |   5 | '0'  | RIGHT |        |   0 | '\0' | int    |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
 
-+---------------------------------------------------------------------------------+
-| com.github.ducoral.mirna.sample.DetailLine                                      |
-+-------------+------+----+-----+------+-------+--------+-----+------+------------+
-| field       | from | to | len | fill | align | format | dec | sep  | value      |
-+-------------+------+----+-----+------+-------+--------+-----+------+------------+
-| ID da linha |    1 |  1 |   1 | '\0' | LEFT  |        |   0 | '\0' | D          |
-+-------------+------+----+-----+------+-------+--------+-----+------+------------+
-| fieldStr    |    2 |  5 |   4 | ' '  | LEFT  |        |   0 | '\0' | String     |
-+-------------+------+----+-----+------+-------+--------+-----+------+------------+
-| fieldInt    |    6 | 10 |   5 | '0'  | RIGHT |        |   0 | '\0' | int        |
-+-------------+------+----+-----+------+-------+--------+-----+------+------------+
-| fieldDec    |   11 | 20 |  10 | '0'  | RIGHT |        |   2 | '\0' | BigDecimal |
-+-------------+------+----+-----+------+-------+--------+-----+------+------------+
++--------------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.DetailLine                                     |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| field      | from | to | len | fill | align | format | dec | sep  | value      |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| identifier |    1 |  1 |   1 | '\0' | LEFT  |        |   0 | '\0' | D          |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldStr   |    2 |  5 |   4 | ' '  | LEFT  |        |   0 | '\0' | String     |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldInt   |    6 | 10 |   5 | '0'  | RIGHT |        |   0 | '\0' | int        |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldDec   |   11 | 20 |  10 | '0'  | RIGHT |        |   2 | '\0' | BigDecimal |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
 
-+-------------------------------------------------------------------------------+
-| com.github.ducoral.mirna.sample.FooterLine                                    |
-+-------------+------+----+-----+------+-------+----------+-----+------+--------+
-| field       | from | to | len | fill | align | format   | dec | sep  | value  |
-+-------------+------+----+-----+------+-------+----------+-----+------+--------+
-| ID da linha |    1 |  1 |   1 | '\0' | LEFT  |          |   0 | '\0' | F      |
-+-------------+------+----+-----+------+-------+----------+-----+------+--------+
-| fieldDtm    |    2 |  9 |   8 | '\0' | LEFT  | ddMMyyyy |   0 | '\0' | Date   |
-+-------------+------+----+-----+------+-------+----------+-----+------+--------+
-| fieldStr    |   10 | 15 |   6 | ' '  | LEFT  |          |   0 | '\0' | String |
-+-------------+------+----+-----+------+-------+----------+-----+------+--------+
-| fieldInt    |   16 | 20 |   5 | '0'  | RIGHT |          |   0 | '\0' | int    |
-+-------------+------+----+-----+------+-------+----------+-----+------+--------+
++------------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.FooterLine                                   |
++------------+------+----+-----+------+-------+----------+-----+------+--------+
+| field      | from | to | len | fill | align | format   | dec | sep  | value  |
++------------+------+----+-----+------+-------+----------+-----+------+--------+
+| identifier |    1 |  1 |   1 | '\0' | LEFT  |          |   0 | '\0' | F      |
++------------+------+----+-----+------+-------+----------+-----+------+--------+
+| fieldDtm   |    2 |  9 |   8 | '\0' | LEFT  | ddMMyyyy |   0 | '\0' | Date   |
++------------+------+----+-----+------+-------+----------+-----+------+--------+
+| fieldStr   |   10 | 15 |   6 | ' '  | LEFT  |          |   0 | '\0' | String |
++------------+------+----+-----+------+-------+----------+-----+------+--------+
+| fieldInt   |   16 | 20 |   5 | '0'  | RIGHT |          |   0 | '\0' | int    |
++------------+------+----+-----+------+-------+----------+-----+------+--------+
 ``` 
 
 ## Documentação
@@ -342,17 +346,17 @@ public class MyLine {
 }
 ```
 
-Senão deverá ter uma construtora _default_ declarada, quando houver outra com parâmetros:
+Caso o contrário, deverá ter uma construtora _default_ declarada, se houver outra com parâmetros:
 
  ```java
 @Line(identifier = "id")
 public class MyLine {
     
-    // Default constructor required
+    // default constructor required
     public MyLine() {
     }
    
-    // Constructor with params
+    // constructor with params
     public MyLine(String param1, Integer param2) {
     }
 
@@ -576,13 +580,63 @@ Tipo | Valor | _Default_ | Utilizado por
 
 ## Escrevendo e lendo documentos.
 
-### Convertendo documento para texto com `Main.toText()`.
+A conversão de objeto para texto e vice-versa é efetuada através dos métodos estáticos 
+`Mirna.toText()`, `Mirna.writeDocument()`, `Mirna.fromText()` e `Mirna.readDocument()`.
 
-### Escrevendo documento para texto com `Main.writeDocument()`.
+Segue abaixo declaração de instância de [MyDocument](#mydocument), configurada com instâncias de
+[HeaderLine](#headerline), [DetailLine](#detailline) e [FooterLine](#footerline) para ser utilizada
+como caso para explicação abaixo dos métodos `Mirna.toText()` e `Mirna.writeDocument()`.
 
-### Convertendo texto para documento com `Main.fromText()`.
+```java
+MyDocument myDocument = new MyDocument(
+    new HeaderLine("header", 123),
+    Arrays.asList(
+            new DetailLine("str1", 10, BigDecimal.valueOf(1.23)),
+            new DetailLine("str2", 20, BigDecimal.valueOf(4.56)),
+            new DetailLine("str3", 30, BigDecimal.valueOf(7.89))),
+    new FooterLine(new GregorianCalendar(2020, Calendar.APRIL, 10).getTime(), "footer", 456)
+);
+```
 
-### Lendo documento a partir de texto com `Main.readDocument()`.
+### Convertendo documento para texto com `Mirna.toText()`.
+O método `Mirna.toText()` recebe por parâmetro uma instância de [Documento](#documento) e retorna uma
+_string_ correspondente ao contendo do arquivo texto gerado a partir dos dados do objeto. 
+Para a instância de [MyDocument](#mydocument) declarada acima na variável `myDocument`, ao executar
+o trecho de código abaixo:
+```java
+System.out.println(Mirna.toText(myDocument));
+```
+Seria impresso o seguinte texto no _console_:
+```
+Hheader        00123
+Dstr1000100000000123
+Dstr2000200000000456
+Dstr3000300000000789
+F10042020footer00456
+```
+
+### Escrevendo documento para texto com `Mirna.writeDocument()`.
+O método recebe por parâmetro uma instância de [Documento](#documento), que será convertida para texto,
+e uma instância de `java.io.Writer`, em que o texto resultante será escrito.
+> Para escrever o documento em arquivo, basta passar uma instância de `java.io.FileWriter` para o
+> parâmetro `writer`.
+Para a instância de [MyDocument](#mydocument) declarada acima na variável `myDocument`, ao executar
+o trecho de código abaixo:
+```java
+Mirna.writeDocument(myDocument, new PrintWriter(System.out));
+```
+Seria impresso o seguinte texto no _console_:
+```
+Hheader        00123
+Dstr1000100000000123
+Dstr2000200000000456
+Dstr3000300000000789
+F10042020footer00456
+```
+
+### Convertendo texto para documento com `Mirna.fromText()`.
+
+### Lendo documento a partir de texto com `Mirna.readDocument()`.
 
 ## Personalizando a configuração.
 
