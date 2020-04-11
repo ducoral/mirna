@@ -10,6 +10,8 @@ class ConverterDec extends ConverterStr {
 
     @Override
     public String toText(Object value) {
+        if (value == null)
+            return super.toText("null");
         String txt = new BigDecimal(String.valueOf(value))
                 .setScale(fielded.decimals(), BigDecimal.ROUND_DOWN)
                 .toString();

@@ -10,8 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MirnaDocumentTest {
 
-    // TODO testar tratamento de valores null em objetos e string vazia em textos.
-
     @Line(identifier = "H")
     static class HeaderCase {
 
@@ -998,4 +996,6 @@ public class MirnaDocumentTest {
                 () -> Mirna.fromText(DocumentCase7.class, text),
                 Strs.MSG_INVALID_LINE.format(ITEM_CASE_2_STR_1));
     }
+
+    // TODO testar tratamento de valores null em objetos e string vazia em textos.
 }

@@ -13,7 +13,10 @@ class ConverterDtm extends ConverterStr {
 
     @Override
     public String toText(Object value) {
-        return super.toText(new SimpleDateFormat(fielded.format()).format((Date)value));
+        String text = value == null
+                ? "null"
+                : new SimpleDateFormat(fielded.format()).format((Date) value);
+        return super.toText(text);
     }
 
     @Override

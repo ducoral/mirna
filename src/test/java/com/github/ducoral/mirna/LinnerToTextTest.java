@@ -1,6 +1,6 @@
 package com.github.ducoral.mirna;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -32,7 +32,19 @@ class LinnerToTextTest {
                 + "c"
                 + "******str2"
                 + "str3-----------";
-        Assertions.assertEquals(expected, new Linner(LineCase1.class).toText(new LineCase1()));
+        assertEquals(expected, new Linner(LineCase1.class).toText(new LineCase1()));
+    }
+
+    @Test
+    void testCase1ForNull() {
+        String expected = "ident1"
+                + "c"
+                + "******null"
+                + "null-----------";
+        LineCase1 line = new LineCase1();
+        line.fieldCase2 = null;
+        line.fieldCase3 = null;
+        assertEquals(expected, new Linner(LineCase1.class).toText(line));
     }
 
     @Line(identifier = "ident2")
@@ -63,6 +75,19 @@ class LinnerToTextTest {
                 + "1234567890***************"
                 + "000000000012345678901234567890";
         assertEquals(expected, new Linner(LineCase2.class).toText(new LineCase2()));
+    }
+
+    @Test
+    void testCase2ForNull() {
+        String expected = "ident2"
+                + "0000000123"
+                + "456            "
+                + "_________________789"
+                + "1234567890***************"
+                + "00000000000000000000000000null";
+        LineCase2 line = new LineCase2();
+        line.fieldCase5 = null;
+        assertEquals(expected, new Linner(LineCase2.class).toText(line));
     }
 
     @Line(identifier = "ident3")
@@ -121,6 +146,21 @@ class LinnerToTextTest {
         assertEquals(expected, new Linner(LineCase4.class).toText(new LineCase4()));
     }
 
+    @Test
+    void testCase4ForNull() {
+        String expected = "ident4"
+                + "null    "
+                + "null  "
+                + "null      "
+                + "null      ";
+        LineCase4 line = new LineCase4();
+        line.fieldCase1 = null;
+        line.fieldCase2 = null;
+        line.fieldCase3 = null;
+        line.fieldCase4 = null;
+        assertEquals(expected, new Linner(LineCase4.class).toText(line));
+    }
+
     static class CustomObject {
         final String string;
         final Integer integer;
@@ -133,6 +173,8 @@ class LinnerToTextTest {
     static class CustomConverterCase implements Converter {
         @Override
         public String toText(Object value) {
+            if (value == null)
+                return "null";
             CustomObject custom = (CustomObject) value;
             return custom.string + custom.integer;
         }
@@ -159,5 +201,46 @@ class LinnerToTextTest {
                 + "ten10     "
                 + "************twenty20";
         assertEquals(expected, new Linner(LineCase5.class).toText(new LineCase5()));
+    }
+
+    @Test
+    void testCase5ForNull() {
+        String expected = "ident5"
+                + "null      "
+                + "****************null";
+        LineCase5 line = new LineCase5();
+        line.fieldCase1 = null;
+        line.fieldCase2 = null;
+        assertEquals(expected, new Linner(LineCase5.class).toText(line));
+    }
+
+    @Line(identifier = "NULL")
+    static class LineNullCase {
+
+        @FieldInt(position = 1, length = 10)
+        Integer fieldCase1 = null;
+
+        @FieldInt(position = 2, length = 10)
+        BigInteger fieldCase2 = null;
+
+        @FieldDec(position = 3, length = 10)
+        BigDecimal fieldCase3 = null;
+
+        @FieldDtm(position = 4)
+        Date fieldCase4 = null;
+
+        @FieldStr(position = 5, length = 10)
+        String fieldCase5 = null;
+    }
+
+    @Test
+    void testLineNullCase() {
+        String expected = "NULL"
+                + "      null"
+                + "      null"
+                + "      null"
+                + "null    "
+                + "null      ";
+        assertEquals(expected, new Linner(LineNullCase.class).toText(new LineNullCase()));
     }
 }

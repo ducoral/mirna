@@ -68,7 +68,7 @@ class Fielded {
     }
 
     public char fill() {
-        return (char) properties.getOrDefault(FILL, '\0');
+        return (char) properties.getOrDefault(FILL, ' ');
     }
 
     public String format() {
