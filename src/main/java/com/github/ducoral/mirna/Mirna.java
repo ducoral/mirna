@@ -19,6 +19,7 @@ public final class Mirna {
     }
 
     public static String toText(Object document) {
+        Objects.requireNonNull(document);
         StringWriter writer = new StringWriter();
         writeDocument(document, writer);
         return writer.toString();
@@ -34,6 +35,8 @@ public final class Mirna {
     }
 
     public static <T> T fromText(Class<T> documentClass, String text) {
+        Objects.requireNonNull(documentClass);
+        Objects.requireNonNull(text);
         return readDocument(documentClass, new StringReader(text));
     }
 
@@ -160,13 +163,13 @@ public final class Mirna {
 
         String str = fixRight("(v" + VERSION.toString() + ")", 8, ' ');
         str =
-                "              _\n" +
-                "    _ __ ___ (_)_ __ _ __   __ _\n" +
-                "   | '_ ` _ \\| | '__| '_ \\ / _` |\n" +
-                "   | | | | | | | |  | | | | (_| |\n" +
-                "   |_| |_| |_|_|_|  |_| |_|\\__,_|\n" +
-                "   #t#:: flat-file parser ::" + str + "#0#\n\n" +
-                "=== #p#" + fixLeft(REPORT.toString() + "#0# ", 34, '=') + "\n\n";
+            "              _\n" +
+            "    _ __ ___ (_)_ __ _ __   __ _\n" +
+            "   | '_ ` _ \\| | '__| '_ \\ / _` |\n" +
+            "   | | | | | | | |  | | | | (_| |\n" +
+            "   |_| |_| |_|_|_|  |_| |_|\\__,_|\n" +
+            "   #t#:: flat-file parser ::" + str + "#0#\n\n" +
+            "=== #p#" + fixLeft(REPORT.toString() + "#0# ", 34, '=') + "\n\n";
         print(str);
 
         Documented documented = new Documented(create(documentClass));

@@ -274,4 +274,25 @@ public class RuleValidationDocumentTest {
                         ValidLine3.class,
                         Strs.MSG_DUPLICATE_TYPE_CONFIG));
     }
+
+    @Document
+    static class DocumentMissingDefaultConstructor {
+
+        @Item
+        final
+        ValidLine4 itemCase1;
+
+        public DocumentMissingDefaultConstructor(ValidLine4 itemCase1) {
+            this.itemCase1 = itemCase1;
+        }
+    }
+
+    @Test
+    void testMissingDefaultConstrutor() {
+        assertThrows(
+                Oops.class,
+                () -> Rule.validateDocument(DocumentMissingDefaultConstructor.class),
+                Strs.MSG_MISSING_DEFAULT_CONSTRUCTOR.format(DocumentMissingDefaultConstructor.class.getName()));
+    }
+
 }

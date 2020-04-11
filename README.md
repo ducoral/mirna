@@ -89,6 +89,7 @@ public class HeaderLine {
 ```
   
 ###### DetailLine
+
 ```java
 @Line(identifier = "D")
 public class DetailLine {
@@ -726,36 +727,10 @@ public class WithSubItemLine {
 }
 ``` 
 
-O campo `details`, declarado como `List<DetailLine>`, está anotado com `@Item`, que é a mesma anotação
+O campo `details`, declarado como `List<`[`DetailLine`](#detailline)`>`, está anotado com `@Item`, que é a mesma anotação
 utilizada para configurar itens no [Documento](#documento). 
 
 O tipo `DetailLine` é uma [Linha](#linha), como pode ser observado na declaração abaixo:
-
-###### DetailLine
-```java
-@Line(identifier = "D")
-public class DetailLine {
-
-    @FieldStr(position = 1, length = 4)
-    private String fieldStr;
-
-    @FieldInt(position = 2, length = 5, fill = '0')
-    private int fieldInt;
-
-    @FieldDec(position = 3, length = 10, fill = '0')
-    private BigDecimal fieldDec;
-
-    public DetailLine() { }
-
-    public DetailLine(String fieldStr, int fieldInt, BigDecimal fieldDec) {
-        this.fieldStr = fieldStr;
-        this.fieldInt = fieldInt;
-        this.fieldDec = fieldDec;
-    }
-
-    // getters and setters
-}
-```
 
 ### Configurando Documentos complexos com itens e subitens
 

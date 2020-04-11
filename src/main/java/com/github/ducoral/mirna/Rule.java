@@ -25,6 +25,8 @@ final class Rule {
         if (!documentClass.isAnnotationPresent(Document.class))
             throw new Oops(Strs.MSG_ANNOTATION_NOT_PRESENT, Strs.MSG_DOCUMENT_ANNOTATION, documentClass.getName());
 
+        validateDefaultConstructor(documentClass);
+
         boolean hasHeader = false;
         boolean hasFooter = false;
 
@@ -75,20 +77,31 @@ final class Rule {
         return false;
     }
 
-    static void validateLine(Class<?> mirnaClass) {
+    private static void validateDefaultConstructor(Class<?> type) {
+        boolean hasConstructor = Stream
+                .of(type.getDeclaredConstructors())
+                .anyMatch(constructor -> constructor.getParameterTypes().length == 0);
+
+        if (!hasConstructor)
+            throw new Oops(Strs.MSG_MISSING_DEFAULT_CONSTRUCTOR, type.getName());
+    }
+
+    static void validateLine(Class<?> lineClass) {
+        validateDefaultConstructor(lineClass);
+
         List<Fielded> maps = new ArrayList<>();
-        fields(mirnaClass, maps::add);
+        fields(lineClass, maps::add);
         if (maps.isEmpty())
             throw new Oops(
-                    Strs.MSG_MISSING_CONFIGURATION, mirnaClass.getSimpleName());
+                    Strs.MSG_MISSING_CONFIGURATION, lineClass.getSimpleName());
 
         if (maps.get(0).identifier().isEmpty())
             throw new Oops(
-                    Strs.MSG_ANNOTATION_NOT_PRESENT, Line.class.getSimpleName(), mirnaClass.getSimpleName());
+                    Strs.MSG_ANNOTATION_NOT_PRESENT, Line.class.getSimpleName(), lineClass.getSimpleName());
 
         if (maps.size() == 1)
             throw new Oops(
-                    Strs.MSG_MISSING_FIELD_CONFIG, mirnaClass.getSimpleName());
+                    Strs.MSG_MISSING_FIELD_CONFIG, lineClass.getSimpleName());
 
         for (int i = 1; i < maps.size(); i++) {
             Fielded fielded = maps.get(i);

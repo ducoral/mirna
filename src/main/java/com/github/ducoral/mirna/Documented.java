@@ -79,8 +79,7 @@ class Documented {
             } else if (!list.isEmpty())
                 return new Documented(list.get(list.size() - 1)).accept(line);
         } else if (!isNull(document, field))
-            if (new Documented(get(document, field)).accept(line))
-                return true;
+            return new Documented(get(document, field)).accept(line);
         return false;
     }
 

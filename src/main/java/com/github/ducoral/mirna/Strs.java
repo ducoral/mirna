@@ -21,6 +21,7 @@ enum Strs {
     MSG_INVALID_LINE("msg.invalid.line"),
     MSG_INVALID_PARAMETER("msg.invalid.parameter"),
     MSG_MISSING_CONFIGURATION("msg.missing.configuration"),
+    MSG_MISSING_DEFAULT_CONSTRUCTOR("msg.missing.default.constructor"),
     MSG_MISSING_FIELD_CONFIG("msg.missing.field.config"),
     MSG_MISSING_POSITION_CONFIG("msg.missing.position.config"),
     MSG_UNMAPPED_LINE("msg.unmapped.line"),

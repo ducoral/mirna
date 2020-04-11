@@ -375,6 +375,34 @@ public class MirnaDocumentTest {
                 Strs.MSG_INVALID_LINE.format(ITEM_CASE_3_STR_2));
     }
 
+    @Test
+    void testDocumentCase1ForNullItensCase1() {
+        String expected = "";
+        assertEquals(expected, Mirna.toText(new DocumentCase1()));
+    }
+
+    @Test
+    void testDocumentCase1ForNullItensCase2() {
+        assertEquals(HEADER_CASE_STR_1, Mirna.toText(new DocumentCase1(HEADER_CASE_OBJ_1, null, null)));
+    }
+
+    @Test
+    void testDocumentCase1ForNullItensCase3() {
+        String expected = HEADER_CASE_STR_1 + ITEM_CASE_1_STR_1;
+        assertEquals(expected, Mirna.toText(new DocumentCase1(HEADER_CASE_OBJ_1, ITEM_CASE_1_OBJ_1, null)));
+    }
+
+    @Test
+    void testDocumentCase1ForNullItensCase4() {
+        String expected = ITEM_CASE_1_STR_1 + FOOTER_CASE_STR_1;
+        assertEquals(expected, Mirna.toText(new DocumentCase1(null, ITEM_CASE_1_OBJ_1, FOOTER_CASE_OBJ_1)));
+    }
+
+    @Test
+    void testDocumentCase1ForNullItensCase5() {
+        assertEquals(FOOTER_CASE_STR_1, Mirna.toText(new DocumentCase1(null, null, FOOTER_CASE_OBJ_1)));
+    }
+
     @Document
     static class DocumentCase2 {
 
@@ -996,6 +1024,4 @@ public class MirnaDocumentTest {
                 () -> Mirna.fromText(DocumentCase7.class, text),
                 Strs.MSG_INVALID_LINE.format(ITEM_CASE_2_STR_1));
     }
-
-    // TODO testar tratamento de valores null em objetos e string vazia em textos.
 }

@@ -9,8 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RuleValidationLineTest {
 
-    // TODO validar se entidades Document e Linha contém construtor default
-
     @Line(identifier = "id")
     static
     class LineValidCase {
@@ -94,5 +92,20 @@ class RuleValidationLineTest {
                 Oops.class,
                 () -> validateLine(LineInvalidCase6.class),
                 Strs.MSG_MISSING_POSITION_CONFIG.format(2, "fieldCase2"));
+    }
+
+    @Line(identifier = "0")
+    static class LineMissingDefaultConstructor {
+
+        public LineMissingDefaultConstructor(String fieldStr) {
+        }
+    }
+
+    @Test
+    void testValidateMissingDefaultConstructor() {
+        assertThrows(
+                Oops.class,
+                () -> validateLine(LineMissingDefaultConstructor.class),
+                Strs.MSG_MISSING_DEFAULT_CONSTRUCTOR.format(LineMissingDefaultConstructor.class.getName()));
     }
 }
