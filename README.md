@@ -229,11 +229,14 @@ com.github.ducoral.mirna.sample.MyDocument document
     - [Configurando quantidade de casas decimais com `decimal`](#configurando-quantidade-de-casas-decimais-com-decimal)
     - [Configurando separador de casas decimais com `separator`](#configurando-separador-de-casas-decimais-com-separator)
     - [Configurando ordem do item no documento com `order`](#configurando-ordem-do-_item_-no-documento-com-order)
-- [Escrevendo e lendo documentos](#escrevendo-e-lendo-documentos)
-    - [Convertendo documento para texto com `Main.toText()`](#convertendo-documento-para-texto-com-maintotext)
-    - [Escrevendo documento para texto com `Main.writeDocument()`](#escrevendo-documento-para-texto-com-mainwritedocument)
-    - [Convertendo texto para documento com `Main.fromText()`](#convertendo-texto-para-documento-com-mainfromtext)
-    - [Lendo documento a partir de texto com `Main.readDocument()`](#lendo-documento-a-partir-de-texto-com-mainreaddocument)
+- [Escrita e leitura de documentos](#escrita-e-leitura-de-documentos)
+    - [Convertendo documento para texto com `Main.toText()`](#escrita-e-leitura-de-documentos)
+    - [Escrevendo documento para texto com `Main.writeDocument()`](#escrevendo-documento-para-texto-com-mirnawritedocument)
+    - [Convertendo texto para documento com `Main.fromText()`](#convertendo-texto-para-documento-com-mirnafromtext)
+    - [Lendo documento a partir de texto com `Main.readDocument()`](#lendo-documento-a-partir-de-texto-com-mirnareaddocument)
+- [Configuração de subitens e Documentos complexos](#configurao-de-subitens-e-documentos-complexos)    
+    - [Configurando subitem de Linha com @Item](#configurando-subitem-de-linha-com-item)
+    - [Configurando Documentos complexos com itens e subitens](#configurando-documentos-complexos-com-itens-e-subitens)
 - [Personalização de configuração](#personalizando-a-configurao)
     - [Personalizando a conversão objeto/texto implementando a interface `Converter`](#personalizando-a-converso-objetotexto-implementando-a-_interface_-converter)
     - [Configurando campo personalizado com `@FieldCtm`](#configurando-campo-personalizado-com-fieldctm)
@@ -572,7 +575,7 @@ Tipo | Valor | _Default_ | Utilizado por
 -----|-------|-----------|--------------
 `int` | `1`, `2`, ..., `Integer.MAX_VALUE` | `0` | `@Item`
 
-## Escrevendo e lendo documentos.
+## Escrita e leitura de documentos.
 
 A conversão de objeto para texto e vice-versa é efetuada através dos métodos estáticos 
 `Mirna.toText()`, `Mirna.writeDocument()`, `Mirna.fromText()` e `Mirna.readDocument()`.
@@ -685,12 +688,335 @@ MyDocument myDocFromReader = Mirna.readDocument(MyDocument.class, new StringRead
 A instância de [MyDocument](#mydocument) resultante atribuída na variável `myDocFromReader` teria a 
 mesma configuração da instância configurada na variável [myDoc](#mydoc).
 
-## Personalizando a configuração.
+## Configuração de subitens e Documentos complexos
+
+**mirna** permite configurar [Linha](#linha) que contenha outra linha relacionada como subitem. Não há
+limites na quantidade de subitens para configuração de [Linhas](#linha). 
+
+### Configurando subitem de Linha com @Item
+
+> O subitem pode ser uma única instância como poder uma lista de subitens declarando
+> o campo da classe com `List`, da seguinte forma: `List<TipoSubitem> subitens;`
+
+Segue abaixo exemplo de [Linha](#linha) que configura subitem anotando determinado campo com @Item:
+
+###### WithSubItemLine
+```java
+@Line(identifier = "S")
+public class WithSubItemLine {
+
+    @FieldStr(position = 1, length = 15)
+    private String fieldStr;
+
+    @FieldInt(position = 2, length = 4)
+    private int fieldInt;
+
+    @Item
+    private List<DetailLine> details;
+
+    public WithSubItemLine() { }
+
+    public WithSubItemLine(String fieldStr, int fieldInt, List<DetailLine> details) {
+        this.fieldStr = fieldStr;
+        this.fieldInt = fieldInt;
+        this.details = details;
+    }
+
+    // getters and setters
+}
+``` 
+
+O campo `details`, declarado como `List<DetailLine>`, está anotado com `@Item`, que é a mesma anotação
+utilizada para configurar itens no [Documento](#documento). 
+
+O tipo `DetailLine` é uma [Linha](#linha), como pode ser observado na declaração abaixo:
+
+###### DetailLine
+```java
+@Line(identifier = "D")
+public class DetailLine {
+
+    @FieldStr(position = 1, length = 4)
+    private String fieldStr;
+
+    @FieldInt(position = 2, length = 5, fill = '0')
+    private int fieldInt;
+
+    @FieldDec(position = 3, length = 10, fill = '0')
+    private BigDecimal fieldDec;
+
+    public DetailLine() { }
+
+    public DetailLine(String fieldStr, int fieldInt, BigDecimal fieldDec) {
+        this.fieldStr = fieldStr;
+        this.fieldInt = fieldInt;
+        this.fieldDec = fieldDec;
+    }
+
+    // getters and setters
+}
+```
+
+### Configurando Documentos complexos com itens e subitens
+
+Documentos complexos podem ser elaborados compondo items que contém subitens. 
+
+Segue exemplo [Documento](#documento) complexo declarado como `MyComplexDocument`:
+
+###### MyComplexDocument
+
+```java
+@Document
+public class MyComplexDocument {
+
+    @Header
+    private HeaderLine header;
+
+    @Item(order = 1)
+    private List<WithSubItemLine> itemsWithDetails;
+
+    @Item(order = 2)
+    private List<AnotherLine> anotherLines;
+
+    @Footer
+    private FooterLine footer;
+
+    public MyComplexDocument() { }
+
+    public MyComplexDocument(
+            HeaderLine header,
+            List<WithSubItemLine> itemsWithDetails,
+            List<AnotherLine> anotherLines,
+            FooterLine footer) {
+        this.header = header;
+        this.itemsWithDetails = itemsWithDetails;
+        this.anotherLines = anotherLines;
+        this.footer = footer;
+    }
+
+    // getters and setters
+}
+```
+
+`AnotherLine` também contém subitem, como pode ser observado em sua declaração abaixo:
+
+###### AnotherLine
+
+```java
+@Line(identifier = "A")
+public class AnotherLine {
+
+    @FieldDtm(position = 1, format = "yyyyMMdd")
+    private Date fieldDtm;
+
+    @FieldDec(position = 2, length = 11, separator = '.', decimals = 4)
+    private BigDecimal fieldDec;
+
+    @Item
+    private ItemLine item;
+
+    public AnotherLine() { }
+
+    public AnotherLine(Date fieldDtm, BigDecimal fieldDec, ItemLine item) {
+        this.fieldDtm = fieldDtm;
+        this.fieldDec = fieldDec;
+        this.item = item;
+    }
+
+    // getters and setters
+}
+```
+
+O subitem `item` é também uma [Linha](#linha), conforme declaração abaixo:
+
+###### ItemLine
+
+```java
+@Line(identifier = "I")
+public class ItemLine {
+
+    @FieldStr(position = 1, length = 7, fill = '*')
+    String fieldStr;
+
+    @FieldInt(position = 2, length = 3, fill = '0')
+    int fieldInt;
+
+    @FieldDec(position = 3, length = 9, fill = '0', decimals = 4, separator = ',')
+    BigDecimal fieldDec;
+
+    public ItemLine() { }
+
+    public ItemLine(String fieldStr, int fieldInt, BigDecimal fieldDec) {
+        this.fieldStr = fieldStr;
+        this.fieldInt = fieldInt;
+        this.fieldDec = fieldDec;
+    }
+
+    // getters and setters
+}
+```
+
+Ao executar o relatório de configuração para a classe [MyComplexDocument](#mycomplexdocument),
+`Mirna.report(MyComplexDocument.class);`, seria impresso no console o seguinte texto:
+
+```
+              _
+    _ __ ___ (_)_ __ _ __   __ _
+   | '_ ` _ \| | '__| '_ \ / _` |
+   | | | | | | | |  | | | | (_| |
+   |_| |_| |_|_|_|  |_| |_|\__,_|
+   :: flat-file parser ::  (v1.0)
+
+=== configuration report ==========
+
+com.github.ducoral.mirna.sample.MyComplexDocument document
+    com.github.ducoral.mirna.sample.HeaderLine header
+    com.github.ducoral.mirna.sample.WithSubItemLine list<item>
+        com.github.ducoral.mirna.sample.DetailLine list<item>
+    com.github.ducoral.mirna.sample.AnotherLine list<item>
+        com.github.ducoral.mirna.sample.ItemLine item
+    com.github.ducoral.mirna.sample.FooterLine footer
+
++----------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.HeaderLine                                 |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| field      | from | to | len | fill | align | format | dec | sep  | value  |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| identifier |    1 |  1 |   1 | '\0' | LEFT  |        |   0 | '\0' | H      |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| fieldStr   |    2 | 15 |  14 | ' '  | LEFT  |        |   0 | '\0' | String |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| fieldInt   |   16 | 20 |   5 | '0'  | RIGHT |        |   0 | '\0' | int    |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+
++----------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.WithSubItemLine                            |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| field      | from | to | len | fill | align | format | dec | sep  | value  |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| identifier |    1 |  1 |   1 | '\0' | LEFT  |        |   0 | '\0' | S      |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| fieldStr   |    2 | 16 |  15 | ' '  | LEFT  |        |   0 | '\0' | String |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+| fieldInt   |   17 | 20 |   4 | ' '  | RIGHT |        |   0 | '\0' | int    |
++------------+------+----+-----+------+-------+--------+-----+------+--------+
+
++--------------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.DetailLine                                     |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| field      | from | to | len | fill | align | format | dec | sep  | value      |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| identifier |    1 |  1 |   1 | '\0' | LEFT  |        |   0 | '\0' | D          |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldStr   |    2 |  5 |   4 | ' '  | LEFT  |        |   0 | '\0' | String     |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldInt   |    6 | 10 |   5 | '0'  | RIGHT |        |   0 | '\0' | int        |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldDec   |   11 | 20 |  10 | '0'  | RIGHT |        |   2 | '\0' | BigDecimal |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+
++----------------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.AnotherLine                                      |
++------------+------+----+-----+------+-------+----------+-----+------+------------+
+| field      | from | to | len | fill | align | format   | dec | sep  | value      |
++------------+------+----+-----+------+-------+----------+-----+------+------------+
+| identifier |    1 |  1 |   1 | '\0' | LEFT  |          |   0 | '\0' | A          |
++------------+------+----+-----+------+-------+----------+-----+------+------------+
+| fieldDtm   |    2 |  9 |   8 | '\0' | LEFT  | yyyyMMdd |   0 | '\0' | Date       |
++------------+------+----+-----+------+-------+----------+-----+------+------------+
+| fieldDec   |   10 | 20 |  11 | ' '  | RIGHT |          |   4 | '.'  | BigDecimal |
++------------+------+----+-----+------+-------+----------+-----+------+------------+
+
++--------------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.ItemLine                                       |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| field      | from | to | len | fill | align | format | dec | sep  | value      |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| identifier |    1 |  1 |   1 | '\0' | LEFT  |        |   0 | '\0' | I          |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldStr   |    2 |  8 |   7 | '*'  | LEFT  |        |   0 | '\0' | String     |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldInt   |    9 | 11 |   3 | '0'  | RIGHT |        |   0 | '\0' | int        |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+| fieldDec   |   12 | 20 |   9 | '0'  | RIGHT |        |   4 | ','  | BigDecimal |
++------------+------+----+-----+------+-------+--------+-----+------+------------+
+
++-----------------------------------------------------------------------------+
+| com.github.ducoral.mirna.sample.FooterLine                                  |
++------------+------+----+-----+------+-------+----------+-----+------+-------+
+| field      | from | to | len | fill | align | format   | dec | sep  | value |
++------------+------+----+-----+------+-------+----------+-----+------+-------+
+| identifier |    1 |  1 |   1 | '\0' | LEFT  |          |   0 | '\0' | F     |
++------------+------+----+-----+------+-------+----------+-----+------+-------+
+| fieldDtm   |    2 |  9 |   8 | '\0' | LEFT  | ddMMyyyy |   0 | '\0' | Date  |
++------------+------+----+-----+------+-------+----------+-----+------+-------+
+| fieldCtm   |   10 | 20 |  11 | ' '  | RIGHT |          |   0 | '\0' | Color |
++------------+------+----+-----+------+-------+----------+-----+------+-------+
+```
+
+Considerando o exemplo de determinada variável `myComplexDoc` do tipo [MyComplexDocument](#mycomplexdocument) 
+contendo a instância:
+
+###### myComplexDoc
+
+```java
+MyComplexDocument myComplexDoc = new MyComplexDocument(
+        new HeaderLine("header", 123),
+        Arrays.asList(
+                new WithSubItemLine(
+                        "item1", 10, Arrays.asList(
+                        new DetailLine("sub1", 10, BigDecimal.valueOf(1.23)),
+                        new DetailLine("sub2", 20, BigDecimal.valueOf(4.56)),
+                        new DetailLine("sub3", 30, BigDecimal.valueOf(7.89)))),
+                new WithSubItemLine(
+                        "item2", 20, Arrays.asList(
+                        new DetailLine("sub4", 40, BigDecimal.valueOf(1.23)),
+                        new DetailLine("sub5", 50, BigDecimal.valueOf(4.56)),
+                        new DetailLine("sub6", 60, BigDecimal.valueOf(7.89))))),
+        Arrays.asList(
+                new AnotherLine(
+                        new GregorianCalendar(2020, Calendar.APRIL, 11).getTime(),
+                        BigDecimal.valueOf(123.456),
+                        new ItemLine("item1", 100, BigDecimal.valueOf(456.789))),
+                new AnotherLine(
+                        new GregorianCalendar(2020, Calendar.APRIL, 12).getTime(),
+                        BigDecimal.valueOf(34.45),
+                        new ItemLine("item2", 200, BigDecimal.valueOf(56.78))),
+                new AnotherLine(
+                        new GregorianCalendar(2020, Calendar.APRIL, 13).getTime(),
+                        BigDecimal.valueOf(987.6543),
+                        new ItemLine("item3", 300, BigDecimal.valueOf(555.333)))),
+        new FooterLine(new GregorianCalendar(2020, Calendar.APRIL, 10).getTime(), Color.MAGENTA));
+```
+
+Ao executar a instrução `System.out.println(Mirna.toText(myComplexDocumentObj()));`, seria impresso o seguinte
+texto no _console_:
+
+```
+Hheader        00123
+Sitem1            10
+Dsub1000100000000123
+Dsub2000200000000456
+Dsub3000300000000789
+Sitem2            20
+Dsub4000400000000123
+Dsub5000500000000456
+Dsub6000600000000789
+A20200411   123.4560
+Iitem1**1000456,7890
+A20200412    34.4500
+Iitem2**2000056,7800
+A20200413   987.6543
+Iitem3**3000555,3330
+F10042020  255:0:255
+```
+
+## Personalizando a configuração
 
 `mirna` permite a extensão de funcionalidade através de especilização da _interface_ `Converter`, que
 pode ser utilizada na configuração de campo personalizado anotado com `@FieldCtm`.
 
-## Personalizando a conversão objeto/texto implementando a _interface_ `Converter`.
+### Personalizando a conversão objeto/texto implementando a _interface_ `Converter`.
 
 A _interface_ `Converter` requer que sejam implementados dois métodos: `Converter.toText()` e
 `Converter.fromText()`. O método `Converter.toText()` deverá retornar _string_ correspondente
@@ -702,6 +1028,7 @@ Segue abaixo a declaração de `ColorConverter`, implementação de `Converter` 
 de campo personalizado em [FooterLine](#footerline), que dá suporte a objeto do tipo `java.awt.Color`:
 
 ###### ColorConverter
+
 ```java
 import com.github.ducoral.mirna.Converter;
 
