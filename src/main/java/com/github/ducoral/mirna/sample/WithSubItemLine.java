@@ -1,30 +1,30 @@
 package com.github.ducoral.mirna.sample;
 
-import com.github.ducoral.mirna.FieldDec;
 import com.github.ducoral.mirna.FieldInt;
 import com.github.ducoral.mirna.FieldStr;
+import com.github.ducoral.mirna.Item;
 import com.github.ducoral.mirna.Line;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-@Line(identifier = "D")
-public class DetailLine {
+@Line(identifier = "S")
+public class WithSubItemLine {
 
-    @FieldStr(position = 1, length = 4)
+    @FieldStr(position = 1, length = 15)
     private String fieldStr;
 
-    @FieldInt(position = 2, length = 5, fill = '0')
+    @FieldInt(position = 2, length = 4)
     private int fieldInt;
 
-    @FieldDec(position = 3, length = 10, fill = '0')
-    private BigDecimal fieldDec;
+    @Item
+    private List<DetailLine> details;
 
-    public DetailLine() { }
+    public WithSubItemLine() { }
 
-    public DetailLine(String fieldStr, int fieldInt, BigDecimal fieldDec) {
+    public WithSubItemLine(String fieldStr, int fieldInt, List<DetailLine> details) {
         this.fieldStr = fieldStr;
         this.fieldInt = fieldInt;
-        this.fieldDec = fieldDec;
+        this.details = details;
     }
 
     public String getFieldStr() {
@@ -43,12 +43,12 @@ public class DetailLine {
         this.fieldInt = fieldInt;
     }
 
-    public BigDecimal getFieldDec() {
-        return fieldDec;
+    public List<DetailLine> getDetails() {
+        return details;
     }
 
-    public void setFieldDec(BigDecimal fieldDec) {
-        this.fieldDec = fieldDec;
+    public void setDetails(List<DetailLine> details) {
+        this.details = details;
     }
 
     @Override
@@ -56,7 +56,6 @@ public class DetailLine {
         return getClass().getSimpleName()
                 + "{fieldStr: " + fieldStr
                 + ", fieldInt: " + fieldInt
-                + ", fieldDec: " + fieldDec
-                + "}";
+                + ", details: " + details.toString() + "}";
     }
 }

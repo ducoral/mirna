@@ -3,6 +3,7 @@ package com.github.ducoral.mirna.sample;
 import com.github.ducoral.mirna.*;
 
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Line(identifier = "F")
@@ -35,5 +36,13 @@ public class FooterLine {
 
     public void setFieldCtm(Color fieldCtm) {
         this.fieldCtm = fieldCtm;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()
+                + "{fieldDtm: " + new SimpleDateFormat("dd/MM/yyyy").format(fieldDtm)
+                + ", fieldCtm: " + fieldCtm.toString()
+                + "}";
     }
 }

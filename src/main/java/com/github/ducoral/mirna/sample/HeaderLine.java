@@ -35,4 +35,12 @@ public class HeaderLine {
     public void setFieldInt(int fieldInt) {
         this.fieldInt = fieldInt;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()
+                + "{fieldStr:" + fieldStr
+                + ", fieldInt:" + fieldInt
+                + "}";
+    }
 }

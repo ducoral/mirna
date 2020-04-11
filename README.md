@@ -699,7 +699,7 @@ por sua, deverá retornar instância do objeto personalizado com valores carrega
 especificada no parâmetro `text`.
 
 Segue abaixo a declaração de `ColorConverter`, implementação de `Converter` utilizada na configuração
-de campo personalizado em [FooterLine](#footerline), que dá suporte a campo do tipo `java.awt.Color`:
+de campo personalizado em [FooterLine](#footerline), que dá suporte a objeto do tipo `java.awt.Color`:
 
 ###### ColorConverter
 ```java
@@ -729,7 +729,7 @@ public class ColorConverter implements Converter {
 
 Dada a implementação de [`Converter`](#personalizando-a-converso-objetotexto-implementando-a-_interface_-converter)
 para determinado tipo personalizado, basta especificar a classe correspondente ao 
-atributo `converter` da anotação `@FieldCtm`, ao configurar o campo da linha, 
+atributo `converter` da anotação `@FieldCtm`, ao configurar o campo de tipo específico, 
 da forma com foi utilizado no exemplo [FooterLine](#footerline):
 
 ```java

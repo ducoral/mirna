@@ -50,4 +50,17 @@ public class MyDocument {
     public void setFooter(FooterLine footer) {
         this.footer = footer;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder docStr = new StringBuilder(getClass().getSimpleName())
+                .append('\n')
+                .append(header.toString())
+                .append('\n');
+        for (DetailLine detailLine : details)
+            docStr.append(detailLine.toString()).append('\n');
+        return docStr.append(footer.toString())
+                .append('\n')
+                .toString();
+    }
 }

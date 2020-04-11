@@ -7,21 +7,21 @@ import com.github.ducoral.mirna.Line;
 
 import java.math.BigDecimal;
 
-@Line(identifier = "D")
-public class DetailLine {
+@Line(identifier = "I")
+public class ItemLine {
 
-    @FieldStr(position = 1, length = 4)
-    private String fieldStr;
+    @FieldStr(position = 1, length = 7, fill = '*')
+    String fieldStr;
 
-    @FieldInt(position = 2, length = 5, fill = '0')
-    private int fieldInt;
+    @FieldInt(position = 2, length = 3, fill = '0')
+    int fieldInt;
 
-    @FieldDec(position = 3, length = 10, fill = '0')
-    private BigDecimal fieldDec;
+    @FieldDec(position = 3, length = 9, fill = '0', decimals = 4, separator = ',')
+    BigDecimal fieldDec;
 
-    public DetailLine() { }
+    public ItemLine() { }
 
-    public DetailLine(String fieldStr, int fieldInt, BigDecimal fieldDec) {
+    public ItemLine(String fieldStr, int fieldInt, BigDecimal fieldDec) {
         this.fieldStr = fieldStr;
         this.fieldInt = fieldInt;
         this.fieldDec = fieldDec;
@@ -56,7 +56,6 @@ public class DetailLine {
         return getClass().getSimpleName()
                 + "{fieldStr: " + fieldStr
                 + ", fieldInt: " + fieldInt
-                + ", fieldDec: " + fieldDec
-                + "}";
+                + ", fieldDec: " + fieldDec + "}";
     }
 }
