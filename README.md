@@ -10,6 +10,17 @@ Bem-vindo ao projeto **mirna**.
 objeto convertível para texto _flat-file_ e é composto por [Linhas](#linha). Uma [Linha](#linha), 
 por sua vez, é formada por [Campos](#campo) que são ordenados por determinada posição configurada.
 
+###### Download
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.github.ducoral</groupId>
+        <artifactId>mirna</artifactId>
+        <version>1.0</version>
+    </dependency>
+</dependencies>
+```
+
 ## Documento
 
 O _framework_ trata como **Documento** uma classe configurada com a anotação 
