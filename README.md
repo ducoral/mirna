@@ -866,7 +866,7 @@ public class ItemLine {
 ```
 
 Ao executar o relatório de configuração para a classe [MyComplexDocument](#mycomplexdocument),
-`Mirna.report(MyComplexDocument.class);`, seria impresso no console o seguinte texto:
+`Mirna.report(MyComplexDocument.class)`, seria impresso no console o seguinte texto:
 
 ```
               _
@@ -998,7 +998,7 @@ MyComplexDocument myComplexDoc = new MyComplexDocument(
         new FooterLine(new GregorianCalendar(2020, Calendar.APRIL, 10).getTime(), Color.MAGENTA));
 ```
 
-Ao executar a instrução `System.out.println(Mirna.toText(myComplexDocumentObj()));`, seria impresso o seguinte
+Ao executar a instrução `System.out.println(Mirna.toText(myComplexDoc))`, seria impresso o seguinte
 texto no _console_:
 
 ```
