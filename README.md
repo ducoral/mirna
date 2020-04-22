@@ -6,47 +6,48 @@ Bem-vindo ao projeto **mirna**.
 > _flat-file_, que utiliza objetos configurados por anotação, e dá suporte à confecção
 > de documentos avançados via configuração de subitens.
 
-- Documentação
-    - [Conceitos](#conceitos):
-        [Documento](#documento), 
-        [Item](#item),
-        [Linha](#linha) e
-        [Campo](#campo)
-    - [Configurando Documento](#configurao-de-documento): 
-        [`@Document`](#document) 
-        [`@Header`](#header) 
-        [`@Footer`](#footer) 
-        [`@Item`](#item)
-    - [Configurando Linha](#configurao-de-linha-e-campos): 
-        [`@Line`](#line) 
-        [`@FieldStr`](#fieldstr) 
-        [`@FieldInt`](#fieldint) 
-        [`@FieldDec`](#fielddec) 
-        [`@FieldDtm`](#fielddtm)
-    - [Parâmetros](#atributos-de-configurao):
-        [`identifier`](#identifier)
-        [`position`](#position)
-        [`length`](#length)
-        [`align`](#align)
-        [`fill`](#fill)
-        [`format`](#format)
-        [`decimal`](#decimal)
-        [`separator`](#separator)
-        [`order`](#order)
-    - [Em ação](#em-ao):
-        [`Mirna.toText()`](#mirnatotext)
-        [`Mirna.writeDocument()`](#mirnawritedocument)
-        [`Mirna.fromText()`](#mirnafromtext)
-        [`Mirna.readDocument()`](#mirnareaddocument)
-    - [Personalização](#personalizando-a-configurao):
-        [`Converter`](#_interface_-converter)
-        [`@FieldCtm`](#fieldctm)
-        [`converter`](#converter)
-    - [Avançado](#configurao-de-subitens-e-documentos-complexos):
-        [Subitens](#configurando-subitem-de-linha-com-item) e
-        [Documentos complexos](#configurando-documentos-complexos-com-itens-e-subitens)
+**Documentação:**
 
-## Download
+- [Conceitos](#conceitos):
+    [Documento](#documento), 
+    [Item](#item),
+    [Linha](#linha) e
+    [Campo](#campo)
+- [Configurando Documento](#configurao-de-documento): 
+    [`@Document`](#document) 
+    [`@Header`](#header) 
+    [`@Footer`](#footer) 
+    [`@Item`](#item)
+- [Configurando Linha](#configurao-de-linha-e-campos): 
+    [`@Line`](#line) 
+    [`@FieldStr`](#fieldstr) 
+    [`@FieldInt`](#fieldint) 
+    [`@FieldDec`](#fielddec) 
+    [`@FieldDtm`](#fielddtm)
+- [Parâmetros](#atributos-de-configurao):
+    [`identifier`](#identifier)
+    [`position`](#position)
+    [`length`](#length)
+    [`align`](#align)
+    [`fill`](#fill)
+    [`format`](#format)
+    [`decimal`](#decimal)
+    [`separator`](#separator)
+    [`order`](#order)
+- [Em ação](#em-ao):
+    [`Mirna.toText()`](#mirnatotext)
+    [`Mirna.writeDocument()`](#mirnawritedocument)
+    [`Mirna.fromText()`](#mirnafromtext)
+    [`Mirna.readDocument()`](#mirnareaddocument)
+- [Personalização](#personalizando-a-configurao):
+    [`Converter`](#_interface_-converter)
+    [`@FieldCtm`](#fieldctm)
+    [`converter`](#converter)
+- [Avançado](#configurao-de-subitens-e-documentos-complexos):
+    [Subitens](#configurando-subitem-de-linha-com-item) e
+    [Documentos complexos](#configurando-documentos-complexos-com-itens-e-subitens)
+
+**Download:**
 
 ```xml
 <dependencies>
@@ -69,10 +70,10 @@ por sua vez, é formada por [Campos](#campo) que são ordenados por determinada 
 O _framework_ trata como **Documento** uma classe configurada com a anotação 
 [@Document](#document). Um **Documento** deve conter campos
 do tipo [Linha](#linha) anotados com
-[@Header](#configurando-cabealho-com-header), [@Footer](#configurando-rodap-com-footer) ou 
-[@Item](#configurando-itens-com-item). 
+[@Header](#header), [@Footer](#footer) ou 
+[@Item](#item). 
 
-[@Header](#configurando-cabealho-com-header) e [@Footer](#configurando-rodap-com-footer) configuram
+[@Header](#header) e [@Footer](#footer) configuram
 [Linha](#linha) que deve ocorrer uma única vez no **Documento**. A primeira e a última, 
 respectivamente. Porém, é possível mapear [Linha](#linha) com múltiplas ocorrências declarando
 item com tipo `java.util.List<`[Linha](#linha)`>`.
@@ -122,19 +123,19 @@ gerar uma ou mais linhas de documento texto.
 
 **Linha** é a configuração que representa a ocorrência de determinada linha em um 
 [Documento](#documento). Uma **Linha** corresponde à uma classe configurada com a anotação 
-[@Line](#configurando-classe-linha-com-line), com uma identidade definida no atributo 
-[identifier](#identificando-uma-linha-com-identifier) e com
+[@Line](#line), com uma identidade definida no atributo 
+[identifier](#identifier) e com
 [Campos](#campo) declarados para tipos Java, anotados com 
-[@FieldStr](#configurando-campo-_string_-com-fieldstr), 
-[@FieldInt](#configurando-campo-inteiro-com-fieldint), 
-[@FieldDec](#configurando-campo-decimal-com-fielddec),
-[@FieldDtm](#configurando-campo-data-com-fielddtm) ou
-[@FieldCtm](#configurando-campo-personalizado-com-fieldctm). 
+[@FieldStr](#fieldstr), 
+[@FieldInt](#fieldint), 
+[@FieldDec](#fielddec),
+[@FieldDtm](#fielddtm) ou
+[@FieldCtm](#fieldctm). 
 
-[@FieldCtm](#configurando-campo-personalizado-com-fieldctm) permite extensão de funcionalidade
+[@FieldCtm](#fieldctm) permite extensão de funcionalidade
 dando suporte à configuração de [Campo](#campo) para tipo não suportado pelo _framework_,
 aceitando por parâmetro implementação personalizada de 
-[Converter](#configurando-conversor-personalizado-com-converter), que será a responsável pela
+[Converter](#converter), que será a responsável pela
 conversão objeto/texto.
 
 Segue abaixo a declaração das classes [HeaderLine](#headerline), [DetailLine](#detailline) 
@@ -220,22 +221,22 @@ public class FooterLine {
 **Campo** correspondente ao trecho de uma linha de um [Documento](#documento), com posições
 inicial e final fixas. O que define um **Campo** é a declaração de campo para um tipo Java
 em uma [Linha](#linha), anotada com 
-[@FieldStr](#configurando-campo-_string_-com-fieldstr), 
-[@FieldInt](#configurando-campo-inteiro-com-fieldint), 
-[@FieldDec](#configurando-campo-decimal-com-fielddec),
-[@FieldDtm](#configurando-campo-data-com-fielddtm) ou
-[@FieldCtm](#configurando-campo-personalizado-com-fieldctm). 
+[@FieldStr](#fieldstr), 
+[@FieldInt](#fieldint), 
+[@FieldDec](#fielddec),
+[@FieldDtm](#fielddtm) ou
+[@FieldCtm](#fieldctm). 
  
 Um **Campo** correspondente à um trecho fixo de determinada [Linha](#linha), porém, nesse 
 espaço reservado, o valor poderá estar formatado à esquerda ou à direita, ter espaço vazio
 preenchido com determinado caractere configurado, etc, conforme configuração das propriedades: 
-[position](#configurando-posio-do-campo-com-position), 
-[length](#configurando-comprimento-do-campo-em-texto-com-length),
-[align](#configurando-alinhamento-do-valor-do-campo-com-align),
-[fill](#configurando-preenchimento-do-campo-com-fill),
-[format](#configurando-formato-para-data-com-format),
-[decimal](#configurando-quantidade-de-casas-decimais-com-decimal) e
-[separator](#configurando-separador-de-casas-decimais-com-separator).
+[position](#position), 
+[length](#length),
+[align](#align),
+[fill](#fill),
+[format](#format),
+[decimal](#decimal) e
+[separator](#separator).
 
 ## Relatório de configuração
 
@@ -342,7 +343,7 @@ A anotação **@Header** configura a linha que deverá ocorrer primeiro e uma ú
 vez no [Documento](#documento). 
 
 O campo do [Documento](#documento) anotado com **@Header** deve ser uma 
-classe anotada com [@Line](#configurando-classe-linha-com-line).
+classe anotada com [@Line](#line).
 
 ### `@Footer`
 
@@ -358,8 +359,8 @@ O campo do [Documento](#documento) anotado com **@Footer** deve ser uma [Linha](
 > Configurando itens do [Documento](#documento).
 
 Configura qualquer outra [Linha](#linha) do [Documento](#documento) que não seja
-um [`@Header`](#configurando-cabealho-com-header) ou um 
-[`@Footer`](#configurando-rodap-com-footer), e que poderá ocorrer no 
+um [`@Header`](#header) ou um 
+[`@Footer`](#footer), e que poderá ocorrer no 
 documento uma única ou múltiplas vezes, conforme o tipo utilizado na declaração
 do campo na classe. 
 
@@ -378,7 +379,7 @@ public class MyDocument {
 }
 ```
 
-> O atributo opcional [`order`](#configurando-ordem-do-_item_-no-documento-com-order) 
+> O atributo opcional [`order`](#order) 
 > permite configurar a ordem em que determinada linha deverá ser escrita, em relação 
 > às outras linhas do [Documento](#documento), quando houver mais de uma linha anotada com
 > `@Item`.
@@ -391,7 +392,7 @@ public class MyDocument {
 
 A anotação `@Line` deve ser utilizada para configurar determinada classe para ser tratada 
 como uma [Linha](#linha) pelo _framework_. Essa configuração requer valor para o atributo
-[`identifier`](#identificando-uma-linha-com-identifier), pois, é necessário para 
+[`identifier`](#identifier), pois, é necessário para 
 identificação do tipo da [Linha](#linha) quando representada em texto.
 
 Uma classe anotada com `@Line` deve ter, obrigatoriamente, um construtor _default_. 
@@ -437,7 +438,7 @@ suporte para os tipos Java `char`, `Character` e `String`.
 
 Requer | Opcional
 -------|---------
-[`position`](#configurando-posio-do-campo-com-position) [`length`](#configurando-comprimento-do-campo-em-texto-com-length) | [`align`](#configurando-alinhamento-do-valor-do-campo-com-align) [`fill`](#configurando-preenchimento-do-campo-com-fill)
+[`position`](#position) [`length`](#length) | [`align`](#align) [`fill`](#fill)
 
 ### `@FieldInt`
 
@@ -449,7 +450,7 @@ suporte para os tipos Java `byte`, `short`, `int`, `long`, `Byte`, `Short`,
 
 Requer | Opcional
 -------|---------
-[`position`](#configurando-posio-do-campo-com-position) [`length`](#configurando-comprimento-do-campo-em-texto-com-length) | [`align`](#configurando-alinhamento-do-valor-do-campo-com-align) [`fill`](#configurando-preenchimento-do-campo-com-fill)
+[`position`](#position) [`length`](#length) | [`align`](#align) [`fill`](#fill)
 
 ### `@FieldDec`
 
@@ -460,7 +461,7 @@ suporte para os tipos Java `float`, `double`, `Float`, `Double`, e `BigDecimal`.
 
 Requer | Opcional
 -------|---------
-[`position`](#configurando-posio-do-campo-com-position) [`length`](#configurando-comprimento-do-campo-em-texto-com-length) | [`align`](#configurando-alinhamento-do-valor-do-campo-com-align) [`decimals`](#configurando-quantidade-de-casas-decimais-com-decimal) [`fill`](#configurando-preenchimento-do-campo-com-fill) [`separator`](#configurando-separador-de-casas-decimais-com-separator)
+[`position`](#position) [`length`](#length) | [`align`](#align) [`decimals`](#decimal) [`fill`](#fill) [`separator`](#separator)
 
 ### `@FieldDtm`
 
@@ -471,7 +472,7 @@ suporte para o tipo Java `java.util.Date`.
 
 Requer | Opcional
 -------|---------
-[`position`](#configurando-posio-do-campo-com-position)| [`format`](#configurando-formato-para-data-com-format)
+[`position`](#position)| [`format`](#format)
 
 ## Atributos de configuração
 
@@ -518,7 +519,7 @@ Configurando posição do campo na [Linha](#linha).
 
 Ao converter os [Campos](#campo) de determinada [Linha](#linha) para texto, o
 _framework_ iniciará uma _string_ com o literal configurado em 
-[`identifier`](#identificando-uma-linha-com-identifier) e, para cada campo 
+[`identifier`](#identifier) e, para cada campo 
 declarado na [Linha](#linha), seguindo a ordem crescente do valor configurado
 em `position`, a partir da `position` com valor `1`, irá concatenar à direita dessa _string_
 o valor do campo convertido para texto, conforme a sua configuração.
@@ -528,7 +529,7 @@ o valor do campo convertido para texto, conforme a sua configuração.
 > do Java não define, ou garante, a ordem em que os campos recuperados de uma
 > classe via _reflection_ são retornados. Dessa forma essa abordagem ficaria 
 > dependente da implementação do JDK. A configuração 
-> [`order`](#configurando-ordem-do-_item_-no-documento-com-order) existe pelo mesmo
+> [`order`](#order) existe pelo mesmo
 > motivo.
 
 Portanto, idependentemente da ordem em que os campos são declarados em uma
@@ -580,7 +581,7 @@ Tipo | Valor | Utilizado por
 > Configurando comprimento do [Campo](#campo).
 
 Um [Campo](#campo) corresponde a um trecho de texto da linha em determinada posição inicial e final, conforme
-valor configurado em [`position`](#configurando-posio-do-campo-com-position), e comprimento em `length`.
+valor configurado em [`position`](#position), e comprimento em `length`.
 
 `length` define a largura em caracateres que o campo irá reservar no texto da linha para o valor formatado.    
 
@@ -616,7 +617,7 @@ Tipo | Valor | _Default_ | Utilizado por
 Configurando preenchimento do [Campo](#campo).
 
 Provavelmente a _string_ resultante da conversão do valor do campo terá comprimento menor que o configurado
-em [`length`](#configurando-comprimento-do-campo-em-texto-com-length). Nesse caso, o _framework_ irá concatenar
+em [`length`](#length). Nesse caso, o _framework_ irá concatenar
 o valor definido em `fill` ao valor do campo até que a _string_ atinja o comprimento determinado.
 
 Tipo | Valor | _Default_ | Utilizado por 
@@ -663,9 +664,9 @@ Define a ordem em que a [Linha](#linha) corrrespondente de determinado _item_ se
 gerado no arquivo em relação aos demais itens do [Documento](#documento). 
 
 Ao converter determinado [Documento](#documento) em arquivo texto, o _framework_ esreverá
-primeiro a [Linha](#linha) correspondente do _item_ anotado com [@Header](#configurando-cabealho-com-header),
-se existir, depois as linhas dos itens anotados com [@Item](#configurando-itens-com-item)
-e, por último, a linha do _item_ anotado com [@Footer](#configurando-rodap-com-footer).
+primeiro a [Linha](#linha) correspondente do _item_ anotado com [@Header](#header),
+se existir, depois as linhas dos itens anotados com [@Item](#item)
+e, por último, a linha do _item_ anotado com [@Footer](#footer).
 
 Tipo | Valor | _Default_ | Utilizado por 
 -----|-------|-----------|--------------
@@ -1137,7 +1138,7 @@ public class ColorConverter implements Converter {
 
 > Configurando [Campo](#campo) personalizado.
 
-Dada a implementação de [`Converter`](#personalizando-a-converso-objetotexto-implementando-a-_interface_-converter)
+Dada a implementação de [`Converter`](#_interface_-converter)
 para determinado tipo personalizado, basta especificar a classe correspondente ao 
 atributo `converter` da anotação `@FieldCtm`, ao configurar o campo de tipo específico, 
 da forma com foi utilizado no exemplo [FooterLine](#footerline):
