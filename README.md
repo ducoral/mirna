@@ -1,51 +1,52 @@
 # `mirna`
 
-Bem-vindo ao projeto **mirna**.
+Bem-vindo ao projeto **`mirna`**.
  
-> Um _framework_ simples escrito em Java para manipulação de arquivos do tipo 
-> _flat-file_, que utiliza objetos configurados por anotação, e dá suporte à confecção
-> de documentos avançados via configuração de subitens.
+> Um _framework_ escrito em Java para manipulação de arquivos textos do tipo 
+> [_Flat-file_](https://en.wikipedia.org/wiki/Flat-file_database) com suporte
+> à subitens e extensão de funcionalidade. A estrutura e conteúdo dos arquivos 
+> são mapeados em classes configuradas via anotação. 
 
 **Documentação:**
 
-- [Conceitos](#conceitos):
-    [Documento](#documento), 
-    [Item](#item),
-    [Linha](#linha) e
-    [Campo](#campo)
-- [Configurando Documento](#configurao-de-documento): 
-    [`@Document`](#document) 
-    [`@Header`](#header) 
-    [`@Footer`](#footer) 
-    [`@Item`](#item)
-- [Configurando Linha](#configurao-de-linha-e-campos): 
-    [`@Line`](#line) 
-    [`@FieldStr`](#fieldstr) 
-    [`@FieldInt`](#fieldint) 
-    [`@FieldDec`](#fielddec) 
-    [`@FieldDtm`](#fielddtm)
-- [Parâmetros](#atributos-de-configurao):
-    [`identifier`](#identifier)
-    [`position`](#position)
-    [`length`](#length)
-    [`align`](#align)
-    [`fill`](#fill)
-    [`format`](#format)
-    [`decimal`](#decimal)
-    [`separator`](#separator)
-    [`order`](#order)
-- [Em ação](#em-ao):
-    [`Mirna.toText()`](#mirnatotext)
-    [`Mirna.writeDocument()`](#mirnawritedocument)
-    [`Mirna.fromText()`](#mirnafromtext)
-    [`Mirna.readDocument()`](#mirnareaddocument)
-- [Personalização](#personalizando-a-configurao):
-    [`Converter`](#_interface_-converter)
-    [`@FieldCtm`](#fieldctm)
-    [`converter`](#converter)
-- [Avançado](#configurao-de-subitens-e-documentos-complexos):
-    [Subitens](#configurando-subitem-de-linha-com-item) e
-    [Documentos complexos](#configurando-documentos-complexos-com-itens-e-subitens)
+- [Conceito](#conceito)
+    - [Documento](#documento) 
+    - [Item](#item)
+    - [Linha](#linha)
+    - [Campo](#campo)
+- [Configurando Documento](#configurao-de-documento) 
+    - [`@Document`](#document) 
+    - [`@Header`](#header) 
+    - [`@Footer`](#footer) 
+    - [`@Item`](#item)
+- [Configurando Linha](#configurao-de-linha-e-campos) 
+    - [`@Line`](#line) 
+    - [`@FieldStr`](#fieldstr) 
+    - [`@FieldInt`](#fieldint) 
+    - [`@FieldDec`](#fielddec) 
+    - [`@FieldDtm`](#fielddtm)
+- [Parâmetros](#atributos-de-configurao)
+    - [`identifier`](#identifier)
+    - [`position`](#position)
+    - [`length`](#length)
+    - [`align`](#align)
+    - [`fill`](#fill)
+    - [`format`](#format)
+    - [`decimal`](#decimal)
+    - [`separator`](#separator)
+    - [`order`](#order)
+- [Em ação](#em-ao)
+    - [`Mirna.toText()`](#mirnatotext)
+    - [`Mirna.writeDocument()`](#mirnawritedocument)
+    - [`Mirna.fromText()`](#mirnafromtext)
+    - [`Mirna.readDocument()`](#mirnareaddocument)
+- [Estendendo a funcionalidade](#estendendo-a-funcionalidade)
+    - [`Converter`](#_interface_-converter)
+    - [`@FieldCtm`](#fieldctm)
+    - [`converter`](#converter)
+- [Avançado](#configurao-de-subitens-e-documentos-complexos)
+    - [Subitens](#configurando-subitem-de-linha-com-item)
+    - [Documentos complexos](#configurando-documentos-complexos-com-itens-e-subitens)
 
 **Download:**
 
@@ -59,7 +60,7 @@ Bem-vindo ao projeto **mirna**.
 </dependencies>
 ```
 
-## Conceitos
+## Conceito
 
 **mirna** é fundamentada em um conceito de [Documento](#documento). [Documento](#documento) é um
 objeto convertível para texto _flat-file_ e é composto por [Linhas](#linha). Uma [Linha](#linha), 
@@ -1091,7 +1092,7 @@ Iitem3**3000555,3330
 F10042020  255:0:255
 ```
 
-## Personalizando a configuração
+## Estendendo a funcionalidade
 
 `mirna` permite a extensão de funcionalidade através de especilização da _interface_ `Converter`, que
 pode ser utilizada na configuração de campo personalizado anotado com `@FieldCtm`.
