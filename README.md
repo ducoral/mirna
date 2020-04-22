@@ -69,7 +69,7 @@ como um [Documento](#documento) que contém [Itens](#item).
 
 [Linha](#linha) é [identificada](#identifier) e contém [Campos](#campo).
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Documento
 
@@ -85,7 +85,7 @@ Um **Documento** pode conter várias [Linhas](#linha) de vários tipos. Porém, 
 Segue abaixo a declaração do **Documento** de exemplo, [MyDocument](#mydocument), utilizado
 para ilustrar as funcionalidades descritas nessa documentação.
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ###### MyDocument
 
@@ -117,7 +117,7 @@ public class MyDocument {
 [MyDocument](#mydocument) é composto por um cabeçalho, do tipo [HeaderLine](#headerline),
 seguido de uma lista de [DetailLine](#detailline) e por um rodapé do tipo [FooterLine](#footerline).
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Item
 
@@ -129,7 +129,7 @@ vez no **Documento**. A primeira e a última, respectivamente. Porém, é possí
 [Linha](#linha) com múltiplas ocorrências declarando item com o tipo 
 `java.util.List<`[Linha](#linha)`>`.
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Linha
 
@@ -218,7 +218,7 @@ public class FooterLine {
 }
 ```
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Campo
 
@@ -233,7 +233,7 @@ configurado, etc, conforme configuração das propriedades: [position](#position
 [length](#length), [align](#align), [fill](#fill), [format](#format), [decimal](#decimal) 
 e [separator](#separator).
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Relatório de configuração
 
@@ -297,7 +297,7 @@ com.github.ducoral.mirna.sample.MyDocument document
 +------------+------+----+-----+------+-------+----------+-----+------+-------+
 ``` 
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Configuração de Documento
 
@@ -332,7 +332,7 @@ public class Main {
 }
 ```
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `@Header`
 
@@ -345,7 +345,7 @@ deve ser uma classe anotada com [@Line](#line).
 O campo `header` da classe [MyDocument](#mydocument) é um exemplo de cabeçalho configurado
 com **@Header**.  
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `@Footer`
 
@@ -357,7 +357,7 @@ O campo do [Documento](#documento) anotado com **@Footer** deve ser uma [Linha](
 O campo `footer` da classe [MyDocument](#mydocument) é um exemplo de rodapé configurado
 com **@Footer**.
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `@Item`
 
@@ -384,7 +384,7 @@ O atributo opcional [`order`](#order) permite configurar a ordem em que determin
 deverá ser escrita, em relação às outras linhas do [Documento](#documento), quando houver 
 mais de uma linha anotada com `@Item`.
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Configurando Linha
 
@@ -430,7 +430,7 @@ public class MyLine {
 }
 ```
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `@FieldStr`
 
@@ -441,7 +441,7 @@ Requer | Opcional
 -------|---------
 [`position`](#position) [`length`](#length) | [`align`](#align) [`fill`](#fill)
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `@FieldInt`
 
@@ -453,7 +453,7 @@ Requer | Opcional
 -------|---------
 [`position`](#position) [`length`](#length) | [`align`](#align) [`fill`](#fill)
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `@FieldDec`
 
@@ -464,7 +464,7 @@ Requer | Opcional
 -------|---------
 [`position`](#position) [`length`](#length) | [`align`](#align) [`decimals`](#decimal) [`fill`](#fill) [`separator`](#separator)
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `@FieldDtm`
 
@@ -475,7 +475,7 @@ Requer | Opcional
 -------|---------
 [`position`](#position)| [`format`](#format)
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Parâmetros
 
@@ -512,7 +512,7 @@ Tipo | Valor | Utilizado por
 -----|-------|--------------
 `String` | qualquer _string_ | `@Line`
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `position`
 
@@ -577,7 +577,7 @@ Tipo | Valor | Utilizado por
 -----|-------|--------------
 `int` | `1`, `2`, ..., `Integer.MAX_VALUE` | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldDtm` `@FieldCtm`
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `length`
 
@@ -591,7 +591,7 @@ Tipo | Valor | Utilizado por
 -----|-------|--------------
 `int` | `1`, `2`, ..., `Integer.MAX_VALUE` | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldCtm`
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `align`
 
@@ -613,7 +613,7 @@ Tipo | Valor | _Default_ | Utilizado por
 -----|-------|-----------|--------------
 `com.github.ducoral.Align` | `LEFT`, `RIGHT` | `RIGHT` nos campos numéricos e `LEFT` nos demais | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldDtm` `@FieldCtm`
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `fill`
 
@@ -625,7 +625,7 @@ Tipo | Valor | _Default_ | Utilizado por
 -----|-------|-----------|--------------
 `char` | qualquer _char_ | `' '` | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldCtm`
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `format`
 
@@ -635,7 +635,7 @@ Tipo | Valor | _Default_ | Utilizado por
 -----|-------|-----------|--------------
 `String` | `"dd/MM/yyyy"`, `"ddMMyy"`, padrão `SimpleDateFormat` | `"ddMMyyyy"` | `@FieldDtm`
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `decimal`
 
@@ -646,7 +646,7 @@ Tipo | Valor | _Default_ | Utilizado por
 -----|-------|-----------|--------------
 `int` | `1`, `2`, ..., mais do que `6` não é possível que precise | `2` | `@FieldDec`
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `separator`
 
@@ -657,7 +657,7 @@ Tipo | Valor | _Default_ | Utilizado por
 -----|-------|-----------|--------------
 `char` | `'.'`, `','`, etc. | `'\0'` | `@FieldDec`
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ### `order`
 
@@ -673,7 +673,7 @@ Tipo | Valor | _Default_ | Utilizado por
 -----|-------|-----------|--------------
 `int` | `1`, `2`, ..., `Integer.MAX_VALUE` | `0` | `@Item`
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Em ação
 
@@ -684,7 +684,7 @@ Segue abaixo declaração de instância de [MyDocument](#mydocument), configurad
 [HeaderLine](#headerline), [DetailLine](#detailline) e [FooterLine](#footerline) para ser utilizada
 como caso para explicação abaixo dos métodos `Mirna.toText()` e `Mirna.writeDocument()`.
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ###### myDoc 
 
@@ -699,7 +699,7 @@ MyDocument myDoc = new MyDocument(
 );
 ```
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## `Mirna.toText()`
 
@@ -722,7 +722,7 @@ Dstr3000300000000789
 F10042020  255:0:255
 ```
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## `Mirna.writeDocument()`
 
@@ -749,7 +749,7 @@ Dstr3000300000000789
 F10042020  255:0:255
 ```
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## `Mirna.fromText()`.
 
@@ -772,7 +772,7 @@ MyDocument myDocFromText = Mirna.fromText(MyDocument.class, text);
 A instância de [MyDocument](#mydocument) resultante atribuída na variável `myDocFromText` teria a 
 mesma configuração da instância configurada na variável [myDoc](#mydoc).
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## `Mirna.readDocument()`.
 
@@ -799,14 +799,14 @@ MyDocument myDocFromReader = Mirna.readDocument(MyDocument.class, new StringRead
 A instância de [MyDocument](#mydocument) resultante atribuída na variável `myDocFromReader` teria a 
 mesma configuração da instância configurada na variável [myDoc](#mydoc).
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Avançado
 
 **mirna** permite configurar [Linha](#linha) que contenha outra linha relacionada como subitem. Não há
 limites na quantidade de subitens para configuração de [Linhas](#linha). 
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Subitens
 
@@ -847,7 +847,7 @@ utilizada para configurar itens no [Documento](#documento).
 
 O tipo `DetailLine` é uma [Linha](#linha), como pode ser observado na declaração abaixo:
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Documentos complexos
 
@@ -1103,14 +1103,14 @@ Iitem3**3000555,3330
 F10042020  255:0:255
 ```
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## Estendendo a funcionalidade
 
 `mirna` permite a extensão de funcionalidade através de especilização da _interface_ `Converter`, que
 pode ser utilizada na configuração de campo personalizado anotado com `@FieldCtm`.
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## _Interface_ `Converter`
 
@@ -1148,7 +1148,7 @@ public class ColorConverter implements Converter {
 } 
 ```  
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## `@FieldCtm`
 
@@ -1162,7 +1162,7 @@ da forma com foi utilizado no exemplo [FooterLine](#footerline):
 private Color fieldCtm;
 ```   
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
 
 ## `converter`
 
@@ -1170,4 +1170,4 @@ O atributo `converter`, da anotação `@FieldCtm`, requer a instância de `java.
 correspondente à implementação de `Converter` que deverá ser utilizada pelo _framework_ ao
 efetuar a conversão objeto/texto para o tipo declarado no campo personalizado.
 
-###### [`Voltar`](#documentação)
+###### [`Voltar`](#mirna)
