@@ -3,11 +3,11 @@
 Bem-vindo ao projeto **mirna**.
  
 > Um _framework_ escrito em Java para manipulação de arquivos textos do tipo 
-> [_Flat-file_](https://en.wikipedia.org/wiki/Flat-file_database) com suporte
+> [_flat-file_](https://en.wikipedia.org/wiki/Flat-file_database), com suporte
 > à subitens e extensão de funcionalidade. A estrutura e conteúdo dos arquivos 
 > são mapeados em classes configuradas via anotação. 
 
-**Documentação:**
+## **Documentação**
 
 - [Fundamento](#fundamento)
     | [Documento](#documento) 
@@ -19,13 +19,13 @@ Bem-vindo ao projeto **mirna**.
     | [`@Header`](#header) 
     | [`@Footer`](#footer) 
     | [`@Item`](#item-1)
-- [Configurando Linha](#configurao-de-linha-e-campos) 
+- [Configurando Linha](#configurando-linha) 
     | [`@Line`](#line) 
     | [`@FieldStr`](#fieldstr) 
     | [`@FieldInt`](#fieldint) 
     | [`@FieldDec`](#fielddec) 
     | [`@FieldDtm`](#fielddtm)
-- [Parâmetros](#atributos-de-configurao)
+- [Parâmetros](#parmetros)
     | [`identifier`](#identifier)
     | [`position`](#position)
     | [`length`](#length)
@@ -44,11 +44,11 @@ Bem-vindo ao projeto **mirna**.
     | [`Converter`](#_interface_-converter)
     | [`@FieldCtm`](#fieldctm)
     | [`converter`](#converter)
-- [Avançado](#configurao-de-subitens-e-documentos-complexos)
-    | [Subitens](#configurando-subitem-de-linha-com-item)
-    | [Documentos complexos](#configurando-documentos-complexos-com-itens-e-subitens)
+- [Avançado](#avanado)
+    | [Subitens](#subitens)
+    | [Documentos complexos](#documentos-complexos)
 
-**Download:**
+## **Download**
 
 ```xml
 <dependencies>
@@ -62,32 +62,26 @@ Bem-vindo ao projeto **mirna**.
 
 ## Fundamento
 
-Determinado arquivo texto tratado pelo _framework_ é entendido como [Documento](#documento), uma
-classe anotada com [@Document](#document), composta por [Itens](#item), campos de classe
-anotados com [@Item](#item) 
+O _framework_ trata o arquivo [_flat-file_](https://en.wikipedia.org/wiki/Flat-file_database) 
+como um [Documento](#documento) que contém [Itens](#item).
 
-**mirna** é fundamentada em um conceito de [Documento](#documento). [Documento](#documento) é um
-objeto convertível para texto _flat-file_ e é composto por [Linhas](#linha). Uma [Linha](#linha), 
-por sua vez, é formada por [Campos](#campo) que são ordenados por determinada posição configurada.
+[Item](#item) representa a instância de única ou múltiplas [Linhas](#linha).
+
+[Linha](#linha) é [identificada](#identifier) e contém [Campos](#campo).
 
 ## Documento
 
-O _framework_ trata como **Documento** uma classe configurada com a anotação 
-[@Document](#document). Um **Documento** deve conter campos
-do tipo [Linha](#linha) anotados com
-[@Header](#header), [@Footer](#footer) ou 
-[@Item](#item). 
+**Documento** é uma classe configurada com a anotação [@Document](#document). Cada campo dessa
+classe é entendido como um [Item](#item).  
 
-[@Header](#header) e [@Footer](#footer) configuram
-[Linha](#linha) que deve ocorrer uma única vez no **Documento**. A primeira e a última, 
-respectivamente. Porém, é possível mapear [Linha](#linha) com múltiplas ocorrências declarando
-item com tipo `java.util.List<`[Linha](#linha)`>`.
+Não há limite para a quantidade de [Itens](#item) configurados. Além disso, o _framework_ 
+suporta a configuração de [subitens](#subitens).
 
 Um **Documento** pode conter várias [Linhas](#linha) de vários tipos. Porém, um mesmo tipo de
-[Linha](#linha) não pode estar configurado em mais de uma posição em um mesmo **Documento**.
- 
-Segue abaixo a declaração de [MyDocument](#mydocument), que será utilizada como exemplo de
-**Documento** para ilustrar as funcionalidades descritas na documentação. 
+[Linha](#linha) não pode estar configurado em mais de um [Item](#item) em um mesmo **Documento**.
+
+Segue abaixo a declaração do **Documento** de exemplo, [MyDocument](#mydocument), utilizado
+para ilustrar as funcionalidades descritas nessa documentação.
 
 ###### MyDocument
 
@@ -116,37 +110,32 @@ public class MyDocument {
 }
 ``` 
 
-O **Documento** [MyDocument](#mydocument) é composto por um cabeçalho, do tipo [HeaderLine](#headerline),
+[MyDocument](#mydocument) é composto por um cabeçalho, do tipo [HeaderLine](#headerline),
 seguido de uma lista de [DetailLine](#detailline) e por um rodapé do tipo [FooterLine](#footerline).
 
 ## Item
 
-Falta definir conceito de Item no documento, que representa posição do documento que pode
-gerar uma ou mais linhas de documento texto.
+**Item**, em determinado [Documento](#documento), representa uma ou várias [Linhas](#linha), e
+deve estar configurado com as anotações [@Header](#header), [@Footer](#footer) ou [@Item](#item).
+
+[@Header](#header) e [@Footer](#footer) configuram [Linha](#linha) que deve ocorrer uma única 
+vez no **Documento**. A primeira e a última, respectivamente. Porém, é possível mapear 
+[Linha](#linha) com múltiplas ocorrências declarando item com o tipo 
+`java.util.List<`[Linha](#linha)`>`.
 
 ## Linha
 
-**Linha** é a configuração que representa a ocorrência de determinada linha em um 
-[Documento](#documento). Uma **Linha** corresponde à uma classe configurada com a anotação 
-[@Line](#line), com uma identidade definida no atributo 
-[identifier](#identifier) e com
-[Campos](#campo) declarados para tipos Java, anotados com 
-[@FieldStr](#fieldstr), 
-[@FieldInt](#fieldint), 
-[@FieldDec](#fielddec),
-[@FieldDtm](#fielddtm) ou
-[@FieldCtm](#fieldctm). 
+**Linha** representa a linha de texto no arquivo 
+[_flat-file_](https://en.wikipedia.org/wiki/Flat-file_database), é [identificada](#identifier) 
+e contém [Campos](#campo). 
 
-[@FieldCtm](#fieldctm) permite extensão de funcionalidade
-dando suporte à configuração de [Campo](#campo) para tipo não suportado pelo _framework_,
-aceitando por parâmetro implementação personalizada de 
-[Converter](#converter), que será a responsável pela
-conversão objeto/texto.
+A classe que configura determinada **Linha** deve estar anotada com [@Line](#line). Cada 
+[Campo](#campo) da classe pode ser de um dos tipos Java suportados ou de tipo personalizado, 
+conforme [extensão de funcionalidade](#estendendo-a-funcionalidade) fornecida pelo usuário.
 
-Segue abaixo a declaração das classes [HeaderLine](#headerline), [DetailLine](#detailline) 
-e [FooterLine](#footerline), correspondentes às **Linhas** configuradas em [MyDocument](#mydocument)
-e que serão utilizadas como exemplo de **Linha** na ilustração de funcionalidades descritas 
-na documentação. 
+Segue abaixo a definição das classes [HeaderLine](#headerline), [DetailLine](#detailline) 
+e [FooterLine](#footerline), correspondentes às **Linhas** configuradas como [Itens](#item) 
+de [MyDocument](#mydocument). 
 
 ##### HeaderLine
 
@@ -223,33 +212,24 @@ public class FooterLine {
 
 ## Campo
 
-**Campo** correspondente ao trecho de uma linha de um [Documento](#documento), com posições
-inicial e final fixas. O que define um **Campo** é a declaração de campo para um tipo Java
-em uma [Linha](#linha), anotada com 
-[@FieldStr](#fieldstr), 
-[@FieldInt](#fieldint), 
-[@FieldDec](#fielddec),
-[@FieldDtm](#fielddtm) ou
-[@FieldCtm](#fieldctm). 
+**Campo** representa uma _substring_ em determinada linha de arquivo texto, com posições inicial e 
+final fixas. O campo de classe que configura um **Campo** deve estar anotado com 
+[@FieldStr](#fieldstr), [@FieldInt](#fieldint), [@FieldDec](#fielddec), [@FieldDtm](#fielddtm) 
+ou [@FieldCtm](#fieldctm), para o caso de campo com tipo personalizado. 
  
-Um **Campo** correspondente à um trecho fixo de determinada [Linha](#linha), porém, nesse 
-espaço reservado, o valor poderá estar formatado à esquerda ou à direita, ter espaço vazio
-preenchido com determinado caractere configurado, etc, conforme configuração das propriedades: 
-[position](#position), 
-[length](#length),
-[align](#align),
-[fill](#fill),
-[format](#format),
-[decimal](#decimal) e
-[separator](#separator).
+O valor de determinado campo, dentro do trecho fixo reservado na linha texto, poderá estar 
+formatado à esquerda ou à direita, ter espaço vazio preenchido com determinado caractere 
+configurado, etc, conforme configuração das propriedades: [position](#position), 
+[length](#length), [align](#align), [fill](#fill), [format](#format), [decimal](#decimal) 
+e [separator](#separator).
 
 ## Relatório de configuração
 
-> **mirna** contém o método estático `Mirna.report` que imprime no _console_ o relatório 
-> de configuração de um [Documento](#documento), da classe correspondente especificada
-> por parâmetro.
+O metodo estático `Mirna.report(Class<?>)` imprime no `console` um relatório de configuração
+de [Documento](#documento), conforme classe especificada por parâmetro, formatado em texto.
 
-Segue abaixo a saída da execução de `Mirna.report(MyDocument.class)`:
+Segue abaixo a saída do relatório de configuração de [MyDocument](#mydocument), resultante da 
+execução da instrução `Mirna.report(MyDocument.class)`:
 
 ```
               _
@@ -309,12 +289,9 @@ com.github.ducoral.mirna.sample.MyDocument document
 
 ### `@Document`
 
-> Configurando classe [Documento](#documento).
+A anotação **@Document** configura determinada classe Java para ser tratada como
+[Documento](#documento) pelo _framework_, conforme a classe `MyDocument` declarada abaixo:
 
-Determinado POJO (classe Java) que pretende ser tratado como um [Documento](#documento) deve 
-estar anotado com [@Document](#documento). 
-
-Exemplo:
 ```java
 @Document
 public class MyDocument {
@@ -322,7 +299,8 @@ public class MyDocument {
 }
 ```
 
-> A partir do exemplo, escrita e leitura de um objeto MyDocument pode ser feita da sequinte forma:
+A partir do [Documento](#documento) `MyDocument` definido acima, é possível escrever/ler para
+arquivo ou converter para _string_ da sequinte forma:
 
 ```java
 public class Main {
@@ -340,38 +318,42 @@ public class Main {
 }
 ```
 
-### `@Header`
+###### [`Voltar`](#documentao)
 
-> Configurando cabeçalho do [Documento](#documento).
+### `@Header`
 
 A anotação **@Header** configura a linha que deverá ocorrer primeiro e uma única 
 vez no [Documento](#documento). 
 
-O campo do [Documento](#documento) anotado com **@Header** deve ser uma 
-classe anotada com [@Line](#line).
+O campo de classe de determinado [Documento](#documento) anotado com **@Header** 
+deve ser uma classe anotada com [@Line](#line).
+
+O campo `header` da classe [MyDocument](#mydocument) é um exemplo de cabeçalho configurado
+com **@Header**.  
+
+###### [`Voltar`](#documentao)
 
 ### `@Footer`
-
-> Configurando rodapé do [Documento](#documento).
 
 A anotação **@Footer** configura a linha que deverá ocorrer uma única vez e por 
 último no [Documento](#documento).
 
 O campo do [Documento](#documento) anotado com **@Footer** deve ser uma [Linha](#linha). 
 
+O campo `footer` da classe [MyDocument](#mydocument) é um exemplo de rodapé configurado
+com **@Footer**.
+
+###### [`Voltar`](#documentao)
+
 ### `@Item`
 
-> Configurando itens do [Documento](#documento).
+Configura qualquer outra [Linha](#linha) do [Documento](#documento) que não seja um 
+[`@Header`](#header) ou um [`@Footer`](#footer), e que poderá ocorrer no documento uma 
+única ou múltiplas vezes, conforme a declaração do campo na classe. 
 
-Configura qualquer outra [Linha](#linha) do [Documento](#documento) que não seja
-um [`@Header`](#header) ou um 
-[`@Footer`](#footer), e que poderá ocorrer no 
-documento uma única ou múltiplas vezes, conforme o tipo utilizado na declaração
-do campo na classe. 
-
-Não há limites para a quantidade de [Linhas](#linha) anotadas com `@Item`. Para
-configurar uma linha para aceitar múltiplas ocorrências, declare o campo com
-o tipo `java.util.List<`[`Linha`](#linha)`>`, conforme exemplo abaixo:
+Não há limites para a quantidade de [Linhas](#linha) anotadas com `@Item`. Para configurar 
+determinada linha para aceitar múltiplas ocorrências, o campo deve ser declarado com lista, 
+`java.util.List<`[`Linha`](#linha)`>`, conforme exemplo abaixo:
 
 ```java
 public class MyDocument {
@@ -384,29 +366,19 @@ public class MyDocument {
 }
 ```
 
-> O atributo opcional [`order`](#order) 
-> permite configurar a ordem em que determinada linha deverá ser escrita, em relação 
-> às outras linhas do [Documento](#documento), quando houver mais de uma linha anotada com
-> `@Item`.
+O atributo opcional [`order`](#order) permite configurar a ordem em que determinada linha 
+deverá ser escrita, em relação às outras linhas do [Documento](#documento), quando houver 
+mais de uma linha anotada com `@Item`.
 
-## Configuração de Linha e Campos
+###### [`Voltar`](#documentao)
+
+## Configurando Linha
 
 ### `@Line`
 
-> Configurando [Linha](#linha).
+A anotação `@Line` configura determinada classe para mapear linha do arquivo texto.
 
-A anotação `@Line` deve ser utilizada para configurar determinada classe para ser tratada 
-como uma [Linha](#linha) pelo _framework_. Essa configuração requer valor para o atributo
-[`identifier`](#identifier), pois, é necessário para 
-identificação do tipo da [Linha](#linha) quando representada em texto.
-
-Uma classe anotada com `@Line` deve ter, obrigatoriamente, um construtor _default_. 
-Segundo a especificação [8.8.9. Default Constructor](https://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.8.9) 
-do Java, um construtor _default_ será gerado pelo compilador automaticamente se não
-houver nenhum outro declarado na classe implementada. Portanto, nesse caso, deixar 
-a classe sem nenhum construtor está OK também.
-
-A classe, portanto, pode estar sem construtora:
+Exemplo:
 
  ```java
 @Line(identifier = "id")
@@ -416,7 +388,17 @@ public class MyLine {
 }
 ```
 
-Caso o contrário, deverá ter uma construtora _default_ declarada, se houver outra com parâmetros:
+O atributo [`identifier`](#identifier) configura a _string_ que será utilizada como 
+identificador de determinada linha no arquivo texto. O valor especificado em 
+[`identifier`](#identifier) é fixado como primeiro campo da linha texto.   
+ 
+Uma classe anotada com `@Line` deve ter, obrigatoriamente, um construtor _default_. Segundo a 
+especificação [8.8.9. Default Constructor](https://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.8.9) 
+, um construtor _default_ será gerado pelo compilador automaticamente se não houver 
+nenhum outro declarado na classe implementada. Portanto, nesse caso, deixar a classe sem 
+nenhum construtor está OK também.
+
+Exemplo de classe com construtora _default_ declarada:
 
  ```java
 @Line(identifier = "id")
@@ -434,9 +416,9 @@ public class MyLine {
 }
 ```
 
-### `@FieldStr`
+###### [`Voltar`](#documentao)
 
-> Configurando [Campo](#campo) para tipo _string_.
+### `@FieldStr`
 
 A anotação `@FieldStr` é utilizada para configurar campos _string_, dando 
 suporte para os tipos Java `char`, `Character` e `String`.
@@ -445,9 +427,9 @@ Requer | Opcional
 -------|---------
 [`position`](#position) [`length`](#length) | [`align`](#align) [`fill`](#fill)
 
-### `@FieldInt`
+###### [`Voltar`](#documentao)
 
-> Configurando [Campo](#campo) para tipo inteiro.
+### `@FieldInt`
 
 A anotação `@FieldInt` é utilizada para configurar campos inteiros, dando 
 suporte para os tipos Java `byte`, `short`, `int`, `long`, `Byte`, `Short`,
@@ -457,9 +439,9 @@ Requer | Opcional
 -------|---------
 [`position`](#position) [`length`](#length) | [`align`](#align) [`fill`](#fill)
 
-### `@FieldDec`
+###### [`Voltar`](#documentao)
 
-> Configurando [Campo](#campo) para tipo decimal.
+### `@FieldDec`
 
 A anotação `@FieldDec` é utilizada para configurar campos decimais, dando 
 suporte para os tipos Java `float`, `double`, `Float`, `Double`, e `BigDecimal`.
@@ -468,9 +450,9 @@ Requer | Opcional
 -------|---------
 [`position`](#position) [`length`](#length) | [`align`](#align) [`decimals`](#decimal) [`fill`](#fill) [`separator`](#separator)
 
-### `@FieldDtm`
+###### [`Voltar`](#documentao)
 
-> Configurando [Campo](#campo) para tipo data.
+### `@FieldDtm`
 
 A anotação `@FieldDtm` é utilizada para configurar campos de data, dando 
 suporte para o tipo Java `java.util.Date`.
@@ -479,11 +461,11 @@ Requer | Opcional
 -------|---------
 [`position`](#position)| [`format`](#format)
 
-## Atributos de configuração
+###### [`Voltar`](#documentao)
+
+## Parâmetros
 
 ### `identifier`
-
-> Configurando identificador de [Linha](#linha).
 
 O valor especificado em `identifier` será utilizado pelo _framework_ para
 identificar o tipo da linha quando estiver no formato texto. O identificador
@@ -516,9 +498,9 @@ Tipo | Valor | Utilizado por
 -----|-------|--------------
 `String` | qualquer _string_ | `@Line`
 
-### `position`
+###### [`Voltar`](#documentao)
 
-> Configurando posição do [Campo](#campo).
+### `position`
 
 Configurando posição do campo na [Linha](#linha).
 
@@ -581,22 +563,23 @@ Tipo | Valor | Utilizado por
 -----|-------|--------------
 `int` | `1`, `2`, ..., `Integer.MAX_VALUE` | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldDtm` `@FieldCtm`
 
+###### [`Voltar`](#documentao)
+
 ### `length`
 
-> Configurando comprimento do [Campo](#campo).
+Um [Campo](#campo) corresponde a um trecho de texto da linha em determinada posição inicial e 
+final, conforme valor configurado em [`position`](#position), e comprimento em `length`.
 
-Um [Campo](#campo) corresponde a um trecho de texto da linha em determinada posição inicial e final, conforme
-valor configurado em [`position`](#position), e comprimento em `length`.
-
-`length` define a largura em caracateres que o campo irá reservar no texto da linha para o valor formatado.    
+`length` define a largura em caracateres que o campo irá reservar no texto da linha para o 
+valor formatado.    
 
 Tipo | Valor | Utilizado por 
 -----|-------|--------------
 `int` | `1`, `2`, ..., `Integer.MAX_VALUE` | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldCtm`
 
-### `align`
+###### [`Voltar`](#documentao)
 
-> Configurando alinhamento do valor do [Campo](#campo).
+### `align`
 
 A propriedade `align` define se a _string_ resultante da conversão do valor do campo
 para texto ficará posicionada à esquerda ou à direita no espaço reservado de 
@@ -615,23 +598,22 @@ Align.RIGHT -> "*******abc"
 Tipo | Valor | _Default_ | Utilizado por 
 -----|-------|-----------|--------------
 `com.github.ducoral.Align` | `LEFT`, `RIGHT` | `RIGHT` nos campos numéricos e `LEFT` nos demais | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldDtm` `@FieldCtm`
-> 
+
+###### [`Voltar`](#documentao)
 
 ### `fill`
 
-Configurando preenchimento do [Campo](#campo).
-
-Provavelmente a _string_ resultante da conversão do valor do campo terá comprimento menor que o configurado
-em [`length`](#length). Nesse caso, o _framework_ irá concatenar
-o valor definido em `fill` ao valor do campo até que a _string_ atinja o comprimento determinado.
+Provavelmente a _string_ resultante da conversão do valor do campo terá comprimento menor que o 
+configurado em [`length`](#length). Nesse caso, o _framework_ irá concatenar o valor definido 
+em `fill` ao valor do campo até que a _string_ atinja o comprimento determinado.
 
 Tipo | Valor | _Default_ | Utilizado por 
 -----|-------|-----------|--------------
 `char` | qualquer _char_ | `' '` | `@FieldStr` `@FieldInt` `@FieldDec` `@FieldCtm`
 
-### `format`
+###### [`Voltar`](#documentao)
 
-> Configurando formato de [Campo](#campo) data.
+### `format`
 
 Define o formato de data para campo com valor do tipo `java.util.Date`. 
 
@@ -639,20 +621,20 @@ Tipo | Valor | _Default_ | Utilizado por
 -----|-------|-----------|--------------
 `String` | `"dd/MM/yyyy"`, `"ddMMyy"`, padrão `SimpleDateFormat` | `"ddMMyyyy"` | `@FieldDtm`
 
+###### [`Voltar`](#documentao)
+
 ### `decimal`
 
-> Configurando precisão de [Campo](#campo) decimal.  
-
-Define a quantidade de casas decimais aplicada na formatação do valor de 
-determinado campo decimal.
+Define a quantidade de casas decimais aplicada na formatação do valor de determinado 
+campo decimal.
 
 Tipo | Valor | _Default_ | Utilizado por 
 -----|-------|-----------|--------------
 `int` | `1`, `2`, ..., mais do que `6` não é possível que precise | `2` | `@FieldDec`
 
-### `separator`
+###### [`Voltar`](#documentao)
 
-> Configurando separador para [Campo](#campo) decimal.
+### `separator`
 
 Define o _char_ que será utilizado para separar as casas decimais na formatação do valor de
 determinado campo decimal. O valor `'\0'` indica que não será utilizado separador.
@@ -661,9 +643,9 @@ Tipo | Valor | _Default_ | Utilizado por
 -----|-------|-----------|--------------
 `char` | `'.'`, `','`, etc. | `'\0'` | `@FieldDec`
 
-### `order`
+###### [`Voltar`](#documentao)
 
-> Configurando ordem de [Item](#item) no [Documento](#documento).
+### `order`
 
 Define a ordem em que a [Linha](#linha) corrrespondente de determinado _item_ será 
 gerado no arquivo em relação aos demais itens do [Documento](#documento). 
@@ -677,6 +659,8 @@ Tipo | Valor | _Default_ | Utilizado por
 -----|-------|-----------|--------------
 `int` | `1`, `2`, ..., `Integer.MAX_VALUE` | `0` | `@Item`
 
+###### [`Voltar`](#documentao)
+
 ## Em ação
 
 A conversão de objeto para texto e vice-versa é efetuada através dos métodos estáticos 
@@ -685,6 +669,8 @@ A conversão de objeto para texto e vice-versa é efetuada através dos métodos
 Segue abaixo declaração de instância de [MyDocument](#mydocument), configurada com instâncias de
 [HeaderLine](#headerline), [DetailLine](#detailline) e [FooterLine](#footerline) para ser utilizada
 como caso para explicação abaixo dos métodos `Mirna.toText()` e `Mirna.writeDocument()`.
+
+###### [`Voltar`](#documentao)
 
 ###### myDoc 
 
@@ -699,9 +685,9 @@ MyDocument myDoc = new MyDocument(
 );
 ```
 
-### `Mirna.toText()`
+###### [`Voltar`](#documentao)
 
-> Convertendo documento para texto.
+## `Mirna.toText()`
 
 O método `Mirna.toText()` recebe por parâmetro uma instância de [Documento](#documento) e retorna uma
 _string_ correspondente ao contendo do arquivo texto gerado a partir dos dados do objeto. 
@@ -722,9 +708,9 @@ Dstr3000300000000789
 F10042020  255:0:255
 ```
 
-### `Mirna.writeDocument()`.
+###### [`Voltar`](#documentao)
 
-> Escrevendo em documento texto.
+## `Mirna.writeDocument()`
 
 O método recebe por parâmetro uma instância de [Documento](#documento), que será convertida para texto,
 e uma instância de `java.io.Writer`, em que o texto resultante será escrito.
@@ -749,9 +735,9 @@ Dstr3000300000000789
 F10042020  255:0:255
 ```
 
-### `Mirna.fromText()`.
+###### [`Voltar`](#documentao)
 
-> Convertendo texto para [Documento](#documento).
+## `Mirna.fromText()`.
 
 O método `Mirna.fromText()` recebe por parâmetro uma _string_ correspondente ao conteúdo em texto
 do documento e retorna instância do objeto configurado com os dados carregados.
@@ -772,9 +758,9 @@ MyDocument myDocFromText = Mirna.fromText(MyDocument.class, text);
 A instância de [MyDocument](#mydocument) resultante atribuída na variável `myDocFromText` teria a 
 mesma configuração da instância configurada na variável [myDoc](#mydoc).
 
-### `Mirna.readDocument()`.
+###### [`Voltar`](#documentao)
 
-> Lendo [Documento](#documento) a partir de texto.
+## `Mirna.readDocument()`.
 
 O método `Mirna.readDocument()` recebe por parâmetro uma instância de `java.lang.Class`, correspondente ao
 [Documento](#documento) que será recuperado, e uma instância de `java.io.Reader`, de onde o _framework_
@@ -799,19 +785,22 @@ MyDocument myDocFromReader = Mirna.readDocument(MyDocument.class, new StringRead
 A instância de [MyDocument](#mydocument) resultante atribuída na variável `myDocFromReader` teria a 
 mesma configuração da instância configurada na variável [myDoc](#mydoc).
 
-## Configuração de subitens e Documentos complexos
+###### [`Voltar`](#documentao)
+
+## Avançado
 
 **mirna** permite configurar [Linha](#linha) que contenha outra linha relacionada como subitem. Não há
 limites na quantidade de subitens para configuração de [Linhas](#linha). 
 
-### Configurando subitem de Linha com @Item
+## Subitens
 
-> O subitem pode ser uma única instância como poder uma lista de subitens declarando
-> o campo da classe com `List`, da seguinte forma: `List<TipoSubitem> subitens;`
+O subitem pode ser uma única instância como poder uma lista de subitens declarando
+o campo da classe com `List`, da seguinte forma: `List<TipoSubitem> subitens;`
 
 Segue abaixo exemplo de [Linha](#linha) que configura subitem anotando determinado campo com @Item:
 
 ###### WithSubItemLine
+
 ```java
 @Line(identifier = "S")
 public class WithSubItemLine {
@@ -842,7 +831,7 @@ utilizada para configurar itens no [Documento](#documento).
 
 O tipo `DetailLine` é uma [Linha](#linha), como pode ser observado na declaração abaixo:
 
-### Configurando Documentos complexos com itens e subitens
+## Documentos complexos
 
 Documentos complexos podem ser elaborados compondo items que contém subitens. 
 
@@ -1096,14 +1085,14 @@ Iitem3**3000555,3330
 F10042020  255:0:255
 ```
 
+###### [`Voltar`](#documentao)
+
 ## Estendendo a funcionalidade
 
 `mirna` permite a extensão de funcionalidade através de especilização da _interface_ `Converter`, que
 pode ser utilizada na configuração de campo personalizado anotado com `@FieldCtm`.
 
-### _Interface_ `Converter`
-
-> Implementando a _interface_ para conversão objeto/texto personalizada. 
+## _Interface_ `Converter`
 
 A _interface_ `Converter` requer que sejam implementados dois métodos: `Converter.toText()` e
 `Converter.fromText()`. O método `Converter.toText()` deverá retornar _string_ correspondente
@@ -1139,9 +1128,9 @@ public class ColorConverter implements Converter {
 } 
 ```  
 
-### `@FieldCtm`
+###### [`Voltar`](#documentao)
 
-> Configurando [Campo](#campo) personalizado.
+## `@FieldCtm`
 
 Dada a implementação de [`Converter`](#_interface_-converter)
 para determinado tipo personalizado, basta especificar a classe correspondente ao 
@@ -1153,10 +1142,10 @@ da forma com foi utilizado no exemplo [FooterLine](#footerline):
 private Color fieldCtm;
 ```   
 
-### `converter`
-
-> Configurando conversor personalizado.
+## `converter`
 
 O atributo `converter`, da anotação `@FieldCtm`, requer a instância de `java.lang.Class` 
 correspondente à implementação de `Converter` que deverá ser utilizada pelo _framework_ ao
 efetuar a conversão objeto/texto para o tipo declarado no campo personalizado.
+
+###### [`Voltar`](#documentao)
