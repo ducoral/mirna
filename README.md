@@ -1,6 +1,6 @@
 # `mirna`
 
-Bem-vindo ao projeto **`mirna`**.
+Bem-vindo ao projeto **mirna**.
  
 > Um _framework_ escrito em Java para manipulação de arquivos textos do tipo 
 > [_Flat-file_](https://en.wikipedia.org/wiki/Flat-file_database) com suporte
@@ -9,7 +9,7 @@ Bem-vindo ao projeto **`mirna`**.
 
 **Documentação:**
 
-- [Conceito](#conceito)
+- [Fundamento](#fundamento)
     | [Documento](#documento) 
     | [Item](#item)
     | [Linha](#linha)
@@ -18,7 +18,7 @@ Bem-vindo ao projeto **`mirna`**.
     | [`@Document`](#document) 
     | [`@Header`](#header) 
     | [`@Footer`](#footer) 
-    | [`@Item`](#item)
+    | [`@Item`](#item-1)
 - [Configurando Linha](#configurao-de-linha-e-campos) 
     | [`@Line`](#line) 
     | [`@FieldStr`](#fieldstr) 
@@ -60,7 +60,11 @@ Bem-vindo ao projeto **`mirna`**.
 </dependencies>
 ```
 
-## Conceito
+## Fundamento
+
+Determinado arquivo texto tratado pelo _framework_ é entendido como [Documento](#documento), uma
+classe anotada com [@Document](#document), composta por [Itens](#item), campos de classe
+anotados com [@Item](#item) 
 
 **mirna** é fundamentada em um conceito de [Documento](#documento). [Documento](#documento) é um
 objeto convertível para texto _flat-file_ e é composto por [Linhas](#linha). Uma [Linha](#linha), 
